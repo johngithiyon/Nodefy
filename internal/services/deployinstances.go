@@ -1,25 +1,13 @@
 package services
 
 import (
-	"log"
-	"os/exec"
-
 	"github.com/johngithiyon/Nodefy/internal/models"
+	"github.com/johngithiyon/Nodefy/internal/repository/docker"
 )
 
 func DeployInstances(Deploy *models.Deploy ) error  {
 
-
-	cmd  := exec.Command("sudo" ,"docker", "run",Deploy.OsName)
-
-	bytes,runerr := cmd.CombinedOutput()
-
-	log.Println(string(bytes))
-
-	if runerr != nil {
-		return runerr 
-	}
-    
+    docker.BuildImage(Deploy)
 	return nil 
 
 }
