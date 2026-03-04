@@ -30,7 +30,7 @@ RUN set -e; \
     else \
         echo "Unsupported Linux distribution"; \
         exit 1; \
-    fi
+    fi    
 
 # Default command (can be overridden at runtime)
 CMD ["sh"]
