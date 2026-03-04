@@ -55,8 +55,9 @@
             min-height: 100vh;
         }
 
-        /* ---------- ENHANCED BACKGROUND ANIMATIONS (preserve colors) ---------- */
-        /* Main ambient glow - more dynamic */
+        /* ---------- ENHANCED BACKGROUND ANIMATIONS ---------- */
+        
+        /* Main ambient glow */
         .ambient-glow {
             position: fixed;
             top: 0;
@@ -69,6 +70,7 @@
                 radial-gradient(circle at 40% 80%, rgba(139, 92, 246, 0.1), transparent 40%);
             z-index: -1;
             pointer-events: none;
+            transition: transform 0.1s ease-out; /* For parallax */
             animation: pulseGlow 12s ease-in-out infinite alternate;
         }
 
@@ -78,7 +80,7 @@
             100% { opacity: 0.5; transform: scale(1); filter: blur(0px); }
         }
 
-        /* Animated gradient mesh overlay - new, subtle, pro animation */
+        /* Animated gradient mesh overlay */
         .mesh-bg {
             position: fixed;
             top: 0;
@@ -109,6 +111,7 @@
             z-index: -1;
             pointer-events: none;
             overflow: hidden;
+            transition: transform 0.1s ease-out; /* For parallax */
         }
 
         .particle {
@@ -127,6 +130,36 @@
             100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.2; }
         }
 
+        /* NEW: Floating Bubbles (Large Soft Orbs) */
+        .bubbles-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+            transition: transform 0.2s ease-out; /* Slower parallax for depth */
+        }
+
+        .bubble {
+            position: absolute;
+            bottom: -100px; /* Start below screen */
+            background: radial-gradient(circle at 30% 30%, rgba(139, 92, 246, 0.08), rgba(139, 92, 246, 0.01) 60%, transparent 80%);
+            border-radius: 50%;
+            border: 1px solid rgba(139, 92, 246, 0.05);
+            animation: riseBubble 25s infinite ease-in;
+            filter: blur(2px);
+        }
+
+        @keyframes riseBubble {
+            0% { transform: translateY(0) translateX(0) scale(0.8); opacity: 0; }
+            20% { opacity: 0.5; }
+            80% { opacity: 0.5; }
+            100% { transform: translateY(-120vh) translateX(50px) scale(1.2); opacity: 0; }
+        }
+
         /* Additional floating glow spots */
         .glow-spot {
             position: fixed;
@@ -137,9 +170,11 @@
             z-index: -1;
             pointer-events: none;
             animation: spotMove 25s infinite alternate;
+            transition: transform 0.2s ease-out; /* Parallax */
         }
         .spot1 { top: -20vh; right: -10vw; }
         .spot2 { bottom: -30vh; left: -10vw; animation-delay: -5s; width: 80vw; height: 80vw; background: radial-gradient(circle at center, rgba(59, 130, 246, 0.04), transparent 70%); }
+        
         @keyframes spotMove {
             0% { transform: translate(0, 0) scale(1); }
             100% { transform: translate(5%, 5%) scale(1.1); }
@@ -393,6 +428,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 24px;
+            perspective: 1000px; /* Enable 3D space for tilt */
         }
 
         .feature-card {
@@ -400,11 +436,11 @@
             border: 1px solid var(--border-subtle);
             padding: 32px;
             border-radius: 20px;
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transition: all 0.1s ease-out; /* Fast transition for smooth tilt */
+            transform-style: preserve-3d;
         }
 
         .feature-card:hover {
-            transform: translateY(-8px);
             border-color: var(--accent-color);
             background: rgba(255,255,255,0.05);
             box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
@@ -422,14 +458,13 @@
             margin-bottom: 20px;
             font-size: 1.5rem;
             transition: transform 0.3s;
+            transform: translateZ(20px); /* Lift icon slightly in 3D */
         }
-        .feature-card:hover .feature-icon {
-            transform: scale(1.1) rotate(5deg);
-        }
-
+        
         .feature-card h3 {
             font-size: 1.25rem;
             margin-bottom: 10px;
+            transform: translateZ(10px); /* Lift text slightly */
         }
 
         /* --- 7. WHO IS IT FOR? --- */
@@ -756,18 +791,37 @@
 </head>
 <body>
 
-    <!-- Enhanced background layers (preserve original colors, just more movement) -->
-    <div class="ambient-glow"></div>
+    <!-- Enhanced background layers -->
+    <div class="ambient-glow" id="ambient-glow"></div>
     <div class="mesh-bg"></div>
-    <div class="glow-spot spot1"></div>
-    <div class="glow-spot spot2"></div>
-    <div class="particles">
+    
+    <!-- Glow Spots (Parallax Targets) -->
+    <div class="glow-spot spot1" id="spot1"></div>
+    <div class="glow-spot spot2" id="spot2"></div>
+    
+    <!-- NEW: Floating Bubbles Layer -->
+    <div class="bubbles-container" id="bubbles-container">
+        <!-- Large Bubbles -->
+        <div class="bubble" style="left: 10%; width: 150px; height: 150px; animation-duration: 22s; animation-delay: 0s;"></div>
+        <div class="bubble" style="left: 30%; width: 80px; height: 80px; animation-duration: 28s; animation-delay: -5s;"></div>
+        <div class="bubble" style="left: 60%; width: 200px; height: 200px; animation-duration: 35s; animation-delay: -10s;"></div>
+        <div class="bubble" style="left: 85%; width: 120px; height: 120px; animation-duration: 25s; animation-delay: -2s;"></div>
+        <div class="bubble" style="left: 45%; width: 60px; height: 60px; animation-duration: 30s; animation-delay: -15s;"></div>
+    </div>
+
+    <!-- Particles Layer -->
+    <div class="particles" id="particles">
         <div class="particle" style="top: 20%; left: 15%; animation-duration: 16s;"></div>
         <div class="particle" style="top: 70%; left: 80%; width: 6px; height: 6px; animation-duration: 22s; animation-delay: -2s;"></div>
         <div class="particle" style="top: 40%; left: 40%; width: 3px; height: 3px; animation-duration: 14s; animation-delay: -5s;"></div>
         <div class="particle" style="top: 85%; left: 25%; width: 5px; height: 5px; animation-duration: 19s; animation-delay: -1s;"></div>
         <div class="particle" style="top: 10%; left: 90%; width: 4px; height: 4px; animation-duration: 24s;"></div>
         <div class="particle" style="top: 55%; left: 10%; width: 7px; height: 7px; animation-duration: 17s; animation-delay: -8s;"></div>
+        
+        <!-- Extra Particles for "More Bubbles" feel -->
+        <div class="particle" style="top: 30%; left: 5%; width: 2px; height: 2px; animation-duration: 12s; animation-delay: -4s;"></div>
+        <div class="particle" style="top: 60%; left: 50%; width: 5px; height: 5px; animation-duration: 20s; animation-delay: -12s;"></div>
+        <div class="particle" style="top: 15%; left: 70%; width: 3px; height: 3px; animation-duration: 15s; animation-delay: -6s;"></div>
     </div>
 
     <!-- Navigation -->
@@ -827,37 +881,37 @@
             </div>
             <div class="features-grid">
                 <!-- Card 1 -->
-                <div class="feature-card reveal">
+                <div class="feature-card reveal js-tilt">
                     <div class="feature-icon">🖥</div>
                     <h3>Full OS-Level Control</h3>
                     <p>Access root-level customization and configure system services without restrictions.</p>
                 </div>
                 <!-- Card 2 -->
-                <div class="feature-card reveal">
+                <div class="feature-card reveal js-tilt">
                     <div class="feature-icon">🐧</div>
                     <h3>Ubuntu-Based Environments</h3>
                     <p>Deploy flexible Linux nodes powered by Ubuntu for stability and compatibility.</p>
                 </div>
                 <!-- Card 3 -->
-                <div class="feature-card reveal">
+                <div class="feature-card reveal js-tilt">
                     <div class="feature-icon">🧩</div>
                     <h3>Modular Architecture</h3>
                     <p>Extend functionality with a scalable and plug-and-play system design.</p>
                 </div>
                 <!-- Card 4 -->
-                <div class="feature-card reveal">
+                <div class="feature-card reveal js-tilt">
                     <div class="feature-icon">🔐</div>
                     <h3>Secure by Design</h3>
                     <p>Isolated nodes with secure authentication and environment control.</p>
                 </div>
                 <!-- Card 5 -->
-                <div class="feature-card reveal">
+                <div class="feature-card reveal js-tilt">
                     <div class="feature-icon">⚙</div>
                     <h3>Developer-Friendly Dashboard</h3>
                     <p>Manage, monitor, and configure nodes with an intuitive UI.</p>
                 </div>
                 <!-- Card 6 -->
-                <div class="feature-card reveal">
+                <div class="feature-card reveal js-tilt">
                     <div class="feature-icon">🌐</div>
                     <h3>Open Source & Community Driven</h3>
                     <p>Fully transparent codebase with community contributions.</p>
@@ -1057,11 +1111,11 @@
     </footer>
 
     <script>
-        // --- ANIMATION ON SCROLL ---
-        // Uses IntersectionObserver to trigger animations when elements come into view
         document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- 1. SCROLL REVEAL ANIMATION ---
             const observerOptions = {
-                threshold: 0.1, // Trigger when 10% of the element is visible
+                threshold: 0.1,
                 rootMargin: "0px 0px -50px 0px"
             };
 
@@ -1069,25 +1123,52 @@
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('active');
-                        // Optional: Stop observing once animated
-                        // observer.unobserve(entry.target); 
                     }
                 });
             }, observerOptions);
 
-            const revealElements = document.querySelectorAll('.reveal');
-            revealElements.forEach(el => observer.observe(el));
-        });
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-        // --- INTERACTIVE HOVER FOR STEPS ---
-        // Keeps the existing interaction but adds smooth return
-        document.querySelectorAll('.step-item').forEach(item => {
-            item.addEventListener('mouseenter', () => {
-                // CSS handles the transform now, this is for any extra JS logic if needed later
-                item.style.cursor = 'pointer';
+            // --- 2. MOUSE PARALLAX EFFECT (Professional Depth) ---
+            const ambientGlow = document.getElementById('ambient-glow');
+            const spot1 = document.getElementById('spot1');
+            const spot2 = document.getElementById('spot2');
+            const particles = document.getElementById('particles');
+            const bubblesContainer = document.getElementById('bubbles-container');
+
+            document.addEventListener('mousemove', (e) => {
+                const x = (window.innerWidth - e.pageX * 2) / 100;
+                const y = (window.innerHeight - e.pageY * 2) / 100;
+
+                // Move layers at different speeds for depth
+                if(ambientGlow) ambientGlow.style.transform = `translate(${x}px, ${y}px)`;
+                if(spot1) spot1.style.transform = `translate(${x * 1.5}px, ${y * 1.5}px)`;
+                if(spot2) spot2.style.transform = `translate(${x * 0.5}px, ${y * 0.5}px)`;
+                if(particles) particles.style.transform = `translate(${x * -0.5}px, ${y * -0.5}px)`;
+                if(bubblesContainer) bubblesContainer.style.transform = `translate(${x * -0.2}px, ${y * -0.2}px)`;
             });
-            item.addEventListener('mouseleave', () => {
-                item.style.cursor = 'default';
+
+            // --- 3. 3D CARD TILT EFFECT (Interactive Polish) ---
+            const tiltCards = document.querySelectorAll('.js-tilt');
+
+            tiltCards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left; // x position within the element
+                    const y = e.clientY - rect.top;  // y position within the element
+                    
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    
+                    const rotateX = ((y - centerY) / centerY) * -5; // Max rotation deg
+                    const rotateY = ((x - centerX) / centerX) * 5;
+
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+                });
             });
         });
     </script>
