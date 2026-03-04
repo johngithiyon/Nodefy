@@ -34,4 +34,14 @@ func BuildImage(Deploy *models.Deploy) {
 
 		    log.Println(string(output))
 
+			runexecuter := exec.Command("sudo","docker","run","-d","nodefy-image","sleep","infinity")
+
+			runoutput,runerr := runexecuter.CombinedOutput()
+
+			if runerr != nil {
+				log.Println("Run failed:", runerr)
+				log.Println(string(runoutput))
+				return
+			}
+
 }
