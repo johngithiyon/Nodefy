@@ -16,14 +16,17 @@ func BuildImage(Deploy *models.Deploy) {
 				   service += services + " "
 			}
 
+			//Write  a commmand to build the image
 
-			executer := exec.Command("sudo",
+			executer := exec.Command(
 				"docker", "build",
 				"--build-arg", "BASE_IMAGE="+Deploy.OsName,
 				"--build-arg", "PACKAGES="+service,
 				"-t", "nodefy-image",
 				".",
 			)
+
+			//Used to show the output and error from the cmd 
 		
 			output, err := executer.CombinedOutput()
 			if err != nil {
@@ -34,7 +37,9 @@ func BuildImage(Deploy *models.Deploy) {
 
 		    log.Println(string(output))
 
-			runexecuter := exec.Command("sudo","docker","run","-d","nodefy-image","sleep","infinity")
+			// write the command to run the container
+
+			runexecuter := exec.Command("docker","run","-m","100m","--memory-swap=100m","-d","nodefy-image","sleep","infinity")
 
 			runoutput,runerr := runexecuter.CombinedOutput()
 
