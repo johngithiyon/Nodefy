@@ -9,4 +9,5 @@ import (
 func Routes() {
 	 
 	  http.HandleFunc("/deploy",handlers.Deploy)
+	  http.HandleFunc("/signup",handlers.Signuphandler)
 }
