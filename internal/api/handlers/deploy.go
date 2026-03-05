@@ -16,6 +16,8 @@ func Deploy(w http.ResponseWriter, r *http.Request) {
 	var Deploy models.Deploy
 
     if r.Method != http.MethodPost {
+		 log.Println("Invalid Metheod")
+		 response.Response(w,405,"Invalid Metheod")
 		 return
 	}
 
@@ -24,7 +26,8 @@ func Deploy(w http.ResponseWriter, r *http.Request) {
    decoderr := utils.Jsoncov(r.Body,&Deploy)
 
    if decoderr != nil {
-	  log.Println(decoderr)
+	  log.Println("Decode Error",decoderr)
+	  response.Response(w,500,"Internal Server Error")
 	  return 
    }
 
@@ -33,6 +36,7 @@ func Deploy(w http.ResponseWriter, r *http.Request) {
    if Deploy.OsName != "ubuntu" && Deploy.OsName != "alphine" {
 	    
 	       log.Println("Invalid os")
+		   response.Response(w,400,"Invalid OS")
 	       return 
    }
 
@@ -43,6 +47,7 @@ func Deploy(w http.ResponseWriter, r *http.Request) {
 	       if services != "postgresql" && services != "redis-server" {
 
 				log.Println("Invalid Services")
+				response.Response(w,400,"Invalid Services")
 				return 
 		   }
    }
@@ -51,7 +56,9 @@ func Deploy(w http.ResponseWriter, r *http.Request) {
    deployerr := services.DeployInstances(&Deploy)
 
    if deployerr != nil {
-	 return 
+	  log.Println("Deploy Error",deployerr)
+	  response.Response(w,500,"Internal Server Error")
+	  return 
    }
 
    response.Response(w,200,"Instances Deployed Successfully")
