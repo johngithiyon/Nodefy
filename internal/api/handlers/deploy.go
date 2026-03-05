@@ -35,6 +35,17 @@ func Deploy(w http.ResponseWriter, r *http.Request) {
 	       return 
    }
 
+   // validate the user selected services
+
+   for _,services := range Deploy.Services {
+	     
+	       if services != "postgresql" && services != "redis-server" {
+
+				log.Println("Invalid Services")
+				return 
+		   }
+   }
+
     
    deployerr := services.DeployInstances(&Deploy)
 
