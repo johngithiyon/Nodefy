@@ -7,6 +7,7 @@ import (
 	"github.com/johngithiyon/Nodefy/internal/models"
 	"github.com/johngithiyon/Nodefy/internal/services"
 
+	"github.com/johngithiyon/Nodefy/pkg/response"
 	"github.com/johngithiyon/Nodefy/pkg/utils"
 )
 
@@ -52,5 +53,7 @@ func Deploy(w http.ResponseWriter, r *http.Request) {
    if deployerr != nil {
 	 return 
    }
+
+   response.Response(w,200,"Instances Deployed Successfully")
 
 }
