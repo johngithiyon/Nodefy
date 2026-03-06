@@ -5,6 +5,8 @@ import (
 	"net/http"
 
 	"github.com/johngithiyon/Nodefy/internal/models"
+	"github.com/johngithiyon/Nodefy/internal/repository/storage/postgres"
+	"github.com/johngithiyon/Nodefy/internal/repository/storage/redis"
 	"github.com/johngithiyon/Nodefy/internal/services"
 	"github.com/johngithiyon/Nodefy/pkg/response"
 	"github.com/johngithiyon/Nodefy/pkg/utils"
@@ -23,6 +25,15 @@ func Signuphandler(w http.ResponseWriter, r *http.Request) {
 	     Signup.Username =  r.FormValue("username")
 		 Signup.Email = r.FormValue("email")
 		 Signup.Password = r.FormValue("password")
+
+		 //check the existence 
+
+		    checkexists , checkerr :=  postgres.CheckUserexists(&Signup)
+
+			 if !checkexists && checkerr != nil {
+				  response.Response(w,409,"User Exists")
+				  return 
+			  }
 
 		 //valiadte username 
 
@@ -50,17 +61,48 @@ func Signuphandler(w http.ResponseWriter, r *http.Request) {
 			    return 
 		 }
 
+		 //Hash the password 
+
 		 hashedpass,hasherr := services.Passwordhash(Signup.Password)
 
 		 if hasherr != nil {
+            log.Println("Hash Err",hasherr)
+			response.Response(w,500,"Internal Server Error")
 			return 
 		 }
 
-		 log.Println(hashedpass)
 
-		 response.Response(w,200,"Signup Successful")
+		otp := services.OtpGenerator(Signup.Email)
 
-         
+		if otp == "" {
+			response.Response(w,500,"Internal Server Error")
+			return 
+		}
 
+		senderr := services.SendEmail(Signup.Email,otp)
+
+		if senderr != nil {
+			log.Println("Mail Send Error",senderr)
+			response.Response(w,500,"Internal Server Error")
+			return 
+		}
+
+		id := services.GenerateSessionStore(Signup.Username)
+
+		signupdetails := map[string]interface{} {
+			"username":Signup.Username,
+			"email":Signup.Email,
+			"password":hashedpass,
+			Signup.Username+"otp":otp,
+		}  
+
+		storerr := redis.Storetemp(id,signupdetails)
+
+       if  storerr != nil {
+		    
+            response.Response(w,500,"Internal Server Error")
+			return
+	   } 
+		response.Response(w,200,"Signup Successful")
 
 }
