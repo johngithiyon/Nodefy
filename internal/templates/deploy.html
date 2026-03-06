@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nodefy - Deploy New Instance</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- 1. CORE VARIABLES & THEME --- */
+        :root {
+            --bg-gradient-start: #050505;
+            --bg-gradient-end: #1a0b2e;
+            --accent-color: #8b5cf6;      
+            --accent-hover: #7c3aed;
+            --accent-glow: rgba(139, 92, 246, 0.4);
+            
+            --text-main: #FFFFFF;
+            --text-muted: #A1A1AA;
+            --text-dark: #52525B;
+            
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(255, 255, 255, 0.2);
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-blur: blur(16px);
+            
+            --font-ui: 'Inter', sans-serif;
+            --font-code: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-ui);
+            background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+            background-attachment: fixed;
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- BACKGROUND ANIMATIONS (No Grid/Mesh) --- */
+        .ambient-glow {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: 
+                radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.15), transparent 35%),
+                radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.12), transparent 35%);
+            z-index: -1; pointer-events: none;
+            animation: pulseGlow 12s ease-in-out infinite alternate;
+        }
+        @keyframes pulseGlow {
+            0% { opacity: 0.4; transform: scale(1); }
+            100% { opacity: 0.8; transform: scale(1.02); }
+        }
+
+        .bubbles-container {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1; pointer-events: none; overflow: hidden;
+        }
+        .bubble {
+            position: absolute; bottom: -100px;
+            background: radial-gradient(circle at 30% 30%, rgba(139, 92, 246, 0.08), transparent 80%);
+            border-radius: 50%;
+            border: 1px solid rgba(139, 92, 246, 0.05);
+            animation: riseBubble 25s infinite ease-in; filter: blur(2px);
+        }
+        @keyframes riseBubble {
+            0% { transform: translateY(0) scale(0.8); opacity: 0; }
+            50% { opacity: 0.5; }
+            100% { transform: translateY(-120vh) scale(1.2); opacity: 0; }
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            position: fixed;
+            top: 20px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 1200px; height: 64px;
+            background: rgba(10, 10, 15, 0.7);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border-subtle);
+            border-radius: 100px;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 32px; z-index: 1000;
+        }
+        .nav-logo {
+            font-weight: 800; font-size: 1.25rem; color: white; text-decoration: none;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .nav-logo span { color: var(--accent-color); }
+        .nav-links a {
+            text-decoration: none; color: var(--text-muted);
+            font-size: 0.9rem; margin-left: 20px; transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--text-main); }
+
+        /* --- MAIN LAYOUT --- */
+        main {
+            flex: 1;
+            padding-top: 120px;
+            padding-bottom: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .wizard-container {
+            width: 90%;
+            max-width: 1000px;
+            position: relative;
+        }
+
+        .step-header {
+            text-align: center;
+            margin-bottom: 40px;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .step-header h2 {
+            font-size: 2.5rem; margin-bottom: 10px;
+            background: linear-gradient(to right, #fff, #ccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* --- GRID SYSTEMS --- */
+        .selection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            perspective: 1000px;
+        }
+
+        /* --- OS CARDS --- */
+        .os-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+            position: relative;
+            overflow: hidden;
+            height: 220px;
+        }
+
+        .os-card:hover {
+            border-color: var(--accent-color);
+            background: rgba(255,255,255,0.05);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+        }
+        
+        .os-name { font-size: 1.25rem; font-weight: 600; }
+
+        /* --- FIXED OS ICON BOX --- */
+        .os-icon-box {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .os-icon-box img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+        .os-card:hover .os-icon-box img { transform: scale(1.1); }
+
+        /* --- SERVICE CARDS --- */
+        .service-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            height: 100%;
+            position: relative;
+        }
+
+        .service-card:hover { border-color: var(--text-muted); }
+        
+        /* Selected State */
+        .service-card.selected {
+            border-color: var(--accent-color);
+            background: rgba(139, 92, 246, 0.1);
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
+        }
+
+        .service-card.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 10px; right: 10px;
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+
+        /* --- FIXED SERVICE ICON BOX --- */
+        .service-icon-box {
+            width: 50px; 
+            height: 50px; 
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .service-icon-box img {
+            width: 32px; 
+            height: 32px; 
+            object-fit: contain;
+        }
+
+        /* Custom Service Input Area */
+        #custom-input-area {
+            grid-column: 1 / -1;
+            margin-top: 20px;
+            display: none; /* Hidden by default */
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .code-editor {
+            width: 100%;
+            background: #0d0d12;
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            color: #a1a1aa;
+            font-family: var(--font-code);
+            padding: 20px;
+            font-size: 0.9rem;
+            resize: vertical;
+            min-height: 150px;
+            outline: none;
+        }
+        .code-editor:focus { border-color: var(--accent-color); color: white; }
+
+        /* --- ACTION BUTTONS --- */
+        .actions {
+            margin-top: 40px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .btn {
+            padding: 14px 32px; border-radius: 8px; font-weight: 600;
+            font-size: 1rem; cursor: pointer; transition: all 0.3s;
+            border: none; display: inline-flex; align-items: center; gap: 10px;
+        }
+
+        .btn-primary {
+            background: var(--accent-color); color: white;
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
+        }
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.5);
+        }
+        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.05); color: white;
+            border: 1px solid var(--border-subtle);
+        }
+        .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+
+        /* --- STEP VISIBILITY UTILS --- */
+        .wizard-step {
+            display: none;
+            animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .wizard-step.active { display: block; }
+
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- LOADING OVERLAY --- */
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 5, 10, 0.9); z-index: 2000;
+            display: none; align-items: center; justify-content: center;
+            flex-direction: column;
+            backdrop-filter: blur(10px);
+        }
+        .spinner {
+            width: 50px; height: 50px;
+            border: 3px solid rgba(139, 92, 246, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--accent-color);
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* --- TOAST NOTIFICATIONS --- */
+        .toast-container {
+            position: fixed; bottom: 30px; right: 30px; z-index: 3000;
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .toast {
+            background: #1a1a20; border-left: 4px solid var(--accent-color);
+            padding: 16px 24px; border-radius: 4px; color: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            animation: slideInRight 0.3s ease;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .toast.error { border-left-color: #ef4444; }
+        .toast.success { border-left-color: #10b981; }
+
+        @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .step-header h2 { font-size: 1.8rem; }
+            .selection-grid { grid-template-columns: 1fr 1fr; }
+            .os-card { height: 180px; padding: 20px; }
+            .os-icon-box { width: 70px; height: 70px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Backgrounds (Grid/Mesh Removed) -->
+    <div class="ambient-glow"></div>
+    <div class="bubbles-container">
+        <div class="bubble" style="left: 10%; width: 150px; height: 150px; animation-duration: 22s;"></div>
+        <div class="bubble" style="left: 30%; width: 80px; height: 80px; animation-duration: 28s;"></div>
+        <div class="bubble" style="left: 60%; width: 200px; height: 200px; animation-duration: 35s;"></div>
+        <div class="bubble" style="left: 85%; width: 120px; height: 120px; animation-duration: 25s;"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="home.html" class="nav-logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="var(--accent-color)"/>
+                <path d="M2 17L12 22L22 17" stroke="white"/>
+                <path d="M2 12L12 17L22 12" stroke="white"/>
+            </svg>
+            Nodefy
+        </a>
+        <div class="nav-links">
+            <a href="home.html">Home</a>
+            <a href="#features">Features</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="wizard-container">
+            
+            <!-- STEP 1: SELECT OS -->
+            <div id="step-1" class="wizard-step active">
+                <div class="step-header">
+                    <h2>Choose Operating System</h2>
+                    <p style="color: var(--text-muted)">Select the base image for your node</p>
+                </div>
+
+                <div class="selection-grid">
+                    <!-- Ubuntu -->
+                    <div class="os-card" onclick="selectOS('ubuntu')">
+                        <div class="os-icon-box">
+                            <img src="../static/images/ubantu.png" alt="Ubuntu Logo">
+                        </div>
+                        <div class="os-name">Ubuntu</div>
+                    </div>
+
+                    <!-- Alpine -->
+                    <div class="os-card" onclick="selectOS('alphine')">
+                        <div class="os-icon-box">
+                            <img src="../static/images/alpine.webp" alt="Alpine Logo">
+                        </div>
+                        <div class="os-name">Alpine</div>
+                    </div>
+
+                    <!-- Fedora -->
+                    <div class="os-card" onclick="selectOS('fedora')">
+                        <div class="os-icon-box">
+                            <img src="../static/images/fedora.webp" alt="Fedora Logo">
+                        </div>
+                        <div class="os-name">Fedora</div>
+                    </div>
+
+                    <!-- CentOS -->
+                    <div class="os-card" onclick="selectOS('centos')">
+                        <div class="os-icon-box">
+                            <img src="../static/images/CentOS.png" alt="CentOS Logo">
+                        </div>
+                        <div class="os-name">CentOS</div>
+                    </div>
+
+                    <!-- Kali -->
+                    <div class="os-card" onclick="selectOS('kali')">
+                        <div class="os-icon-box">
+                            <img src="../static/images/Kali.png" alt="Kali Logo">
+                        </div>
+                        <div class="os-name">Kali Linux</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2: SELECT SERVICES -->
+            <div id="step-2" class="wizard-step">
+                <div class="step-header">
+                    <h2>Configure Services</h2>
+                    <p style="color: var(--text-muted)">Select pre-installed software or add custom scripts (Optional)</p>
+                </div>
+
+                <div class="selection-grid">
+                    <!-- PostgreSQL -->
+                    <div class="service-card" id="svc-postgresql" onclick="toggleService('postgresql')">
+                        <div class="service-icon-box">
+                            <img src="../static/images/postgresql.png" alt="PostgreSQL">
+                        </div>
+                        <div class="service-name">PostgreSQL</div>
+                    </div>
+
+                    <!-- Redis -->
+                    <div class="service-card" id="svc-redis-server" onclick="toggleService('redis-server')">
+                        <div class="service-icon-box">
+                            <img src="../static/images/redis.png" alt="Redis Server">
+                        </div>
+                        <div class="service-name">Redis Server</div>
+                    </div>
+
+                    <!-- Custom Services -->
+                    <div class="service-card" id="svc-custom" onclick="toggleCustomService()">
+                        <div class="service-icon-box">
+                            <svg viewBox="0 0 24 24" fill="white" width="32" height="32">
+                                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                            </svg>
+                        </div>
+                        <div class="service-name">Custom Services</div>
+                    </div>
+                </div>
+
+                <!-- Custom Code Textarea (Hidden until clicked) -->
+                <div id="custom-input-area">
+                    <p style="margin-bottom: 10px; color: var(--accent-color); font-size: 0.9rem;">Enter bash commands or installation script:</p>
+                    <textarea id="custom-code" class="code-editor" placeholder="# Example\napt-get update\napt-get install nginx -y\nsystemctl start nginx"></textarea>
+                </div>
+
+                <div class="actions">
+                    <button class="btn btn-secondary" onclick="goToStep(1)">Back</button>
+                    <button class="btn btn-primary" onclick="deployInstance()">Deploy Instance</button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div class="overlay" id="loading-overlay">
+        <div class="spinner"></div>
+        <h3 style="font-weight: 500;">Deploying Node...</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">Allocating resources & configuring OS</p>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script>
+        // State Management
+        let selectedOS = "";
+        let selectedServices = new Set();
+        let isCustomServiceActive = false;
+
+        /* --- OS SELECTION LOGIC --- */
+        function selectOS(osName) {
+            selectedOS = osName;
+            console.log("Selected OS:", osName);
+            
+            // Backend Compatibility Note:
+            // The provided Go backend currently validates: 
+            // if Deploy.OsName != "ubuntu" && Deploy.OsName != "alphine"
+            // If you select 'centos', 'fedora', or 'kali', the backend will return "Invalid OS" 
+            // unless you update deploy.go to include them.
+            
+            goToStep(2);
+        }
+
+        /* --- SERVICE SELECTION LOGIC --- */
+        function toggleService(serviceName) {
+            if(serviceName === 'custom') return; 
+
+            const card = document.getElementById(`svc-${serviceName}`);
+            
+            if (selectedServices.has(serviceName)) {
+                selectedServices.delete(serviceName);
+                card.classList.remove('selected');
+            } else {
+                selectedServices.add(serviceName);
+                card.classList.add('selected');
+            }
+        }
+
+        function toggleCustomService() {
+            const card = document.getElementById('svc-custom');
+            const inputArea = document.getElementById('custom-input-area');
+            const customCode = document.getElementById('custom-code').value.trim();
+
+            isCustomServiceActive = !isCustomServiceActive;
+
+            if (isCustomServiceActive) {
+                card.classList.add('selected');
+                inputArea.style.display = 'block';
+                setTimeout(() => document.getElementById('custom-code').focus(), 100);
+            } else {
+                card.classList.remove('selected');
+                inputArea.style.display = 'none';
+            }
+        }
+
+        /* --- NAVIGATION LOGIC --- */
+        function goToStep(stepNumber) {
+            document.querySelectorAll('.wizard-step').forEach(el => {
+                el.classList.remove('active');
+            });
+
+            const target = document.getElementById(`step-${stepNumber}`);
+            if (target) {
+                target.classList.add('active');
+            }
+        }
+
+        /* --- DEPLOY LOGIC --- */
+        async function deployInstance() {
+            // Handle Custom Service
+            const customCode = document.getElementById('custom-code').value.trim();
+            if (isCustomServiceActive && customCode.length > 0) {
+                // NOTE: The current Go backend strictly checks:
+                // if services != "postgresql" && services != "redis-server" { return 400 }
+                // Sending custom code here will cause an "Invalid Services" error from the backend.
+                // We add it to the set as requested by the UI flow, but the backend will reject it.
+                selectedServices.add(customCode);
+            }
+
+            // REMOVED VALIDATION: 
+            // "if the user can click deploy even though without choosing the services"
+            // We allow the services array to be empty. The Go loop handles empty arrays gracefully (skips validation).
+
+            const payload = {
+                osName: selectedOS,
+                services: Array.from(selectedServices)
+            };
+
+            console.log("Deploying with payload:", payload);
+
+            const overlay = document.getElementById('loading-overlay');
+            overlay.style.display = 'flex';
+
+            try {
+                const response = await fetch('/deploy', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showToast(data.message || "Instances Deployed Successfully", "success");
+                    setTimeout(() => {
+                        window.location.href = 'home.html';
+                    }, 2000);
+                } else {
+                    throw new Error(data.message || "Deployment Failed");
+                }
+
+            } catch (error) {
+                console.error("Deploy Error:", error);
+                showToast(error.message, "error");
+            } finally {
+                overlay.style.display = 'none';
+            }
+        }
+
+        /* --- TOAST NOTIFICATION SYSTEM --- */
+        function showToast(message, type = "success") {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            let icon = '';
+            if(type === 'success') icon = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+            else icon = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>';
+
+            toast.innerHTML = `${icon}<span>${message}</span>`;
+            
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'slideInRight 0.3s ease reverse forwards';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        /* --- 3D TILT EFFECT --- */
+        document.addEventListener('DOMContentLoaded', () => {
+            const tiltCards = document.querySelectorAll('.os-card, .service-card');
+
+            tiltCards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    
+                    const rotateX = ((y - centerY) / centerY) * -5;
+                    const rotateY = ((x - centerX) / centerX) * 5;
+
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
