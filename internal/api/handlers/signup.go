@@ -3,6 +3,7 @@ package handlers
 import (
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/johngithiyon/Nodefy/internal/models"
 	"github.com/johngithiyon/Nodefy/internal/repository/storage/postgres"
@@ -28,16 +29,15 @@ func Signuphandler(w http.ResponseWriter, r *http.Request) {
 
 		 //check the existence 
 
-		    checkexists , checkerr :=  postgres.CheckUserexists(&Signup)
-
-			 if !checkexists && checkerr != nil {
+		    checkexists :=  postgres.CheckUserexists(&Signup)
+			 if !checkexists  {
 				  response.Response(w,409,"User Exists")
 				  return 
 			  }
 
 		 //valiadte username 
 
-		 if !(len(Signup.Username) <= 12)  {
+		 if !(len(Signup.Username) <= 13)  {
 			log.Println("Username Length Issues")
 			response.Response(w,402,"Invalid Username")
 			return 		  
@@ -88,21 +88,31 @@ func Signuphandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		id := services.GenerateSessionStore(Signup.Username)
+		
+		//store the temp id in cookies 
+
+		http.SetCookie(w,&http.Cookie{
+
+			Name: "temp-id",
+			 Value: id,
+			 Expires: time.Now().Add(30 * time.Minute),
+	
+	 })
 
 		signupdetails := map[string]interface{} {
 			"username":Signup.Username,
 			"email":Signup.Email,
 			"password":hashedpass,
-			Signup.Username+"otp":otp,
+			"otp":otp,
 		}  
 
 		storerr := redis.Storetemp(id,signupdetails)
-
-       if  storerr != nil {
-		    
+		
+        if  storerr != nil { 
             response.Response(w,500,"Internal Server Error")
 			return
 	   } 
+
 		response.Response(w,200,"Signup Successful")
 
 }
