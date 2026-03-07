@@ -7,7 +7,13 @@ import (
 
 func DeployInstances(Deploy *models.Deploy ) error  {
 
-    docker.BuildImage(Deploy)
+   builerr :=  docker.BuildImage(Deploy)
+
+   if builerr != nil {
+	     
+	     return builerr
+   }
+
 	return nil 
 
 }
