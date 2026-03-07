@@ -7,7 +7,7 @@ import (
 	"github.com/johngithiyon/Nodefy/internal/models"
 )
 
-func BuildImage(Deploy *models.Deploy) {
+func BuildImage(Deploy *models.Deploy) error {
 
 	        var service string 
 	 
@@ -28,11 +28,11 @@ func BuildImage(Deploy *models.Deploy) {
 
 			//Used to show the output and error from the cmd 
 		
-			output, err := executer.CombinedOutput()
-			if err != nil {
-				log.Println("Build failed:", err)
+			output, outerr := executer.CombinedOutput()
+			if outerr != nil {
+				log.Println("Build failed:", outerr)
 				log.Println(string(output))
-				return
+				return outerr
 			}
 
 		    log.Println(string(output))
@@ -46,7 +46,9 @@ func BuildImage(Deploy *models.Deploy) {
 			if runerr != nil {
 				log.Println("Run failed:", runerr)
 				log.Println(string(runoutput))
-				return
+				return runerr
 			}
+
+			return nil 
 
 }
