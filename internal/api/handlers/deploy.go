@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/johngithiyon/Nodefy/internal/models"
+	"github.com/johngithiyon/Nodefy/internal/repository/storage/redis"
 	"github.com/johngithiyon/Nodefy/internal/services"
 
 	"github.com/johngithiyon/Nodefy/pkg/response"
@@ -19,6 +20,23 @@ func Deploy(w http.ResponseWriter, r *http.Request) {
 		 log.Println("Invalid Metheod")
 		 response.Response(w,405,"Invalid Metheod")
 		 return
+	}
+
+	//get the username to find the deploy user 
+ 
+	sessionid,getsessionerr :=  utils.Getsessionid(r,"session-id")
+
+	   if sessionid == "" && getsessionerr != nil {
+		     response.Response(w,400,"Cookie not found")
+			 return
+		}
+
+
+	username,geterr := redis.Getusername(sessionid)
+
+	if geterr != nil {
+		response.Response(w,500,"Internal Server Error")
+		return
 	}
 
 	// Convert the Json into Struct
@@ -53,7 +71,7 @@ func Deploy(w http.ResponseWriter, r *http.Request) {
    }
 
     
-   deployerr := services.DeployInstances(&Deploy)
+   deployerr := services.DeployInstances(username,&Deploy)
 
    if deployerr != nil {
 	  log.Println("Deploy Error",deployerr)
