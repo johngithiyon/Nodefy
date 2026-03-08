@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/johngithiyon/Nodefy/internal/errors"
 	"github.com/johngithiyon/Nodefy/internal/models"
-	"github.com/johngithiyon/Nodefy/internal/repository/storage/redis"
 	"github.com/johngithiyon/Nodefy/internal/services"
 
 	"github.com/johngithiyon/Nodefy/pkg/response"
@@ -32,13 +32,6 @@ func Deploy(w http.ResponseWriter, r *http.Request) {
 		}
 
 
-	username,geterr := redis.Getusername(sessionid)
-
-	if geterr != nil {
-		response.Response(w,500,"Internal Server Error")
-		return
-	}
-
 	// Convert the Json into Struct
 
    decoderr := utils.Jsoncov(r.Body,&Deploy)
@@ -49,34 +42,17 @@ func Deploy(w http.ResponseWriter, r *http.Request) {
 	  return 
    }
 
-   // validate the user request
-
-   if Deploy.OsName != "ubuntu" && Deploy.OsName != "alphine" {
-	    
-	       log.Println("Invalid os")
-		   response.Response(w,400,"Invalid OS")
-	       return 
-   }
-
-   // validate the user selected services
-
-   for _,services := range Deploy.Services {
-	     
-	       if services != "postgresql" && services != "redis-server" {
-
-				log.Println("Invalid Services")
-				response.Response(w,400,"Invalid Services")
-				return 
-		   }
-   }
-
     
-   deployerr := services.DeployInstances(username,&Deploy)
+   deployerr := services.DeployInstances(sessionid,&Deploy)
 
-   if deployerr != nil {
-	  log.Println("Deploy Error",deployerr)
-	  response.Response(w,500,"Internal Server Error")
-	  return 
+   if deployerr == errors.ErrInternalserver {
+	    response.Response(w,500,"Internal Server Error")
+		return
+   }
+
+   if deployerr == errors.ErrBadrequest {
+	     response.Response(w,400,"Bad Request")
+		 return
    }
 
    response.Response(w,200,"Instances Deployed Successfully")
