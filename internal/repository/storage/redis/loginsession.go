@@ -17,3 +17,15 @@ func Storesessionid(id string,username string ) error {
 
 	return  nil 
 }
+
+func Getusername(id string) (string,error){
+
+	 username,geterr :=  Redisconn.Redisconn.Get(context.Background(),id).Result()
+
+	 if geterr != nil {
+		   log.Println("Username Get Err",geterr)
+		   return "",geterr
+	 }
+
+	 return username,nil
+}
