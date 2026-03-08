@@ -8,6 +8,7 @@ import (
 	"github.com/johngithiyon/Nodefy/internal/repository/storage/postgres"
 	"github.com/johngithiyon/Nodefy/internal/repository/storage/redis"
 	"github.com/johngithiyon/Nodefy/pkg/response"
+	"github.com/johngithiyon/Nodefy/pkg/utils"
 )
 
 
@@ -22,14 +23,14 @@ func Otphandler(w http.ResponseWriter, r *http.Request) {
 	 
 	    otp := r.FormValue("otp")
 
-		id,cookierr :=  r.Cookie("temp-id")
+		sessionid,getsessionerr :=  utils.Getsessionid(r,"temp-id")
 
-		if cookierr != nil {
-			log.Println("Cookies Error",cookierr)
-			return 
+		if sessionid == "" && getsessionerr != nil {
+			 response.Response(w,400,"Cookie not found")
+			 return
 		}
 
-        storedata,geterr :=  redis.Getstoretemp(id.Value)
+        storedata,geterr :=  redis.Getstoretemp(sessionid)
 
 		if storedata == nil  && geterr != nil {
 			 response.Response(w,500,"Internal Server Error")
