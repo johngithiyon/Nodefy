@@ -7,10 +7,10 @@ import (
 	"github.com/johngithiyon/Nodefy/internal/models"
 )
 
-func BuildImage(Deploy *models.Deploy) error {
+func BuildImage(username string,Deploy *models.Deploy) error {
 
 	        var service string 
-	 
+			
             for _,services := range Deploy.Services {
 				 
 				   service += services + " "
@@ -22,7 +22,7 @@ func BuildImage(Deploy *models.Deploy) error {
 				"docker", "build",
 				"--build-arg", "BASE_IMAGE="+Deploy.OsName,
 				"--build-arg", "PACKAGES="+service,
-				"-t", "nodefy-image",
+				"-t", Deploy.OsName,
 				".",
 			)
 
@@ -39,7 +39,7 @@ func BuildImage(Deploy *models.Deploy) error {
 
 			// write the command to run the container
 
-			runexecuter := exec.Command("docker","run","-m","100m","--memory-swap=100m","-d","nodefy-image","sleep","infinity")
+			runexecuter := exec.Command("docker","run","-m","100m","--memory-swap=100m","--name",username,"-d",Deploy.OsName,"sleep","infinity")
 
 			runoutput,runerr := runexecuter.CombinedOutput()
 
