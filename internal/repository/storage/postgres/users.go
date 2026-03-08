@@ -8,11 +8,11 @@ import (
 )
 
 
-func  CheckUserexists(signup *models.Signup) bool {
+func  CheckUserexists(username string) bool {
 
-	      var username string 
+	      var user string 
 
-        scanerr :=  Database.Db.QueryRow("select username from users where username = $1",signup.Username).Scan(&username)
+        scanerr :=  Database.Db.QueryRow("select username from users where username = $1",username).Scan(&user)
        
 	    if scanerr != nil && scanerr == sql.ErrNoRows {
 			   return true
