@@ -5,9 +5,9 @@ import (
 	"github.com/johngithiyon/Nodefy/internal/repository/docker"
 )
 
-func DeployInstances(Deploy *models.Deploy ) error  {
+func DeployInstances(username string,Deploy *models.Deploy ) error  {
 
-   builerr :=  docker.BuildImage(Deploy)
+   builerr :=  docker.BuildImage(username,Deploy)
 
    if builerr != nil {
 	     
