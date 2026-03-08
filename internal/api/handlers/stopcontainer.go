@@ -11,6 +11,11 @@ import (
 
 func StopcontainerHandler(w http.ResponseWriter, r *http.Request) {
 
+	         if r.Method != http.MethodGet {
+				 response.Response(w,405,"Invalid Metheod")
+				 return 
+			 }
+
 	         //get the username to stop the container
 
 			sessionid,getsessionerr :=  utils.Getsessionid(r,"session-id")
