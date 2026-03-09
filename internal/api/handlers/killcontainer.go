@@ -3,7 +3,6 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/johngithiyon/Nodefy/internal/repository/storage/redis"
 	"github.com/johngithiyon/Nodefy/internal/services"
 	"github.com/johngithiyon/Nodefy/pkg/response"
 	"github.com/johngithiyon/Nodefy/pkg/utils"
@@ -26,14 +25,8 @@ func Killcontainerhandler(w http.ResponseWriter, r *http.Request) {
 			 return
 		}
 
-		username,getusernamerr := redis.Getusername(sessionid)
 
-		if username == "" && getusernamerr != nil {
-			  response.Response(w,500,"Internal Server Error")
-			  return
-		}
-
-        killerr := services.Killcontainerservices(username)
+        killerr := services.Killcontainerservices(sessionid)
 
 		if killerr != nil {
 			response.Response(w,500,"Internal Server Error")
