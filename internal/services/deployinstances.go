@@ -6,6 +6,7 @@ import (
 	"github.com/johngithiyon/Nodefy/internal/errors"
 	"github.com/johngithiyon/Nodefy/internal/models"
 	"github.com/johngithiyon/Nodefy/internal/repository/docker"
+	"github.com/johngithiyon/Nodefy/internal/repository/linux"
 	"github.com/johngithiyon/Nodefy/internal/repository/storage/redis"
 )
 
@@ -31,7 +32,7 @@ func DeployInstances(sessionid string,Deploy *models.Deploy ) error  {
 
 	for _,services := range Deploy.Services {
 	
-		if services != "postgresql" && services != "redis-server" {
+		if services != "" && services != "postgresql" && services != "redis-server" {
 
 			log.Println("Invalid Services")
 			return errors.ErrBadrequest
@@ -44,6 +45,12 @@ func DeployInstances(sessionid string,Deploy *models.Deploy ) error  {
    if builerr != nil {
 	     log.Println("Error in the build image",builerr)
 	     return errors.ErrInternalserver
+   }
+
+   adduserr := linux.Adduser(username)
+
+   if adduserr != nil {
+	   return adduserr
    }
 
 	return nil 
