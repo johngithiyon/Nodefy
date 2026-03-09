@@ -4,9 +4,9 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/johngithiyon/Nodefy/internal/errors"
 	"github.com/johngithiyon/Nodefy/internal/models"
-	"github.com/johngithiyon/Nodefy/internal/repository/storage/postgres"
-	"github.com/johngithiyon/Nodefy/internal/repository/storage/redis"
+	"github.com/johngithiyon/Nodefy/internal/services"
 	"github.com/johngithiyon/Nodefy/pkg/response"
 	"github.com/johngithiyon/Nodefy/pkg/utils"
 )
@@ -30,32 +30,18 @@ func Otphandler(w http.ResponseWriter, r *http.Request) {
 			 return
 		}
 
-        storedata,geterr :=  redis.Getstoretemp(sessionid)
+		otperr := services.Otpverificationservices(otp,sessionid,&Ver)
 
-		if storedata == nil  && geterr != nil {
-			 response.Response(w,500,"Internal Server Error")
-			 return 
-		}
-
-		if otp == storedata["otp"] {
-
-			Ver.Username = storedata["username"]
-			Ver.Email = storedata["email"]
-			Ver.Password = storedata["password"]
-
-			storerr := postgres.StoreUser(&Ver)
-
-			if storerr != nil {
-				response.Response(w,500,"Internal Server Error")
-				return 
-			}
-			response.Response(w,200,"Otp Verified")
+		if otperr == errors.ErrInternalserver {
+			response.Response(w,500,"Internal Server Error")
 			return 
-		} else {
-			 response.Response(w,401,"Otp Verify failed")
-			 return
 		}
 
+		if otperr == errors.ErrAuthenticate {
+			response.Response(w,401,"Otp Failed")
+			return 
+		}
 
+		response.Response(w,200,"Otp Verified Successfully")
 
 }
