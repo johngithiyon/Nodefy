@@ -14,7 +14,7 @@ func  CheckUserexists(username string) bool {
 
         scanerr :=  Database.Db.QueryRow("select username from users where username = $1",username).Scan(&user)
        
-	    if scanerr != nil && scanerr == sql.ErrNoRows {
+	    if scanerr == sql.ErrNoRows {
 			   return true
 		}  else {
 			return false 
