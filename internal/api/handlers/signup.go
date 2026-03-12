@@ -28,7 +28,7 @@ func Signuphandler(w http.ResponseWriter, r *http.Request) {
 		id,signuperr := services.Signupservices(&Signup)
 
 		if signuperr == errors.ErrAuthenticate {
-			response.Response(w,402,"Login Failed")
+			response.Response(w,402,"Signup Failed")
 			return 
 		}
 
