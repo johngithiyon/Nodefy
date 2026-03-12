@@ -1,6 +1,8 @@
 package services
 
 import (
+	"log"
+
 	err "github.com/johngithiyon/Nodefy/internal/errors"
 	"github.com/johngithiyon/Nodefy/internal/repository/storage/postgres"
 	"github.com/johngithiyon/Nodefy/internal/repository/storage/redis"
@@ -12,7 +14,7 @@ func LoginServices(username string,Password string ) (string,error) {
 
 	 checkexists := postgres.CheckUserexists(username)
  
-	if !checkexists  {
+	if checkexists  {
 		return "",err.ErrAuthenticate
 	}
 	
@@ -21,6 +23,7 @@ func LoginServices(username string,Password string ) (string,error) {
 	 passwd,passwderr := postgres.SearchPassword(username)
 
 	 if  passwd == "" && passwderr != nil {
+		   log.Println("Passwd err",passwderr)
 		   return "",err.ErrInternalserver
 	 }
 
@@ -29,6 +32,7 @@ func LoginServices(username string,Password string ) (string,error) {
 	 comparerr := Comparepassword(Password,passwd)
 
 	 if comparerr != nil {
+		  log.Println("compare",comparerr)
 		  return "",err.ErrAuthenticate
 	 }
 
