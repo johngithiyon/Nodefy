@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nodefy - Verify OTP</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- 1. CORE VARIABLES & THEME (Identical to Home) --- */
+        :root {
+            --bg-gradient-start: #050505;
+            --bg-gradient-end: #1a0b2e;
+            --accent-color: #8b5cf6;      
+            --accent-hover: #7c3aed;
+            --accent-glow: rgba(139, 92, 246, 0.4);
+            
+            --text-main: #FFFFFF;
+            --text-muted: #A1A1AA;
+            --text-dark: #52525B;
+            
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(255, 255, 255, 0.2);
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-blur: blur(16px);
+            
+            --font-ui: 'Inter', sans-serif;
+            --font-code: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-ui);
+            background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+            background-attachment: fixed;
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* ---------- BACKGROUND ANIMATIONS (Identical to Home) ---------- */
+        .ambient-glow {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: 
+                radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.15), transparent 35%),
+                radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.12), transparent 35%),
+                radial-gradient(circle at 40% 80%, rgba(139, 92, 246, 0.1), transparent 40%);
+            z-index: -2;
+            pointer-events: none;
+            transition: transform 0.1s ease-out;
+            animation: pulseGlow 12s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            0% { opacity: 0.4; transform: scale(1); filter: blur(0px); }
+            50% { opacity: 0.8; transform: scale(1.02); filter: blur(2px); }
+            100% { opacity: 0.5; transform: scale(1); filter: blur(0px); }
+        }
+
+        .mesh-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background-image: 
+                linear-gradient(rgba(139, 92, 246, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(139, 92, 246, 0.02) 1px, transparent 1px);
+            background-size: 60px 60px;
+            z-index: -2;
+            pointer-events: none;
+            animation: meshMove 20s linear infinite alternate;
+        }
+
+        @keyframes meshMove {
+            0% { transform: translate(0, 0) rotate(0deg); opacity: 0.3; }
+            100% { transform: translate(-10px, -10px) rotate(0.5deg); opacity: 0.7; }
+        }
+
+        .particles {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: -2;
+            pointer-events: none;
+            overflow: hidden;
+            transition: transform 0.1s ease-out;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px; height: 4px;
+            background: rgba(139, 92, 246, 0.2);
+            border-radius: 50%;
+            box-shadow: 0 0 15px 2px rgba(139, 92, 246, 0.2);
+            animation: floatParticle 18s infinite ease-in-out;
+        }
+
+        @keyframes floatParticle {
+            0% { transform: translateY(0) translateX(0) scale(1); opacity: 0.2; }
+            50% { transform: translateY(-120px) translateX(40px) scale(1.5); opacity: 0.6; }
+            100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.2; }
+        }
+
+        .bubbles-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: -2;
+            pointer-events: none;
+            overflow: hidden;
+            transition: transform 0.2s ease-out;
+        }
+
+        .bubble {
+            position: absolute;
+            bottom: -100px;
+            background: radial-gradient(circle at 30% 30%, rgba(139, 92, 246, 0.08), rgba(139, 92, 246, 0.01) 60%, transparent 80%);
+            border-radius: 50%;
+            border: 1px solid rgba(139, 92, 246, 0.05);
+            animation: riseBubble 25s infinite ease-in;
+            filter: blur(2px);
+        }
+
+        @keyframes riseBubble {
+            0% { transform: translateY(0) translateX(0) scale(0.8); opacity: 0; }
+            20% { opacity: 0.5; }
+            80% { opacity: 0.5; }
+            100% { transform: translateY(-120vh) translateX(50px) scale(1.2); opacity: 0; }
+        }
+
+        .glow-spot {
+            position: fixed;
+            width: 60vw; height: 60vw;
+            background: radial-gradient(circle at center, rgba(139, 92, 246, 0.05), transparent 70%);
+            border-radius: 50%;
+            z-index: -2;
+            pointer-events: none;
+            animation: spotMove 25s infinite alternate;
+            transition: transform 0.2s ease-out;
+        }
+        .spot1 { top: -20vh; right: -10vw; }
+        .spot2 { bottom: -30vh; left: -10vw; animation-delay: -5s; width: 80vw; height: 80vw; background: radial-gradient(circle at center, rgba(59, 130, 246, 0.04), transparent 70%); }
+        
+        @keyframes spotMove {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(5%, 5%) scale(1.1); }
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 1200px;
+            height: 64px;
+            background: rgba(10, 10, 15, 0.7);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border-subtle);
+            border-radius: 100px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 32px;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .nav-logo {
+            font-weight: 800;
+            font-size: 1.25rem;
+            letter-spacing: -0.02em;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .nav-logo span { color: var(--accent-color); }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--text-main); }
+
+        /* --- MAIN LAYOUT --- */
+        main {
+            flex: 1;
+            padding-top: 140px;
+            padding-bottom: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* --- IMPROVED OTP CARD --- */
+        .otp-container {
+            width: 90%;
+            max-width: 500px;
+            background: rgba(20, 20, 25, 0.6);
+            backdrop-filter: blur(25px);
+            /* Gradient Border Effect */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 32px;
+            padding: 48px 40px;
+            text-align: center;
+            box-shadow: 
+                0 20px 50px rgba(0,0,0,0.5),
+                inset 0 1px 0 rgba(255,255,255,0.1);
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Decorative top glow line */
+        .otp-container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+            opacity: 0.5;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Animated Icon Container */
+        .icon-wrapper {
+            width: 80px; height: 80px;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.1));
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 24px;
+            position: relative;
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.2);
+            animation: iconFloat 3s ease-in-out infinite;
+        }
+        
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .otp-header h2 {
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #fff 40%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .otp-header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 40px;
+            line-height: 1.5;
+        }
+
+        /* --- 6-DIGIT SPLIT INPUTS --- */
+        .otp-digits-container {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .otp-digit {
+            width: 48px;
+            height: 60px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid var(--border-subtle);
+            border-radius: 12px;
+            color: white;
+            font-family: var(--font-code);
+            font-size: 1.5rem;
+            font-weight: 600;
+            text-align: center;
+            outline: none;
+            transition: all 0.2s ease;
+            -moz-appearance: textfield; /* Remove spinner Firefox */
+        }
+
+        .otp-digit::-webkit-outer-spin-button,
+        .otp-digit::-webkit-inner-spin-button {
+            -webkit-appearance: none; /* Remove spinner Chrome/Safari */
+            margin: 0;
+        }
+
+        .otp-digit:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.2);
+            transform: translateY(-2px);
+            background: rgba(139, 92, 246, 0.05);
+        }
+
+        /* Button Styles */
+        .btn {
+            width: 100%;
+            padding: 16px; border-radius: 12px; font-weight: 600;
+            font-size: 1rem; cursor: pointer; transition: all 0.3s;
+            border: none; display: inline-flex; align-items: center; justify-content: center;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+            position: relative; overflow: hidden;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-color), #6d28d9);
+            color: white;
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
+            z-index: 1;
+        }
+
+        .btn-primary::before {
+            content: ''; position: absolute; top: 0; left: -100%;
+            width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent);
+            transform: skewX(-25deg);
+            transition: 0.5s;
+            z-index: -1;
+        }
+        .btn-primary:hover::before { left: 150%; transition: 0.7s; }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(139, 92, 246, 0.6);
+        }
+        .btn-primary:active { transform: scale(0.98); }
+
+        .resend-link {
+            display: block;
+            margin-top: 24px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .resend-link:hover { color: var(--accent-color); text-decoration: underline; }
+
+        /* --- LOADING OVERLAY --- */
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 5, 10, 0.85); backdrop-filter: blur(12px);
+            z-index: 2000;
+            display: none; align-items: center; justify-content: center;
+            flex-direction: column;
+        }
+        
+        .spinner {
+            width: 60px; height: 60px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, transparent 0deg, var(--accent-color) 360deg);
+            position: relative;
+            animation: rotateSpinner 1s linear infinite;
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+        }
+        .spinner::after {
+            content: ''; position: absolute; top: 4px; left: 4px; right: 4px; bottom: 4px;
+            background: #050505; border-radius: 50%;
+        }
+        @keyframes rotateSpinner { 100% { transform: rotate(360deg); } }
+
+        /* --- TOAST NOTIFICATIONS --- */
+        .toast-container {
+            position: fixed; bottom: 40px; right: 40px; z-index: 3000;
+            display: flex; flex-direction: column; gap: 12px;
+        }
+        .toast {
+            background: rgba(20, 20, 25, 0.95);
+            backdrop-filter: blur(10px);
+            border-left: 4px solid var(--accent-color);
+            padding: 18px 24px; border-radius: 8px; color: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            animation: slideInRight 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex; align-items: center; gap: 14px;
+            border: 1px solid var(--border-subtle);
+            min-width: 300px;
+        }
+        .toast.error { border-left-color: #ef4444; }
+        .toast.success { border-left-color: #10b981; }
+
+        @keyframes slideInRight { from { transform: translateX(50px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links a { display: none; }
+            .otp-container { padding: 40px 24px; width: 95%; }
+            .otp-digit { width: 40px; height: 52px; font-size: 1.2rem; }
+            .otp-header h2 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Backgrounds (Identical to Home) -->
+    <div class="ambient-glow" id="ambient-glow"></div>
+    <div class="mesh-bg"></div>
+    <div class="glow-spot spot1" id="spot1"></div>
+    <div class="glow-spot spot2" id="spot2"></div>
+    <div class="bubbles-container" id="bubbles-container">
+        <div class="bubble" style="left: 10%; width: 150px; height: 150px; animation-duration: 22s; animation-delay: 0s;"></div>
+        <div class="bubble" style="left: 30%; width: 80px; height: 80px; animation-duration: 28s; animation-delay: -5s;"></div>
+        <div class="bubble" style="left: 60%; width: 200px; height: 200px; animation-duration: 35s; animation-delay: -10s;"></div>
+        <div class="bubble" style="left: 85%; width: 120px; height: 120px; animation-duration: 25s; animation-delay: -2s;"></div>
+    </div>
+    <div class="particles" id="particles">
+        <div class="particle" style="top: 20%; left: 15%; animation-duration: 16s;"></div>
+        <div class="particle" style="top: 70%; left: 80%; width: 6px; height: 6px; animation-duration: 22s; animation-delay: -2s;"></div>
+        <div class="particle" style="top: 40%; left: 40%; width: 3px; height: 3px; animation-duration: 14s; animation-delay: -5s;"></div>
+        <div class="particle" style="top: 85%; left: 25%; width: 5px; height: 5px; animation-duration: 19s; animation-delay: -1s;"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="home.html" class="nav-logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="var(--accent-color)"/>
+                <path d="M2 17L12 22L22 17" stroke="white"/>
+                <path d="M2 12L12 17L22 12" stroke="white"/>
+            </svg>
+            Nodefy
+        </a>
+        <div class="nav-links">
+            <a href="home.html">Home</a>
+            <a href="about.html">About</a>
+        </div>
+        <a href="login.html" class="btn btn-primary" style="padding: 8px 20px; font-size: 0.9rem; width: auto;">Login</a>
+    </nav>
+
+    <main>
+        <div class="otp-container">
+            <!-- Animated Security Icon -->
+            <div class="icon-wrapper">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--accent-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+                </svg>
+            </div>
+
+            <div class="otp-header">
+                <h2>Verify Email</h2>
+                <p>Please enter the 6-digit code sent to your email address to complete your registration.</p>
+            </div>
+
+            <form id="otpForm" onsubmit="verifyOTP(event)">
+                <!-- 6 Separate Inputs for better UX -->
+                <div class="otp-digits-container" id="otpContainer">
+                    <input type="text" class="otp-digit" maxlength="1" inputmode="numeric" autocomplete="one-time-code">
+                    <input type="text" class="otp-digit" maxlength="1" inputmode="numeric" autocomplete="one-time-code">
+                    <input type="text" class="otp-digit" maxlength="1" inputmode="numeric" autocomplete="one-time-code">
+                    <input type="text" class="otp-digit" maxlength="1" inputmode="numeric" autocomplete="one-time-code">
+                    <input type="text" class="otp-digit" maxlength="1" inputmode="numeric" autocomplete="one-time-code">
+                    <input type="text" class="otp-digit" maxlength="1" inputmode="numeric" autocomplete="one-time-code">
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    <span>Verify Code</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </button>
+            </form>
+
+            <a href="#" class="resend-link">Didn't receive a code? Resend</a>
+        </div>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div class="overlay" id="loading-overlay">
+        <div class="spinner"></div>
+        <h3 style="font-weight: 600; margin-top: 24px;">Verifying...</h3>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- PARALLAX BACKGROUND EFFECT ---
+            const ambientGlow = document.getElementById('ambient-glow');
+            const spot1 = document.getElementById('spot1');
+            const spot2 = document.getElementById('spot2');
+            const particles = document.getElementById('particles');
+            const bubblesContainer = document.getElementById('bubbles-container');
+
+            if(ambientGlow || spot1 || spot2 || particles || bubblesContainer) {
+                document.addEventListener('mousemove', (e) => {
+                    const x = (window.innerWidth - e.pageX * 2) / 100;
+                    const y = (window.innerHeight - e.pageY * 2) / 100;
+
+                    if(ambientGlow) ambientGlow.style.transform = `translate(${x}px, ${y}px)`;
+                    if(spot1) spot1.style.transform = `translate(${x * 1.5}px, ${y * 1.5}px)`;
+                    if(spot2) spot2.style.transform = `translate(${x * 0.5}px, ${y * 0.5}px)`;
+                    if(particles) particles.style.transform = `translate(${x * -0.5}px, ${y * -0.5}px)`;
+                    if(bubblesContainer) bubblesContainer.style.transform = `translate(${x * -0.2}px, ${y * -0.2}px)`;
+                });
+            }
+
+            // --- OTP INPUT LOGIC (Auto-focus) ---
+            const inputs = document.querySelectorAll('.otp-digit');
+            
+            inputs.forEach((input, index) => {
+                // Move to next input on typing
+                input.addEventListener('input', (e) => {
+                    if (e.target.value.length === 1) {
+                        if (index < inputs.length - 1) {
+                            inputs[index + 1].focus();
+                        }
+                    }
+                });
+
+                // Handle Backspace
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Backspace' && e.target.value === '') {
+                        if (index > 0) {
+                            inputs[index - 1].focus();
+                        }
+                    }
+                });
+
+                // Handle Paste
+                input.addEventListener('paste', (e) => {
+                    e.preventDefault();
+                    const text = (e.clipboardData || window.clipboardData).getData('text');
+                    if (!/^\d+$/.test(text)) return;
+                    
+                    const digits = text.split('').slice(0, 6);
+                    digits.forEach((digit, i) => {
+                        if (inputs[i]) inputs[i].value = digit;
+                    });
+                    // Focus the next empty input or the last one
+                    const nextIndex = Math.min(digits.length, inputs.length - 1);
+                    inputs[nextIndex].focus();
+                });
+            });
+
+            // Focus first input on load
+            if(inputs.length > 0) inputs[0].focus();
+        });
+
+        /* --- VERIFY LOGIC --- */
+        async function verifyOTP(event) {
+            event.preventDefault();
+
+            // Gather values from 6 separate inputs
+            const inputs = document.querySelectorAll('.otp-digit');
+            let otpValue = '';
+            inputs.forEach(input => otpValue += input.value);
+
+            if (otpValue.length !== 6) {
+                showToast("Please enter a valid 6-digit code.", "error");
+                return;
+            }
+
+            const overlay = document.getElementById('loading-overlay');
+            overlay.style.display = 'flex';
+
+            try {
+                // Using FormData to send application/x-www-form-urlencoded
+                // This matches r.FormValue("otp") in Go
+                const formData = new FormData();
+                formData.append('otp', otpValue); // The backend receives the concatenated string
+
+                const response = await fetch('/otp', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showToast(data.message || "Verification Successful", "success");
+                    // Redirect to home or dashboard after successful verification
+                    setTimeout(() => {
+                        window.location.href = 'home.html';
+                    }, 1500);
+                } else {
+                    throw new Error(data.message || "Verification Failed");
+                }
+
+            } catch (error) {
+                console.error("OTP Error:", error);
+                showToast(error.message, "error");
+            } finally {
+                overlay.style.display = 'none';
+            }
+        }
+
+        /* --- TOAST NOTIFICATION SYSTEM --- */
+        function showToast(message, type = "success") {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            let icon = '';
+            if(type === 'success') icon = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+            else icon = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>';
+
+            toast.innerHTML = `${icon}<span>${message}</span>`;
+            
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'slideInRight 0.3s ease reverse forwards';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

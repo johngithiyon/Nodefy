@@ -1,0 +1,573 @@
+This code restores the exact visual theme of your original **home.html** (the purple/black gradients, the mesh background, the floating bubbles, and the glass cards) but includes the **correct, high-quality content** for your project.
+
+I have ensured the UI is polished (spacing, fonts, shadows) while strictly keeping your original color palette and background animations.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nodefy - About Us</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- 1. CORE VARIABLES & THEME (Original Home Theme) --- */
+        :root {
+            --bg-gradient-start: #050505;
+            --bg-gradient-end: #1a0b2e;
+            --accent-color: #8b5cf6;      
+            --accent-hover: #7c3aed;
+            --accent-glow: rgba(139, 92, 246, 0.4);
+            
+            --text-main: #FFFFFF;
+            --text-muted: #A1A1AA;
+            --text-dark: #52525B;
+            
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(255, 255, 255, 0.2);
+            --glass-bg: rgba(255, 255, 255, 0.02);
+            --glass-blur: blur(16px);
+            
+            --font-ui: 'Inter', sans-serif;
+            --font-code: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-ui);
+            background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+            background-attachment: fixed;
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* --- 2. BACKGROUND ANIMATIONS (Original Theme) --- */
+        
+        .ambient-glow {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: 
+                radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.15), transparent 35%),
+                radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.12), transparent 35%),
+                radial-gradient(circle at 40% 80%, rgba(139, 92, 246, 0.1), transparent 40%);
+            z-index: -2; pointer-events: none;
+            transition: transform 0.1s ease-out;
+            animation: pulseGlow 12s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            0% { opacity: 0.4; transform: scale(1); filter: blur(0px); }
+            50% { opacity: 0.8; transform: scale(1.02); filter: blur(2px); }
+            100% { opacity: 0.5; transform: scale(1); filter: blur(0px); }
+        }
+
+        .mesh-bg {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-image: 
+                linear-gradient(rgba(139, 92, 246, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(139, 92, 246, 0.02) 1px, transparent 1px);
+            background-size: 60px 60px;
+            z-index: -2; pointer-events: none;
+            animation: meshMove 20s linear infinite alternate;
+        }
+
+        @keyframes meshMove {
+            0% { transform: translate(0, 0) rotate(0deg); opacity: 0.3; }
+            100% { transform: translate(-10px, -10px) rotate(0.5deg); opacity: 0.7; }
+        }
+
+        .particles {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -2; pointer-events: none; overflow: hidden;
+            transition: transform 0.1s ease-out;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px; height: 4px;
+            background: rgba(139, 92, 246, 0.2);
+            border-radius: 50%;
+            box-shadow: 0 0 15px 2px rgba(139, 92, 246, 0.2);
+            animation: floatParticle 18s infinite ease-in-out;
+        }
+
+        @keyframes floatParticle {
+            0% { transform: translateY(0) translateX(0) scale(1); opacity: 0.2; }
+            50% { transform: translateY(-120px) translateX(40px) scale(1.5); opacity: 0.6; }
+            100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.2; }
+        }
+
+        .bubbles-container {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -2; pointer-events: none; overflow: hidden;
+            transition: transform 0.2s ease-out;
+        }
+
+        .bubble {
+            position: absolute; bottom: -100px;
+            background: radial-gradient(circle at 30% 30%, rgba(139, 92, 246, 0.08), rgba(139, 92, 246, 0.01) 60%, transparent 80%);
+            border-radius: 50%;
+            border: 1px solid rgba(139, 92, 246, 0.05);
+            animation: riseBubble 25s infinite ease-in;
+            filter: blur(2px);
+        }
+
+        @keyframes riseBubble {
+            0% { transform: translateY(0) translateX(0) scale(0.8); opacity: 0; }
+            20% { opacity: 0.5; }
+            80% { opacity: 0.5; }
+            100% { transform: translateY(-120vh) translateX(50px) scale(1.2); opacity: 0; }
+        }
+
+        .glow-spot {
+            position: fixed;
+            width: 60vw; height: 60vw;
+            background: radial-gradient(circle at center, rgba(139, 92, 246, 0.05), transparent 70%);
+            border-radius: 50%;
+            z-index: -2; pointer-events: none;
+            animation: spotMove 25s infinite alternate;
+            transition: transform 0.2s ease-out;
+        }
+        .spot1 { top: -20vh; right: -10vw; }
+        .spot2 { bottom: -30vh; left: -10vw; animation-delay: -5s; width: 80vw; height: 80vw; background: radial-gradient(circle at center, rgba(59, 130, 246, 0.04), transparent 70%); }
+        
+        @keyframes spotMove {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(5%, 5%) scale(1.1); }
+        }
+
+        /* --- 3. NAVIGATION --- */
+        nav {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 1200px; height: 64px;
+            background: rgba(10, 10, 15, 0.7);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border-subtle);
+            border-radius: 100px;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 32px; z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .nav-logo {
+            font-weight: 800; font-size: 1.25rem; letter-spacing: -0.02em;
+            color: white; text-decoration: none;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .nav-logo span { color: var(--accent-color); }
+
+        .nav-links { display: flex; gap: 32px; }
+        .nav-links a {
+            text-decoration: none; color: var(--text-muted);
+            font-size: 0.9rem; font-weight: 500;
+            transition: color 0.2s; position: relative;
+        }
+        .nav-links a::after {
+            content: ''; position: absolute; width: 0; height: 2px;
+            bottom: -4px; left: 0; background-color: var(--accent-color); transition: width 0.3s;
+        }
+        .nav-links a:hover { color: var(--text-main); }
+        .nav-links a:hover::after { width: 100%; }
+
+        /* --- 4. LAYOUT & ANIMATIONS --- */
+        .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+        section { padding: 100px 0; position: relative; }
+        
+        .section-header { text-align: center; margin-bottom: 60px; }
+        h2 {
+            font-size: 2.5rem; font-weight: 700; margin-bottom: 16px;
+            background: linear-gradient(to right, #fff, var(--accent-color));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        p { color: var(--text-muted); font-size: 1.1rem; }
+
+        .reveal {
+            opacity: 0; transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* --- 5. HERO --- */
+        .hero {
+            min-height: 60vh; display: flex; align-items: center; justify-content: center;
+            text-align: center; padding-top: 80px;
+        }
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800; line-height: 1.1; margin-bottom: 24px;
+            background: linear-gradient(135deg, #fff 30%, var(--accent-color) 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        /* --- 6. WHAT DRIVES US --- */
+        .vision-mission-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+        }
+        .vm-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-subtle);
+            padding: 40px; border-radius: 24px;
+            transition: 0.3s;
+        }
+        .vm-card:hover {
+            border-color: var(--accent-color);
+            background: rgba(255, 255, 255, 0.04);
+            transform: translateY(-5px);
+        }
+        .vm-card h3 {
+            font-size: 1.5rem; margin-bottom: 16px; color: white;
+            display: flex; align-items: center; gap: 10px;
+        }
+
+        /* --- 7. THE MINDS BEHIND (Team Grid) --- */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .team-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-subtle);
+            padding: 40px;
+            border-radius: 24px;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .team-card:hover {
+            border-color: var(--accent-color);
+            background: rgba(255, 255, 255, 0.04);
+            transform: translateY(-5px);
+        }
+
+        .founder-img-wrapper { 
+            position: relative; 
+            display: inline-block; 
+            margin-bottom: 24px;
+        }
+        
+        .founder-img {
+            width: 180px; height: 180px; border-radius: 50%; object-fit: cover;
+            border: 4px solid var(--accent-color);
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
+            transition: transform 0.3s;
+        }
+        .founder-img:hover { transform: scale(1.05); }
+        
+        .founder-info h3 { 
+            font-size: 1.8rem; color: white; margin-bottom: 8px; 
+        }
+        
+        .founder-info .role {
+            color: var(--accent-color); font-weight: 600; margin-bottom: 20px;
+            display: block; text-transform: uppercase; letter-spacing: 1px; font-size: 0.85rem;
+        }
+        
+        .founder-info p {
+            font-size: 0.95rem; line-height: 1.5;
+        }
+
+        /* --- 8. THE GROWTH STORY --- */
+        .timeline { position: relative; max-width: 800px; margin: 0 auto; padding: 40px 0; }
+        .timeline::before {
+            content: ''; position: absolute; left: 50%; top: 0; bottom: 0;
+            width: 2px; background: var(--border-subtle); transform: translateX(-50%);
+        }
+        .timeline-item { position: relative; width: 50%; padding: 20px 40px; margin-bottom: 50px; }
+        .timeline-item:nth-child(odd) { left: 0; text-align: right; }
+        .timeline-item:nth-child(even) { left: 50%; text-align: left; }
+        .timeline-item::after {
+            content: ''; position: absolute; width: 20px; height: 20px;
+            background: var(--bg-gradient-start); border: 4px solid var(--accent-color);
+            border-radius: 50%; top: 25px; z-index: 2;
+            box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+        }
+        .timeline-item:nth-child(odd)::after { right: -10px; }
+        .timeline-item:nth-child(even)::after { left: -10px; }
+        
+        .timeline-content {
+            background: rgba(20, 20, 25, 0.6); backdrop-filter: blur(10px);
+            padding: 24px; border-radius: 16px; border: 1px solid var(--border-subtle);
+            transition: 0.3s;
+        }
+        .timeline-content:hover { transform: translateY(-5px); border-color: var(--accent-color); }
+        
+        .timeline-date {
+            color: var(--accent-color); font-family: var(--font-code);
+            font-weight: 600; font-size: 0.9rem; margin-bottom: 8px; display: block;
+        }
+        .timeline-title { color: white; font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
+        .timeline-desc { font-size: 0.95rem; color: var(--text-muted); }
+
+        /* --- 9. FOOTER --- */
+        footer {
+            margin-top: auto; border-top: 1px solid var(--border-subtle);
+            background: rgba(5, 5, 10, 0.8); backdrop-filter: blur(20px);
+            padding: 60px 0 30px; text-align: center;
+        }
+        .social-links { display: flex; justify-content: center; gap: 20px; margin-top: 20px; }
+        .social-icon {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: rgba(255,255,255,0.05); display: flex; align-items: center;
+            justify-content: center; color: var(--text-muted); text-decoration: none;
+            transition: 0.2s;
+        }
+        .social-icon:hover { background: var(--accent-color); color: white; transform: translateY(-2px); }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .timeline::before { left: 20px; }
+            .timeline-item { width: 100%; padding-left: 50px; padding-right: 10px; text-align: left !important; }
+            .timeline-item:nth-child(even) { left: 0; }
+            .timeline-item::after { left: 10px !important; right: auto !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Original Backgrounds -->
+    <div class="ambient-glow" id="ambient-glow"></div>
+    <div class="mesh-bg"></div>
+    <div class="glow-spot spot1" id="spot1"></div>
+    <div class="glow-spot spot2" id="spot2"></div>
+    <div class="bubbles-container" id="bubbles-container">
+        <div class="bubble" style="left: 10%; width: 150px; height: 150px; animation-duration: 22s; animation-delay: 0s;"></div>
+        <div class="bubble" style="left: 30%; width: 80px; height: 80px; animation-duration: 28s; animation-delay: -5s;"></div>
+        <div class="bubble" style="left: 60%; width: 200px; height: 200px; animation-duration: 35s; animation-delay: -10s;"></div>
+        <div class="bubble" style="left: 85%; width: 120px; height: 120px; animation-duration: 25s; animation-delay: -2s;"></div>
+        <div class="bubble" style="left: 45%; width: 60px; height: 60px; animation-duration: 30s; animation-delay: -15s;"></div>
+    </div>
+    <div class="particles" id="particles">
+        <div class="particle" style="top: 20%; left: 15%; animation-duration: 16s;"></div>
+        <div class="particle" style="top: 70%; left: 80%; width: 6px; height: 6px; animation-duration: 22s; animation-delay: -2s;"></div>
+        <div class="particle" style="top: 40%; left: 40%; width: 3px; height: 3px; animation-duration: 14s; animation-delay: -5s;"></div>
+        <div class="particle" style="top: 85%; left: 25%; width: 5px; height: 5px; animation-duration: 19s; animation-delay: -1s;"></div>
+        <div class="particle" style="top: 10%; left: 90%; width: 4px; height: 4px; animation-duration: 24s;"></div>
+        <div class="particle" style="top: 55%; left: 10%; width: 7px; height: 7px; animation-duration: 17s; animation-delay: -8s;"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="home.html" class="nav-logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="var(--accent-color)"/>
+                <path d="M2 17L12 22L22 17" stroke="white"/>
+                <path d="M2 12L12 17L22 12" stroke="white"/>
+            </svg>
+            Nodefy
+        </a>
+        <div class="nav-links">
+            <a href="home.html">Home</a>
+            <a href="login.html">Login</a>
+            <a href="signup.html">Sign Up</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container hero-content reveal">
+            <h1>Infrastructure, Simplified.<br><span style="color: var(--accent-color)">Run at the Edge.</span></h1>
+            <p>The lightweight, high-performance cloud node manager built for developers who demand total control over their Linux environments.</p>
+        </div>
+    </section>
+
+    <!-- What Drives Us -->
+    <section id="what-drives-us">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>Our Purpose</h2>
+                <p>Why we built Nodefy</p>
+            </div>
+            
+            <div class="vision-mission-grid">
+                <div class="vm-card reveal">
+                    <h3>🔭 Our Vision</h3>
+                    <p>
+                        To democratize access to cloud infrastructure. We believe every student and developer should have the power to deploy raw Linux instances instantly, without the complexity and overhead of traditional hyperscalers.
+                    </p>
+                </div>
+                <div class="vm-card reveal">
+                    <h3>🚀 Our Mission</h3>
+                    <p>
+                        To build a lightweight, Go-powered platform that abstracts away the noise. We provide a seamless bridge between the user and the machine, focusing on speed, security, and true Linux system control.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Minds Behind -->
+    <section id="minds-behind">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>The Minds Behind</h2>
+                <p>Meet the Architects</p>
+            </div>
+            
+            <div class="team-grid">
+                <!-- Member 1: John Githiyon -->
+                <div class="team-card reveal">
+                    <div class="founder-img-wrapper">
+                        <img src="https://ui-avatars.com/api/?name=John+Githiyon&background=8b5cf6&color=fff&size=256" alt="John Githiyon" class="founder-img">
+                    </div>
+                    <div class="founder-info">
+                        <h3>John Githiyon</h3>
+                        <span class="role">Founder & Lead Architect</span>
+                        <p>
+                            A backend specialist passionate about Go and Linux internals. John architected the core Nodefy engine, designing the high-concurrency handlers for instance lifecycle and secure SSH tunneling.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Member 2: Kanagalekshmi -->
+                <div class="team-card reveal">
+                    <div class="founder-img-wrapper">
+                        <!-- Dynamic Avatar for Kanagalekshmi -->
+                        <img src="https://ui-avatars.com/api/?name=Kanagalekshmi&background=8b5cf6&color=fff&size=256" alt="Kanagalekshmi" class="founder-img">
+                    </div>
+                    <div class="founder-info">
+                        <h3>Kanagalekshmi</h3>
+                        <span class="role">Co-Founder & Frontend Lead</span>
+                        <p>
+                            Focused on experience design. Kanagalekshmi translates complex system states into an intuitive, responsive dark-mode interface, ensuring that managing cloud nodes feels effortless.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Growth Story -->
+    <section id="growth-story">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>The Journey</h2>
+                <p>From concept to deployment</p>
+            </div>
+
+            <div class="timeline">
+                <!-- Stage 1 -->
+                <div class="timeline-item reveal">
+                    <div class="timeline-content">
+                        <span class="timeline-date">Q1 2024: Inception</span>
+                        <h3 class="timeline-title">The Problem</h3>
+                        <p class="timeline-desc">We identified the friction developers face when trying to learn Linux or test microservices. Expensive bills and complex consoles were blocking real innovation.</p>
+                    </div>
+                </div>
+
+                <!-- Stage 2 -->
+                <div class="timeline-item reveal">
+                    <div class="timeline-content">
+                        <span class="timeline-date">Q2 2024: Core Development</span>
+                        <h3 class="timeline-title">Go Microservices</h3>
+                        <p class="timeline-desc">John built the backend in Go, creating a robust API structure. We implemented lightweight handlers for <code>/deployinstance</code>, <code>/stopinstance</code>, and secure socket connections.</p>
+                    </div>
+                </div>
+
+                <!-- Stage 3 -->
+                <div class="timeline-item reveal">
+                    <div class="timeline-content">
+                        <span class="timeline-date">Q3 2024: Interface Design</span>
+                        <h3 class="timeline-title">Visualizing Nodes</h3>
+                        <p class="timeline-desc">Kanagalekshmi developed the glass-morphic UI. We integrated real-time status updates and a terminal-inspired aesthetic that reflects the power of the command line.</p>
+                    </div>
+                </div>
+
+                <!-- Stage 4 -->
+                <div class="timeline-item reveal">
+                    <div class="timeline-content">
+                        <span class="timeline-date">Q4 2024: Beta Launch</span>
+                        <h3 class="timeline-title">First Deployments</h3>
+                        <p class="timeline-desc">Nodefy went live for early adopters. We successfully enabled users to spin up isolated Ubuntu environments and manage them via direct SSH keys.</p>
+                    </div>
+                </div>
+
+                <!-- Stage 5 -->
+                <div class="timeline-item reveal">
+                    <div class="timeline-content">
+                        <span class="timeline-date">2025: Future Scale</span>
+                        <h3 class="timeline-title">Next Gen Features</h3>
+                        <p class="timeline-desc">Expanding capabilities to include persistent storage volumes, container clustering, and community-driven templates to further accelerate development workflows.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <a href="#" class="nav-logo" style="justify-content: center; margin-bottom: 20px;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="var(--accent-color)"/>
+                    <path d="M2 17L12 22L22 17" stroke="white"/>
+                    <path d="M2 12L12 17L22 12" stroke="white"/>
+                </svg>
+                Nodefy
+            </a>
+            <p style="font-size: 0.9rem;">&copy; 2024 Nodefy Project. Built by John Githiyon & Kanagalekshmi.</p>
+            <div class="social-links">
+                <a href="#" class="social-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                </a>
+                <a href="#" class="social-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Scroll Reveal Animation
+            const observerOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" };
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('active');
+                });
+            }, observerOptions);
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+            // Mouse Parallax
+            const ambientGlow = document.getElementById('ambient-glow');
+            const spot1 = document.getElementById('spot1');
+            const spot2 = document.getElementById('spot2');
+            const particles = document.getElementById('particles');
+            const bubblesContainer = document.getElementById('bubbles-container');
+
+            document.addEventListener('mousemove', (e) => {
+                const x = (window.innerWidth - e.pageX * 2) / 100;
+                const y = (window.innerHeight - e.pageY * 2) / 100;
+                if(ambientGlow) ambientGlow.style.transform = `translate(${x}px, ${y}px)`;
+                if(spot1) spot1.style.transform = `translate(${x * 1.5}px, ${y * 1.5}px)`;
+                if(spot2) spot2.style.transform = `translate(${x * 0.5}px, ${y * 0.5}px)`;
+                if(particles) particles.style.transform = `translate(${x * -0.5}px, ${y * -0.5}px)`;
+                if(bubblesContainer) bubblesContainer.style.transform = `translate(${x * -0.2}px, ${y * -0.2}px)`;
+            });
+        });
+    </script>
+</body>
+</html>
