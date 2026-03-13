@@ -5,7 +5,6 @@ import (
 	"log"
 	"time"
 
-	"github.com/johngithiyon/Nodefy/internal/repository/storage/redis"
 	"github.com/pquerna/otp/totp"
 )
 
@@ -22,14 +21,7 @@ func OtpGenerator(email string) string{
 	   
 	   if otperr != nil {
 		      log.Println(otperr)
+			  return  ""
 	   } 
-
-	  seterr := redis.SetOtp(email,otp)
-
-	  if seterr != nil {
-		   log.Println("Seterr otp",seterr)
-		   return ""
-	  }
-
 	   return otp	   
 }

@@ -16,5 +16,9 @@ migrate-version:
 migrate-cure:
 	migrate -path internal/repository/storage/migrations/ -database "$(CONN_STR)" force $(verno)
 
+start:
+	docker start mypostgres
+	docker start myredis
+
 run:
 	go run $(MAIN)

@@ -1,0 +1,47 @@
+package handlers
+
+import (
+	"log"
+	"net/http"
+
+	"github.com/johngithiyon/Nodefy/internal/errors"
+	"github.com/johngithiyon/Nodefy/internal/models"
+	"github.com/johngithiyon/Nodefy/internal/services"
+	"github.com/johngithiyon/Nodefy/pkg/response"
+	"github.com/johngithiyon/Nodefy/pkg/utils"
+)
+
+
+func Otphandler(w http.ResponseWriter, r *http.Request) {
+
+	   var Ver models.Verify
+
+	    if r.Method != http.MethodPost  {
+			log.Println("Invalid Request Metheod")
+			response.Response(w,405,"Invalid Request Metheod")
+		}
+	 
+	    otp := r.FormValue("otp")
+
+		sessionid,getsessionerr :=  utils.Getsessionid(r,"temp-id")
+
+		if sessionid == "" && getsessionerr != nil {
+			 response.Response(w,400,"Cookie not found")
+			 return
+		}
+
+		otperr := services.Otpverificationservices(otp,sessionid,&Ver)
+
+		if otperr == errors.ErrInternalserver {
+			response.Response(w,500,"Internal Server Error")
+			return 
+		}
+
+		if otperr == errors.ErrAuthenticate {
+			response.Response(w,401,"Otp Failed")
+			return 
+		}
+
+		response.Response(w,200,"Otp Verified Successfully")
+
+}

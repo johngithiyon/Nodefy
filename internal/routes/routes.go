@@ -8,6 +8,10 @@ import (
 
 func Routes() {
 	 
-	  http.HandleFunc("/deploy",handlers.Deploy)
+	  http.HandleFunc("/deployinstance",handlers.Deploy)
 	  http.HandleFunc("/signup",handlers.Signuphandler)
+	  http.HandleFunc("/otp",handlers.Otphandler)
+	  http.HandleFunc("/login",handlers.Loginhandler)
+	  http.HandleFunc("/stopinstance",handlers.StopcontainerHandler)
+	  http.HandleFunc("/killinstance",handlers.Killcontainerhandler)
 }
