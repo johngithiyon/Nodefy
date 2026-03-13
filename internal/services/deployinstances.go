@@ -47,6 +47,10 @@ func DeployInstances(sessionid string,Deploy *models.Deploy ) error  {
 	     return errors.ErrInternalserver
    }
 
+   userexists := linux.CheckUserlinux(username)
+
+   if userexists != nil {
+
    adduserr := linux.Adduser(username)
 
    if adduserr != nil {
@@ -54,5 +58,7 @@ func DeployInstances(sessionid string,Deploy *models.Deploy ) error  {
    }
 
 	return nil 
+  }
 
+  return nil 
 }
