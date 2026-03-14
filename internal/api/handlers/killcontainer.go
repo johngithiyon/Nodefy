@@ -10,8 +10,9 @@ import (
 
 func Killcontainerhandler(w http.ResponseWriter, r *http.Request) {
 
-	       
-		if r.Method != http.MethodGet {
+	    killinstancename := r.FormValue("killinstancename")     
+	
+		if r.Method != http.MethodPost {
 			response.Response(w,405,"Invalid Metheod")
 			return 
 		}
@@ -26,7 +27,7 @@ func Killcontainerhandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 
-        killerr := services.Killcontainerservices(sessionid)
+        killerr := services.Killcontainerservices(killinstancename,sessionid)
 
 		if killerr != nil {
 			response.Response(w,500,"Internal Server Error")
