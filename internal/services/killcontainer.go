@@ -7,7 +7,7 @@ import (
 	"github.com/johngithiyon/Nodefy/internal/repository/storage/redis"
 )
 
-func Killcontainerservices(sessionid string) error{
+func Killcontainerservices(killinstancename string,sessionid string) error{
 
 	username,getusernamerr := redis.Getusername(sessionid)
 
@@ -16,7 +16,7 @@ func Killcontainerservices(sessionid string) error{
 		  return getusernamerr
 	}
 
-	  killerr :=  docker.Killcontainer(username)
+	  killerr :=  docker.Killcontainer(killinstancename,username)
 
 	  if killerr != nil {
 		  return killerr
