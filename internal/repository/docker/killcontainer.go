@@ -3,11 +3,19 @@ package docker
 import (
 	"log"
 	"os/exec"
+
+	"github.com/johngithiyon/Nodefy/internal/errors"
 )
 
-func Killcontainer(username string) error {
+func Killcontainer(killinstancename,username string) error {
 
-	     cmd := exec.Command("docker","rm","-f",username)
+	     cmd := exec.Command(
+			"docker",
+			"ps",
+			"-aq",
+			"--filter", "label=owner="+username,
+			"--filter", "label=instance="+killinstancename,
+		)
 
 		output,outputerr :=  cmd.CombinedOutput()
 
@@ -15,8 +23,19 @@ func Killcontainer(username string) error {
 			log.Println("Docker Kill Error",outputerr)
 			return outputerr
 		}
+   
+		log.Println("Docker Kill Id Get output",string(output))
 
-		log.Println("Docker Kill Output",string(output))
+		rmcmd := exec.Command("docker","rm","-f",string(output[0]))
+
+		rmoutput,rmerr := rmcmd.CombinedOutput()
+
+		if rmerr != nil {
+			log.Println("Remove Error",rmerr)
+			return errors.ErrInternalserver
+		}
+
+		log.Println("Docker Kill Output",string(rmoutput))
 
 		 return nil 
 }
