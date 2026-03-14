@@ -39,7 +39,7 @@ func BuildImage(username string,Deploy *models.Deploy) error {
 
 			// write the command to run the container
 
-			runexecuter := exec.Command("docker","run","-u","1000","-m","100m","--memory-swap=100m","--name",username,"-d",Deploy.OsName,"sleep","infinity")
+			runexecuter := exec.Command("docker","run","-u","1000","-m","100m","--memory-swap=100m","--label","owner="+username,"--name",Deploy.Instancename,"-d",Deploy.OsName,"sleep","infinity")
 
 			runoutput,runerr := runexecuter.CombinedOutput()
 
