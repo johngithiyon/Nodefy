@@ -50,3 +50,22 @@ func SearchPassword(username string) (string,error) {
 	return  passwd,nil 
 	 
 }
+
+func SaveInstance(instancename string,username string) error {
+
+	    log.Println(instancename,username)
+
+		updatequery := `
+			UPDATE users
+			SET containers = array_append(COALESCE(containers,'{}'),$1)
+			WHERE username=$2
+			`
+	    _,updaterr :=  Database.Db.Exec(updatequery,instancename,username)
+		
+	    if updaterr != nil {
+			log.Println("Update Err in container array",updaterr)
+			return updaterr 
+		}	
+
+	return nil 
+}
