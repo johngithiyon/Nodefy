@@ -22,7 +22,7 @@ func BuildImage(username string,Deploy *models.Deploy) error {
 				"docker", "build",
 				"--build-arg", "BASE_IMAGE="+Deploy.OsName,
 				"--build-arg", "PACKAGES="+service,
-				"-t", Deploy.OsName,
+				"-t", username+Deploy.OsName,
 				".",
 			)
 
@@ -39,7 +39,7 @@ func BuildImage(username string,Deploy *models.Deploy) error {
 
 			// write the command to run the container
 
-			runexecuter := exec.Command("docker","run","-u","1000","-m","100m","--memory-swap=100m","--label","owner="+username,"--name",Deploy.Instancename,"-d",Deploy.OsName,"sleep","infinity")
+			runexecuter := exec.Command("docker","run","-u","1000","-m","100m","--memory-swap=100m","--label","owner="+username,"--label","instance="+Deploy.Instancename,"-d",Deploy.OsName,"sleep","infinity")
 
 			runoutput,runerr := runexecuter.CombinedOutput()
 
