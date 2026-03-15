@@ -611,7 +611,7 @@
                         <div class="os-name">Alpine</div>
                     </div>
 
-                    <!-- Fedora (For visual completeness, though Go backend currently rejects it) -->
+                    <!-- Fedora -->
                     <div class="os-card" onclick="selectOS('fedora')">
                         <div class="os-icon-box">
                             <img src="../static/images/fedora.webp" alt="Fedora Logo">
@@ -619,7 +619,7 @@
                         <div class="os-name">Fedora</div>
                     </div>
 
-                    <!-- CentOS (For visual completeness, though Go backend currently rejects it) -->
+                    <!-- CentOS -->
                     <div class="os-card" onclick="selectOS('centos')">
                         <div class="os-icon-box">
                             <img src="../static/images/CentOS.png" alt="CentOS Logo">
@@ -627,7 +627,7 @@
                         <div class="os-name">CentOS</div>
                     </div>
 
-                    <!-- Kali (For visual completeness, though Go backend currently rejects it) -->
+                    <!-- Kali -->
                     <div class="os-card" onclick="selectOS('kali')">
                         <div class="os-icon-box">
                             <img src="../static/images/Kali.png" alt="Kali Logo">
@@ -803,24 +803,17 @@
                 service === 'postgresql' || service === 'redis-server'
             );
 
-            // Note on Custom Scripts: 
-            // The Go backend does not currently accept a custom script field in the JSON body based on the provided logic.
-            // It only looks at 'osName' and 'services'. Sending extra fields might be ignored or cause errors depending on the strictness of the JSON decoder.
-            // We will only send the required fields to ensure success.
-
             const payload = {
                 osName: selectedOS,
                 services: validServices
             };
 
-            console.log("Sending Payload:", payload);
-
             const overlay = document.getElementById('loading-overlay');
             overlay.style.display = 'flex';
 
             try {
-                // FIXED: Changed URL to '/deployinstance' to match routes.go
-                // FIXED: Added credentials: 'include' to send the session-id cookie
+                // Send request to /deployinstance
+                // credentials: 'include' ensures the session-id cookie is sent
                 const response = await fetch('/deployinstance', {
                     method: 'POST',
                     headers: {
@@ -844,6 +837,8 @@
                         setTimeout(() => {
                             window.location.href = 'login.html';
                         }, 2000);
+                    } else if (response.status === 405) {
+                        showToast("Invalid Request Method.", "error");
                     } else {
                         throw new Error(data.message || "Deployment Failed");
                     }
