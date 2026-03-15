@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"log"
 
+	"github.com/johngithiyon/Nodefy/internal/errors"
 	"github.com/johngithiyon/Nodefy/internal/models"
 )
 
@@ -73,8 +74,6 @@ func SaveInstance(instancename string,username string) error {
 func CheckInstance(killinstancename string,username string) int {
  
 	var res int 
-
-	log.Println(killinstancename,username)
 	
 	checkquery := `
 	            SELECT array_position(containers,$1)
@@ -89,4 +88,23 @@ func CheckInstance(killinstancename string,username string) int {
 	}
 
 	return 0
+}
+
+func RemoveInstance(killinstancename string,username string) error {
+ 
+	deletequery := `
+	         UPDATE users
+			SET containers = array_remove(containers,$1)
+			WHERE username=$2;
+
+	`
+
+	_,delerr := Database.Db.Exec(deletequery,killinstancename,username)
+
+	if delerr != nil {
+		log.Println("Delete Err from instance kill",delerr)
+		return errors.ErrInternalserver
+	}
+
+	return nil 
 }
