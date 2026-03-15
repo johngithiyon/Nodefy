@@ -597,6 +597,7 @@
                     <!-- Ubuntu -->
                     <div class="os-card" onclick="selectOS('ubuntu')">
                         <div class="os-icon-box">
+                            <!-- Maintaining original link structure as requested -->
                             <img src="../static/images/ubantu.png" alt="Ubuntu Logo">
                         </div>
                         <div class="os-name">Ubuntu</div>
@@ -730,7 +731,19 @@
         function selectOS(osName) {
             selectedOS = osName;
             console.log("Selected OS:", osName);
-            goToStep(2);
+            
+            // Reset visual styles for all cards
+            document.querySelectorAll('.os-card').forEach(card => {
+                card.style.borderColor = 'var(--border-subtle)';
+                card.style.background = 'rgba(20, 20, 25, 0.4)';
+            });
+            
+            // Apply active style to clicked card (Visual feedback)
+            const activeCard = event.currentTarget;
+            activeCard.style.borderColor = 'var(--accent-color)';
+            activeCard.style.background = 'rgba(30, 30, 40, 0.6)';
+
+            setTimeout(() => goToStep(2), 300);
         }
 
         /* --- SERVICE SELECTION LOGIC --- */
@@ -778,44 +791,45 @@
 
         /* --- DEPLOY LOGIC --- */
         async function deployInstance() {
-            // Note: The Go backend strictly validates services.
-            // It only accepts "postgresql" or "redis-server".
-            // It rejects custom scripts (returns 400 Invalid Services).
-            // Therefore, we filter the selectedServices to match backend capabilities.
-            
+            if (!selectedOS) {
+                showToast("Please select an Operating System", "error");
+                goToStep(1);
+                return;
+            }
+
+            // Filter strictly for backend-accepted services
+            // The Go backend loop checks: if services != "postgresql" && services != "redis-server" (returns error)
             const validServices = Array.from(selectedServices).filter(service => 
                 service === 'postgresql' || service === 'redis-server'
             );
 
-            // If the user selected custom service, we ignore it here to prevent a 400 error
-            // because the backend loop: if services != "postgresql" && services != "redis-server" returns error.
-            const customCode = document.getElementById('custom-code').value.trim();
-            if (isCustomServiceActive && customCode.length > 0) {
-                // We log it but do not send it to the backend to avoid crash
-                console.log("Custom script detected but ignored due to backend validation constraints.");
-            }
+            // Note on Custom Scripts: 
+            // The Go backend does not currently accept a custom script field in the JSON body based on the provided logic.
+            // It only looks at 'osName' and 'services'. Sending extra fields might be ignored or cause errors depending on the strictness of the JSON decoder.
+            // We will only send the required fields to ensure success.
 
             const payload = {
-                osName: selectedOS, // Matches Go struct field (assuming standard JSON tags or camelCase)
-                services: validServices // Matches Go struct field
+                osName: selectedOS,
+                services: validServices
             };
 
-            console.log("Deploying with payload:", payload);
+            console.log("Sending Payload:", payload);
 
             const overlay = document.getElementById('loading-overlay');
             overlay.style.display = 'flex';
 
             try {
-                const response = await fetch('/deploy', {
+                // FIXED: Changed URL to '/deployinstance' to match routes.go
+                // FIXED: Added credentials: 'include' to send the session-id cookie
+                const response = await fetch('/deployinstance', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
+                    credentials: 'include', 
                     body: JSON.stringify(payload)
                 });
 
-                // Parsing the JSON response defined in response.go
-                // Response format: {"message": "..."}
                 const data = await response.json();
 
                 if (response.ok) {
@@ -824,8 +838,15 @@
                         window.location.href = 'home.html';
                     }, 2000);
                 } else {
-                    // Handle errors (Invalid OS, Invalid Services, etc.)
-                    throw new Error(data.message || "Deployment Failed");
+                    // Specific handling for Cookie missing (User not logged in)
+                    if (response.status === 400 && data.message === "Cookie not found") {
+                        showToast("Session expired. Please login.", "error");
+                        setTimeout(() => {
+                            window.location.href = 'login.html';
+                        }, 2000);
+                    } else {
+                        throw new Error(data.message || "Deployment Failed");
+                    }
                 }
 
             } catch (error) {

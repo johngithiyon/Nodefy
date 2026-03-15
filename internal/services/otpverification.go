@@ -15,7 +15,7 @@ func Otpverificationservices(otp string,sessionid string,Ver *models.Verify) err
 
 	if storedata == nil  && geterr != nil {
 		 log.Println("Get Temp Data err from otpverify",geterr)
-		 return geterr
+		 return errors.ErrInternalserver
 	}
 
 
