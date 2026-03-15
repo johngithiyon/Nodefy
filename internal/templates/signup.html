@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
     <style>
-        /* --- 1. CORE VARIABLES & THEME (Matches Home.html) --- */
+        /* --- 1. CORE VARIABLES & THEME --- */
         :root {
             --bg-gradient-start: #050505;
             --bg-gradient-end: #1a0b2e;
@@ -52,7 +52,7 @@
             min-height: 100vh;
         }
 
-        /* --- 2. BACKGROUND ANIMATIONS (Synced with Home.html) --- */
+        /* --- 2. BACKGROUND ANIMATIONS --- */
         
         /* Main ambient glow */
         .ambient-glow {
@@ -98,7 +98,7 @@
             100% { transform: translate(-10px, -10px) rotate(0.5deg); opacity: 0.7; }
         }
 
-        /* Floating particles - subtle, professional */
+        /* Floating particles */
         .particles {
             position: fixed;
             top: 0;
@@ -177,7 +177,7 @@
             100% { transform: translate(5%, 5%) scale(1.1); }
         }
 
-        /* --- 3. NAVIGATION (Matches Home.html) --- */
+        /* --- 3. NAVIGATION --- */
         nav {
             position: fixed;
             top: 20px;
@@ -247,7 +247,6 @@
         }
 
         .auth-card {
-            /* Matches home feature card glass style */
             background: rgba(20, 20, 25, 0.6);
             backdrop-filter: blur(20px);
             border: 1px solid var(--border-subtle);
@@ -257,7 +256,6 @@
             width: 100%;
             max-width: 440px;
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.6);
-            /* Entry Animation */
             opacity: 0;
             animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
@@ -337,7 +335,8 @@
             background: rgba(0, 0, 0, 0.5);
         }
         
-        .form-input:focus + .input-icon {
+        /* Select icon color when input focuses via general sibling selector or JS */
+        .input-wrapper:focus-within .input-icon {
             color: var(--accent-color);
         }
 
@@ -349,10 +348,10 @@
             font-family: var(--font-ui);
         }
 
-        /* Button Style (Matches Home) */
+        /* Button Style */
         .btn {
             padding: 14px 32px;
-            border-radius: 8px; /* Slightly more rounded to match home style */
+            border-radius: 8px;
             font-weight: 600;
             font-size: 1rem;
             text-decoration: none;
@@ -365,7 +364,7 @@
             position: relative;
             overflow: hidden;
             border: none;
-            width: 100%; /* Full width for form */
+            width: 100%;
         }
 
         .btn-primary {
@@ -455,15 +454,14 @@
         @media (max-width: 768px) {
             nav { display: none; }
             .auth-card { padding: 32px 24px; }
+            .toast-container { right: 20px; left: 20px; bottom: 20px; }
+            .toast { width: 100%; min-width: auto; }
         }
     </style>
 </head>
 <body>
 
-    <!-- 
-      BACKGROUND LAYERS 
-      These are the exact layers used in home.html to create the deep theme 
-    -->
+    <!-- BACKGROUND LAYERS -->
     <div class="ambient-glow" id="ambient-glow"></div>
     <div class="mesh-bg"></div>
     
@@ -509,8 +507,7 @@
             <a href="home.html">Home</a>
             <a href="login.html">Login</a>
         </div>
-        <!-- Styled to match Home button style -->
-        <a href="#" class="btn btn-primary" style="width: auto; padding: 8px 20px; font-size: 0.9rem;">Get Started</a>
+        <a href="signup.html" class="btn btn-primary" style="width: auto; padding: 8px 20px; font-size: 0.9rem;">Get Started</a>
     </nav>
 
     <!-- Auth Container -->
@@ -528,6 +525,7 @@
                     <div class="input-wrapper">
                         <!-- User Icon -->
                         <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        <!-- Name matches r.FormValue("username") -->
                         <input type="text" name="username" class="form-input" placeholder="Enter username" required maxlength="12" autocomplete="username">
                     </div>
                     <div class="form-hint">Max 12 characters</div>
@@ -539,6 +537,7 @@
                     <div class="input-wrapper">
                         <!-- Mail Icon -->
                         <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                        <!-- Name matches r.FormValue("email") -->
                         <input type="email" name="email" class="form-input" placeholder="name@example.com" required autocomplete="email">
                     </div>
                 </div>
@@ -549,6 +548,7 @@
                     <div class="input-wrapper">
                         <!-- Lock Icon -->
                         <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                        <!-- Name matches r.FormValue("password") -->
                         <input type="password" name="password" class="form-input" placeholder="••••••••" required autocomplete="new-password">
                     </div>
                     <div class="form-hint">Must contain uppercase, number, and special char</div>
@@ -578,7 +578,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             
-            // --- 1. MOUSE PARALLAX EFFECT (From Home.html) ---
+            // --- 1. MOUSE PARALLAX EFFECT ---
             const ambientGlow = document.getElementById('ambient-glow');
             const spot1 = document.getElementById('spot1');
             const spot2 = document.getElementById('spot2');
@@ -597,7 +597,7 @@
                 if(bubblesContainer) bubblesContainer.style.transform = `translate(${x * -0.2}px, ${y * -0.2}px)`;
             });
 
-            // --- 2. SIGNUP LOGIC (Preserved from Original Request) ---
+            // --- 2. SIGNUP LOGIC ---
             const signupForm = document.getElementById('signupForm');
             const overlay = document.getElementById('loading-overlay');
 
@@ -611,27 +611,45 @@
                 try {
                     const response = await fetch('/signup', {
                         method: 'POST',
-                        body: formData // Sends as multipart/form-data, which r.FormValue handles
+                        body: formData // Sends as multipart/form-data
                     });
 
-                    const data = await response.json(); // Assuming backend returns JSON
+                    let message = "";
+                    
+                    // Attempt to parse JSON, but fallback to text if backend returns plain string
+                    try {
+                        const data = await response.json();
+                        message = data.message;
+                    } catch (err) {
+                        // Fallback if response is not JSON
+                        message = await response.text();
+                    }
 
                     if (response.ok) {
-                        showToast(data.message || "Signup Successful! Please verify your email.", "success");
+                        // Success (200)
+                        showToast(message || "Signup Successful!", "success");
+                        
+                        // Redirect after short delay
                         setTimeout(() => {
-                            window.location.href = 'login.html'; // Redirect to login or OTP page
+                            window.location.href = 'login.html'; 
                         }, 2000);
                     } else {
-                        // Handle specific status codes from Go backend
-                        if (response.status === 409) {
-                            showToast("User already exists with this email or username.", "error");
-                        } else if (response.status === 402) {
-                            // Backend sends 402 for validation errors (Username/Email/Password)
-                            showToast(data.message || "Invalid input details.", "error");
+                        // Handle Errors based on Go Backend Status Codes
+                        
+                        if (response.status === 402) {
+                            // Go: ErrAuthenticate ("Signup Failed" - validation)
+                            showToast(message || "Invalid input details.", "error");
+                        } else if (response.status === 500) {
+                            // Go: ErrInternalserver
+                            showToast(message || "Internal Server Error", "error");
                         } else if (response.status === 405) {
-                            showToast("Method not allowed.", "error");
+                            // Go: Invalid Method
+                            showToast(message || "Method not allowed.", "error");
+                        } else if (response.status === 409) {
+                            // Common Conflict (User exists)
+                            showToast(message || "User already exists.", "error");
                         } else {
-                            showToast(data.message || "Something went wrong.", "error");
+                            showToast(message || "Something went wrong.", "error");
                         }
                     }
 
