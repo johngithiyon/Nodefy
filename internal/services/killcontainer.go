@@ -27,7 +27,13 @@ func Killcontainerservices(killinstancename string,sessionid string) error{
 	  if killerr != nil {
 		  return killerr
 	  }
-     
+
+	 rmerr :=  postgres.RemoveInstance(killinstancename,username)
+
+	 if rmerr != nil {
+		 return  rmerr
+	 }
+ 
 	 return nil 
 
 	}  else {
