@@ -69,3 +69,24 @@ func SaveInstance(instancename string,username string) error {
 
 	return nil 
 }
+
+func CheckInstance(killinstancename string,username string) int {
+ 
+	var res int 
+
+	log.Println(killinstancename,username)
+	
+	checkquery := `
+	            SELECT array_position(containers,$1)
+				FROM users
+				WHERE username=$2;
+	`
+
+	Database.Db.QueryRow(checkquery,killinstancename,username).Scan(&res)
+
+	if res == 1 {
+		 return res
+	}
+
+	return 0
+}
