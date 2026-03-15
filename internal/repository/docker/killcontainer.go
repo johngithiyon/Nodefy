@@ -21,7 +21,7 @@ func Killcontainer(killinstancename,username string) error {
 
 		if outputerr != nil {
 			log.Println("Docker Kill Error",outputerr)
-			return outputerr
+			return errors.ErrInternalserver
 		}
    
 		log.Println("Docker Kill Id Get output",string(output))
