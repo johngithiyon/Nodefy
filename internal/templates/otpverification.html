@@ -369,6 +369,7 @@
             font-size: 0.9rem;
             text-decoration: none;
             transition: color 0.2s;
+            cursor: pointer;
         }
         .resend-link:hover { color: var(--accent-color); text-decoration: underline; }
 
@@ -459,7 +460,6 @@
             <a href="home.html">Home</a>
             <a href="about.html">About</a>
         </div>
-        <a href="login.html" class="btn btn-primary" style="padding: 8px 20px; font-size: 0.9rem; width: auto;">Login</a>
     </nav>
 
     <main>
@@ -496,7 +496,8 @@
                 </button>
             </form>
 
-            <a href="#" class="resend-link">Didn't receive a code? Resend</a>
+            <!-- Added onclick event to prevent default anchor behavior and show a toast -->
+            <a href="#" class="resend-link" onclick="handleResend(event)">Didn't receive a code? Resend</a>
         </div>
     </main>
 
@@ -537,6 +538,9 @@
             inputs.forEach((input, index) => {
                 // Move to next input on typing
                 input.addEventListener('input', (e) => {
+                    // Force input to be numeric only
+                    e.target.value = e.target.value.replace(/[^0-9]/g, '');
+
                     if (e.target.value.length === 1) {
                         if (index < inputs.length - 1) {
                             inputs[index + 1].focus();
@@ -594,13 +598,16 @@
                 // Using FormData to send application/x-www-form-urlencoded
                 // This matches r.FormValue("otp") in Go
                 const formData = new FormData();
-                formData.append('otp', otpValue); // The backend receives the concatenated string
+                formData.append('otp', otpValue); 
 
                 const response = await fetch('/otp', {
                     method: 'POST',
-                    body: formData
+                    body: formData,
+                    // Explicitly include credentials to ensure cookies (temp-id) are sent
+                    credentials: 'include'
                 });
 
+                // Parse JSON response based on response.go structure {"message": "..."}
                 const data = await response.json();
 
                 if (response.ok) {
@@ -610,6 +617,7 @@
                         window.location.href = 'home.html';
                     }, 1500);
                 } else {
+                    // Handle errors (401, 400, 500) from backend
                     throw new Error(data.message || "Verification Failed");
                 }
 
@@ -619,6 +627,13 @@
             } finally {
                 overlay.style.display = 'none';
             }
+        }
+
+        /* --- RESEND LINK HANDLER --- */
+        function handleResend(event) {
+            event.preventDefault();
+            // In a real scenario, this would call a /resend-otp endpoint
+            showToast("Resend functionality is not yet implemented.", "error");
         }
 
         /* --- TOAST NOTIFICATION SYSTEM --- */
