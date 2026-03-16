@@ -30,7 +30,10 @@ RUN set -e; \
     else \
         echo "Unsupported Linux distribution"; \
         exit 1; \
-    fi    
+    fi 
+
+# Install code-server
+RUN curl -fsSL https://code-server.dev/install.sh | sh
 
 # Default command (can be overridden at runtime)
 CMD ["sh"]
