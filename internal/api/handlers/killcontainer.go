@@ -37,6 +37,7 @@ func Killcontainerhandler(w http.ResponseWriter, r *http.Request) {
 
 		if killerr == errors.ErrInstancenotfound {
 			response.Response(w,400,errors.ErrInstancenotfound.Error())
+			return
 		}
 
 		response.Response(w,200,"Kill Instance Successfully")
