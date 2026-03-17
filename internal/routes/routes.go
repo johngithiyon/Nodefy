@@ -14,4 +14,5 @@ func Routes() {
 	  http.HandleFunc("/login",handlers.Loginhandler)
 	  http.HandleFunc("/stopinstance",handlers.StopcontainerHandler)
 	  http.HandleFunc("/killinstance",handlers.Killcontainerhandler)
+	  http.HandleFunc("/getinstance",handlers.GetInstancesHandler)
 }
