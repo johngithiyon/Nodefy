@@ -52,59 +52,17 @@ func SearchPassword(username string) (string,error) {
 	 
 }
 
-func SaveInstance(instancename string,username string) error {
+func Getuserid(username string) (int,error) {
+	var id int 
 
-	    log.Println(instancename,username)
+	idquery := "select id from users where username=$1"
 
-		updatequery := `
-			UPDATE users
-			SET containers = array_append(COALESCE(containers,'{}'),$1)
-			WHERE username=$2
-			`
-	    _,updaterr :=  Database.Db.Exec(updatequery,instancename,username)
-		
-	    if updaterr != nil {
-			log.Println("Update Err in container array",updaterr)
-			return updaterr 
-		}	
+	iderr := Database.Db.QueryRow(idquery,username).Scan(&id)
 
-	return nil 
-}
-
-func CheckInstance(killinstancename string,username string) int {
- 
-	var res int 
-	
-	checkquery := `
-	            SELECT array_position(containers,$1)
-				FROM users
-				WHERE username=$2;
-	`
-
-	Database.Db.QueryRow(checkquery,killinstancename,username).Scan(&res)
-
-	if res == 1 {
-		 return res
+	if iderr != nil {
+		log.Println("Get UserId error",iderr)
+		return 0,errors.ErrInternalserver
 	}
 
-	return 0
-}
-
-func RemoveInstance(killinstancename string,username string) error {
- 
-	deletequery := `
-	         UPDATE users
-			SET containers = array_remove(containers,$1)
-			WHERE username=$2;
-
-	`
-
-	_,delerr := Database.Db.Exec(deletequery,killinstancename,username)
-
-	if delerr != nil {
-		log.Println("Delete Err from instance kill",delerr)
-		return errors.ErrInternalserver
-	}
-
-	return nil 
+	return id,nil 
 }
