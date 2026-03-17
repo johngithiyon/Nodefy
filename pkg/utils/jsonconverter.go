@@ -2,19 +2,16 @@ package utils
 
 import (
 	"encoding/json"
-	"io"
 	"log"
-
 )
 
-func Jsoncov(req io.ReadCloser,convstruct any) error {
-	  
-	decoderr := json.NewDecoder(req).Decode(&convstruct)
+func Jsonconvertor(data interface{}) (string,error) {
 
-	if decoderr != nil {
-		log.Println(decoderr)
-		return decoderr
-	 }
-
-	 return nil 
+    jsondata, converr := json.Marshal(data)
+    if converr != nil {
+		log.Println("Json Conv Err",converr)
+        return "",converr
+    }
+	
+	return  string(jsondata),nil 
 }
