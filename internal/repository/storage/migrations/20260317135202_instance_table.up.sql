@@ -1,0 +1,9 @@
+CREATE TABLE instances (
+    id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(id) ON DELETE CASCADE,
+
+    instance_name VARCHAR(50) NOT NULL UNIQUE, -- GLOBAL UNIQUE
+    status VARCHAR(20) DEFAULT 'stopped',
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
