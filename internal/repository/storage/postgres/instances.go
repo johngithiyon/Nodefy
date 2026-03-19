@@ -85,3 +85,27 @@ func Getinstancebyid(ids string) (string,error){
 
 	return instancename,nil 
 }
+
+func DeleteInstances(killinstancename string,username string , userid int) error {
+
+	username = utils.Lowercase(username)
+
+	deleteinstance := "delete from instances where instance_name=$1 and user_id=$2"
+
+	res,delerr := Database.Db.Exec(deleteinstance,username+"-"+killinstancename,userid)
+
+	if delerr != nil {
+		log.Println("Del Err from kill instance",delerr)
+		return delerr
+	}
+
+	_,rowsafferr := res.RowsAffected()
+
+
+	if rowsafferr != nil {
+		log.Println(rowsafferr)
+		return rowsafferr
+	}
+
+	return nil 
+}
