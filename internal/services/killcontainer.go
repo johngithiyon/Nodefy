@@ -18,26 +18,22 @@ func Killcontainerservices(killinstancename string,sessionid string) error{
 		  return errors.ErrInternalserver
 	}
 
-	res :=  postgres.CheckInstance(killinstancename,username)
+    userid,getuseriderr := postgres.Getuserid(username)
 
-	if res == 1 {
-
-	  killerr :=  docker.Killcontainer(killinstancename,username)
-
-	  if killerr != nil {
-		  return killerr
-	  }
-
-	 rmerr :=  postgres.RemoveInstance(killinstancename,username)
-
-	 if rmerr != nil {
-		 return  rmerr
-	 }
- 
-	 return nil 
-
-	}  else {
-		
-		return  errors.ErrInstancenotfound
+	if getuseriderr != nil {
+		return errors.ErrInternalserver
 	}
+
+	delerr := postgres.DeleteInstances(killinstancename,username,userid)
+
+	if delerr != nil {
+		return errors.ErrInstancenotfound
+	}
+
+	killerr := docker.Killcontainer(killinstancename,username)
+
+	if killerr != nil {
+		 return errors.ErrInternalserver
+	}
+	return nil 
 }
