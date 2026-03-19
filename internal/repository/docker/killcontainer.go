@@ -26,7 +26,7 @@ func Killcontainer(killinstancename,username string) error {
    
 		log.Println("Docker Kill Id Get output",string(output))
 
-		rmcmd := exec.Command("docker","rm","-f",string(output[0]))
+		rmcmd := exec.Command("docker","rm","-f",string(output))
 
 		rmoutput,rmerr := rmcmd.CombinedOutput()
 
