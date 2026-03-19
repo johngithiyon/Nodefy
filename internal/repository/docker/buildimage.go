@@ -3,11 +3,11 @@ package docker
 import (
 	"log"
 	"os/exec"
-	"strings"
 
 	"github.com/johngithiyon/Nodefy/internal/errors"
 	"github.com/johngithiyon/Nodefy/internal/models"
 	"github.com/johngithiyon/Nodefy/internal/repository/storage/postgres"
+	"github.com/johngithiyon/Nodefy/pkg/utils"
 )
 
 func BuildImage(username string,Deploy *models.Deploy) error {
@@ -19,7 +19,7 @@ func BuildImage(username string,Deploy *models.Deploy) error {
 				   service += services + " "
 			}
 
-			lowercase_username := strings.ToLower(username)
+			lowercase_username := utils.Lowercase(username)
 
 			//Write  a commmand to build the image
 
@@ -27,7 +27,7 @@ func BuildImage(username string,Deploy *models.Deploy) error {
 				"docker", "build",
 				"--build-arg", "BASE_IMAGE="+Deploy.OsName,
 				"--build-arg", "PACKAGES="+service,
-				"-t", lowercase_username+Deploy.OsName,
+				"-t", lowercase_username+"-"+Deploy.Instancename,
 				".",
 			)
 
@@ -44,7 +44,30 @@ func BuildImage(username string,Deploy *models.Deploy) error {
 
 			// write the command to run the container
 
-			runexecuter := exec.Command("docker","run","-u","1000","-m","100m","--memory-swap=100m","--label","owner="+username,"--label","instance="+Deploy.Instancename,"-d",lowercase_username+Deploy.OsName,"sleep","infinity")
+			name := lowercase_username + "-" + Deploy.Instancename
+
+			runexecuter := exec.Command(
+				"docker", "run",
+
+				"--name", name,
+
+				"-u", "1000",
+				"-m", "100m",
+				"--memory-swap=100m",
+
+				"--network", "nodefy-network",
+
+				"--label", "owner="+username,
+				"--label", "instance="+Deploy.Instancename,
+
+				"-d",
+
+				
+				name,
+
+				"sleep",
+				"infinity",
+			)
 
 			runoutput,runerr := runexecuter.CombinedOutput()
 
