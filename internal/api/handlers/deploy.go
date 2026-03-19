@@ -34,7 +34,7 @@ func Deploy(w http.ResponseWriter, r *http.Request) {
 
 	// Convert the Json into Struct
 
-   decoderr := utils.Jsoncov(r.Body,&Deploy)
+   decoderr := utils.Jstost(r.Body,&Deploy)
 
    if decoderr != nil {
 	  log.Println("Decode Error",decoderr)
