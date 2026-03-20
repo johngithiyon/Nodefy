@@ -18,7 +18,7 @@ func Routes() {
 
 	  // Api endpoints
 	 
-	  http.HandleFunc("/deployinstance",handlers.Deploy)
+	  http.HandleFunc("/buildinstance",handlers.Buildhandler)
 	  http.HandleFunc("/signup",handlers.Signuphandler)
 	  http.HandleFunc("/otp",handlers.Otphandler)
 	  http.HandleFunc("/login",handlers.Loginhandler)
