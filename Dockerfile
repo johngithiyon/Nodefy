@@ -12,7 +12,7 @@ RUN set -e; \
     if command -v apt-get >/dev/null 2>&1; then \
         echo "Detected Debian/Ubuntu"; \
         DEBIAN_FRONTEND=noninteractive \
-        apt-get update; \
+        apt-get update && \
         apt-get install -y --no-install-recommends ${PACKAGES}; \
         rm -rf /var/lib/apt/lists/*; \
     elif command -v apk >/dev/null 2>&1; then \
@@ -31,9 +31,6 @@ RUN set -e; \
         echo "Unsupported Linux distribution"; \
         exit 1; \
     fi 
-
-# Install code-server
-RUN curl -fsSL https://code-server.dev/install.sh | sh
 
 # Default command (can be overridden at runtime)
 CMD ["sh"]
