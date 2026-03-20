@@ -8,13 +8,7 @@ import (
 	"github.com/johngithiyon/Nodefy/pkg/utils"
 )
 
-func Workspaceservices(sessionid string,id string) (string,error){
-
-	instancename,getinstancerr := postgres.Getinstancebyid(id)
-
-	if getinstancerr != nil {
-		return "",getinstancerr
-	}
+func Workspaceservices(sessionid string) (string,error){
 
 	username,getusernamerr := redis.Getusername(sessionid)
  
@@ -32,7 +26,7 @@ func Workspaceservices(sessionid string,id string) (string,error){
  
 	// Docker call to start the workspace 
 
-	urls,workspacerr := docker.Startworkspace(username,instancename)
+	urls,workspacerr := docker.Startworkspace(username)
 
 	if workspacerr != nil {
 		return "",errors.ErrInternalserver
