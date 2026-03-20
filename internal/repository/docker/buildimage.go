@@ -21,6 +21,8 @@ func BuildImage(username string,servicename string) error {
 			cmd := exec.Command(
 				"docker", "run", "-d",
 				"--name",lowercase_username+"-"+servicename,
+				"--label", "owner="+username,
+				"--label", "instance="+lowercase_username+"-"+servicename,
 				 servicename,
 			)
 
