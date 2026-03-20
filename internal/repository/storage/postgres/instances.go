@@ -17,11 +17,9 @@ func SaveInstance(Instancename string,username string) error {
 		return errors.ErrInternalserver
 	}
 
-	lowercase_username := utils.Lowercase(username)
-
 	saveinstance := "insert into instances(user_id, instance_name) Values($1,$2)"
 
-	_,saverr := Database.Db.Exec(saveinstance,userid,lowercase_username+"-"+Instancename)
+	_,saverr := Database.Db.Exec(saveinstance,userid,Instancename)
 
 	if saverr != nil {
 		log.Println("Save Instances Error",saverr)
