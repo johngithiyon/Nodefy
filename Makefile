@@ -19,7 +19,6 @@ migrate-cure:
 start:
 	docker start mypostgres
 	docker start myredis
-	docker start traefik
 
 run:
 	go run $(MAIN)
