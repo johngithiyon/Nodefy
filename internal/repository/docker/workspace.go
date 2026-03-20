@@ -7,15 +7,15 @@ import (
 
 func Startworkspace(username string,instancename string ) (string,error) {
 
-	log.Println(instancename)
+   //TO Do : set the proxy and route the users to the containers
 
-	cmd := exec.Command(
-		"docker", "exec", "-d",
-		instancename,
-		"code-server",
-		"--bind-addr", "0.0.0.0:8081",
+    cmd := exec.Command(
+		"docker", "run", "-d",
+		"--name", "workspace"+"-"+instancename,
+		"--network", "nodefy-network",
+		"-p", "0:8080",
+		"codercom/code-server:latest",
 		"--auth", "none",
-		"/app",
 	)
 
      output,runerr := cmd.CombinedOutput()
@@ -27,7 +27,14 @@ func Startworkspace(username string,instancename string ) (string,error) {
 		 return "",runerr
 	}
 
-	url := "http://localhost:81"+"/"+instancename+".nodefy"
+	ports,porterr := Portfind("workspace-"+instancename)
+
+	if porterr != nil {
+		return "",porterr
+	}
+
+	url := "http://localhost:"+ports
+
 
 	return url,nil 
 }
