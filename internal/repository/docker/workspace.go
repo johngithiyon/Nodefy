@@ -5,14 +5,14 @@ import (
 	"os/exec"
 )
 
-func Startworkspace(username string,instancename string ) (string,error) {
+func Startworkspace(username string) (string,error) {
 
    //TO Do : set the proxy and route the users to the containers
 
     cmd := exec.Command(
 		"docker", "run", "-d",
-		"--name", "workspace"+"-"+instancename,
-		"--network", "nodefy-network",
+		"--name", "workspace"+"-"+username,
+		"--network", username+"-network",
 		"-p", "0:8080",
 		"codercom/code-server:latest",
 		"--auth", "none",
@@ -27,7 +27,7 @@ func Startworkspace(username string,instancename string ) (string,error) {
 		 return "",runerr
 	}
 
-	ports,porterr := Portfind("workspace-"+instancename)
+	ports,porterr := Portfind("workspace-"+username)
 
 	if porterr != nil {
 		return "",porterr
