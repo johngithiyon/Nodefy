@@ -12,8 +12,6 @@ import (
 func WorkspaceHanlder(w http.ResponseWriter, r *http.Request) {
 
 
-	        id := r.URL.Query().Get("id")
-
 			sessionid,sessionerr := utils.Getsessionid(r,"session-id")
 
 			if sessionerr != nil {
@@ -21,7 +19,7 @@ func WorkspaceHanlder(w http.ResponseWriter, r *http.Request) {
 				 return 
 			}
 
-			url,workspacerr := services.Workspaceservices(sessionid,id)
+			url,workspacerr := services.Workspaceservices(sessionid)
 
 			if workspacerr != nil {
 				response.Response(w,500,"Internal Server Error")
