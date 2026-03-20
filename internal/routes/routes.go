@@ -7,6 +7,16 @@ import (
 )
 
 func Routes() {
+
+	  // frontend endpoints 
+
+	  http.HandleFunc("/signupage",handlers.Rendersignupage)
+	  http.HandleFunc("/loginpage",handlers.Renderloginpage)
+	  http.HandleFunc("/otpverificationpage",handlers.RenderOtpverifypage)
+	  http.HandleFunc("/",handlers.Renderhomepage)
+	  http.HandleFunc("/aboutpage",handlers.Renderaboutpage)
+
+	  // Api endpoints
 	 
 	  http.HandleFunc("/deployinstance",handlers.Deploy)
 	  http.HandleFunc("/signup",handlers.Signuphandler)
