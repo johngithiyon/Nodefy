@@ -1,36 +1,34 @@
-# Allow dynamic base image
-ARG BASE_IMAGE
-FROM ${BASE_IMAGE}
+# Use code-server base image
+FROM codercom/code-server:latest
 
-# Packages to install (space separated)
+# Build arguments
 ARG PACKAGES=""
+ARG USERNAME=coder
 
-WORKDIR /app
+# Convert ARG → ENV (VERY IMPORTANT)
+ENV USERNAME=${USERNAME}
 
-# Install packages depending on detected OS
-RUN set -e; \
-    if command -v apt-get >/dev/null 2>&1; then \
-        echo "Detected Debian/Ubuntu"; \
-        DEBIAN_FRONTEND=noninteractive \
-        apt-get update && \
-        apt-get install -y --no-install-recommends ${PACKAGES}; \
-        rm -rf /var/lib/apt/lists/*; \
-    elif command -v apk >/dev/null 2>&1; then \
-        echo "Detected Alpine"; \
-        apk update; \
-        apk add --no-cache ${PACKAGES}; \
-    elif command -v dnf >/dev/null 2>&1; then \
-        echo "Detected RHEL/Fedora"; \
-        dnf install -y ${PACKAGES}; \
-        dnf clean all; \
-    elif command -v yum >/dev/null 2>&1; then \
-        echo "Detected CentOS"; \
-        yum install -y ${PACKAGES}; \
-        yum clean all; \
-    else \
-        echo "Unsupported Linux distribution"; \
-        exit 1; \
-    fi 
+# Set working directory
+WORKDIR /home/${USERNAME}
 
-# Default command (can be overridden at runtime)
-CMD ["sh"]
+# Switch to root
+USER root
+
+# Install packages
+RUN apt-get update && \
+    apt-get install -y git curl ${PACKAGES} && \
+    mkdir -p /home/${USERNAME} && \
+    rm -rf /var/lib/apt/lists/*
+
+ENTRYPOINT []
+
+# Expose port
+EXPOSE 8080
+
+# Runtime command
+CMD ["/bin/sh", "-c", "\
+if [ -n \"$REPO_URL\" ]; then \
+  echo 'Cloning repo...'; \
+  git clone $REPO_URL /home/${USERNAME}/ || true; \
+fi; \
+exec code-server --bind-addr 0.0.0.0:8080 --auth none"]
