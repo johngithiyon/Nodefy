@@ -1,8 +1,8 @@
 package models
 
-
 type Deploy struct {
-	   Instancename string `json:"instancename"`
-       OsName string `json:"osname"`
-	   Services []string `json:"services"`
+	Appname   string   `json:"appname"`
+	Gitrepo   string   `json:"gitrepo"`
+	Languages []string `json:"languages"`
+	Services  []string `json:"services"`
 }
