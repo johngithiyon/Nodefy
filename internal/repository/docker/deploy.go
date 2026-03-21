@@ -2,6 +2,7 @@ package docker
 
 import (
 	"log"
+	"os"
 	"os/exec"
 
 	"github.com/johngithiyon/Nodefy/internal/models"
@@ -12,6 +13,8 @@ import (
 func Deploydocker(username string,Deploy models.Deploy) error {
 
 	lowercase_username := utils.Lowercase(username)
+
+	 AUTH_TOKEN := os.Getenv("AUTH_TOKEN")
 	 
 	   packages := ""
 	    
@@ -67,7 +70,7 @@ func Deploydocker(username string,Deploy models.Deploy) error {
 
 		log.Println(string(output))
 
-		runcmd := exec.Command("docker","run","-d","--name",lowercase_username+"-"+Deploy.Appname,"-e","REPO_URL="+Deploy.Gitrepo,
+		runcmd := exec.Command("docker","run","-d","--name",lowercase_username+"-"+Deploy.Appname,"-e","AUTH_TOKEN="+AUTH_TOKEN,"-e","REPO_URL="+Deploy.Gitrepo,
 		 
 		  "--label", "owner="+lowercase_username,
 		 "--label", "instance="+lowercase_username+"-"+Deploy.Appname,
