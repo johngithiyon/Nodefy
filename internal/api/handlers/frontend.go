@@ -26,3 +26,7 @@ func Renderaboutpage(w http.ResponseWriter, r *http.Request) {
 	services.Render(w,"about.html")
 }
 
+func RenderBuildpage(w http.ResponseWriter, r *http.Request) {
+	services.Render(w,"build.html")
+}
+
