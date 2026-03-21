@@ -27,6 +27,10 @@ func Deploydocker(username string,Deploy models.Deploy) error {
 
 		if len(Deploy.Services) > 0 {
 		for i:=0;i<len(Deploy.Services);i++ {
+
+			if Deploy.Services[i] == "" {
+				break
+			}
 			
 			servicecmd := exec.Command(
 				"docker", "run", "-d",
