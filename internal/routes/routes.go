@@ -21,6 +21,7 @@ func Routes() {
 	 
 	  http.HandleFunc("/buildinstance",handlers.Buildhandler)
 	  http.HandleFunc("/deployinstance",handlers.DeployHandler)
+	  http.HandleFunc("/exploreos",handlers.ExploreosHandler)
 	  http.HandleFunc("/signup",handlers.Signuphandler)
 	  http.HandleFunc("/otp",handlers.Otphandler)
 	  http.HandleFunc("/login",handlers.Loginhandler)
