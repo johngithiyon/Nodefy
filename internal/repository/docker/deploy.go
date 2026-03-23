@@ -6,13 +6,10 @@ import (
 	"os/exec"
 
 	"github.com/johngithiyon/Nodefy/internal/models"
-	"github.com/johngithiyon/Nodefy/pkg/utils"
 )
 
 
 func Deploydocker(username string,Deploy models.Deploy) error {
-
-	lowercase_username := utils.Lowercase(username)
 
 	NGROK_AUTHTOKEN := os.Getenv("AUTH_TOKEN")
 	 
@@ -34,9 +31,9 @@ func Deploydocker(username string,Deploy models.Deploy) error {
 			
 			servicecmd := exec.Command(
 				"docker", "run", "-d",
-				"--name",lowercase_username+"-"+Deploy.Services[i],
-				"--label", "owner="+lowercase_username,
-				"--label", "instance="+lowercase_username+"-"+Deploy.Services[i],
+				"--name",Deploy.Appname+"-"+Deploy.Services[i],
+				"--label", "owner="+username,
+				"--label", "instance="+Deploy.Appname+"-"+Deploy.Services[i],
 				 Deploy.Services[i],
 			)
 
@@ -55,10 +52,10 @@ func Deploydocker(username string,Deploy models.Deploy) error {
 
 		cmd := exec.Command(
 		"docker", "build",
-		"-t",lowercase_username+"-"+Deploy.Appname, // image name
+		"-t",Deploy.Appname+"-"+username, // image name
 
 		"--build-arg", "PACKAGES="+packages,
-		"--build-arg", "USERNAME="+lowercase_username,
+		"--build-arg", "USERNAME="+username,
 
 		".", 
 		)
@@ -74,11 +71,11 @@ func Deploydocker(username string,Deploy models.Deploy) error {
 
 		log.Println(string(output))
 
-		runcmd := exec.Command("docker","run","-d","--name",lowercase_username+"-"+Deploy.Appname,"-e","NGROK_AUTHTOKEN="+NGROK_AUTHTOKEN,"-e","REPO_URL="+Deploy.Gitrepo,
+		runcmd := exec.Command("docker","run","-d","--name",Deploy.Appname+"-"+username,"-e","NGROK_AUTHTOKEN="+NGROK_AUTHTOKEN,"-e","REPO_URL="+Deploy.Gitrepo,
 		 
-		  "--label", "owner="+lowercase_username,
-		 "--label", "instance="+lowercase_username+"-"+Deploy.Appname,
-		 lowercase_username+"-"+Deploy.Appname,
+		  "--label", "owner="+username,
+		 "--label", "instance="+Deploy.Appname+"-"+username,
+		   Deploy.Appname+"-"+username,
 	       
 	      )
 
