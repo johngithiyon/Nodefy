@@ -9,9 +9,13 @@ import (
 
 func Exploreos(username string,exploreos models.Exploreos) error {
 
+   //Fix: Other linux name pull problm
+
 	cmd := exec.Command(
 		"docker", "run", "-d",
-		"--name", username+"-"+exploreos.Osname,
+		"--name", username,
+		"--label", "owner="+username,
+		"--label", "instance="+username,
 		exploreos.Osname,
 		"sh", "-c", "sleep 1800 && kill 1", // kill the container after 30 minutes 
 	)
@@ -19,7 +23,7 @@ func Exploreos(username string,exploreos models.Exploreos) error {
 	output,outputerr := cmd.CombinedOutput()
 
 	if outputerr != nil {
-		log.Println("Err in Explore Os",outputerr)
+		log.Println("Err in Explore Os",outputerr.Error())
 		return outputerr
 	}
 
