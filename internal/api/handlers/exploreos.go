@@ -3,7 +3,9 @@ package handlers
 import (
 	"net/http"
 
+	"github.com/johngithiyon/Nodefy/internal/errors"
 	"github.com/johngithiyon/Nodefy/internal/models"
+	"github.com/johngithiyon/Nodefy/internal/services"
 	"github.com/johngithiyon/Nodefy/pkg/response"
 	"github.com/johngithiyon/Nodefy/pkg/utils"
 )
@@ -34,6 +36,15 @@ func ExploreosHandler(w http.ResponseWriter, r *http.Request) {
 	  response.Response(w,500,"Internal Server Error")
 	  return 
    }
+
+   explorerr := services.Exploreos(sessionid,&exploreos)
+
+   if explorerr == errors.ErrInternalserver {
+	    response.Response(w,500,"Internal Server Error")
+		return 
+   }
+
+   response.Response(w,200,"Instance Created Sucessfully")
 
 
 
