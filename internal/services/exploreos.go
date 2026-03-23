@@ -19,15 +19,7 @@ func Exploreos(sessionid string,exploreos *models.Exploreos) error {
 	   return errors.ErrInternalserver
    }
 
-   //create a  network
-
    lowercase_username := utils.Lowercase(username)
-
-   createrr := docker.Createnetwork(lowercase_username)
-
-   if createrr != nil {
-	   return  errors.ErrInternalserver
-   }
 
   explorerr :=  docker.Exploreos(lowercase_username,*exploreos)
 
