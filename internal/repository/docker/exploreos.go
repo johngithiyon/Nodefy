@@ -15,7 +15,7 @@ func Exploreos(username string,exploreos models.Exploreos) error {
 		"docker", "run", "-d",
 		"--name", username,
 		"--label", "owner="+username,
-		"--label", "instance="+username,
+		"--label", "instance="+exploreos.Instancename,
 		exploreos.Osname,
 		"sh", "-c", "sleep 1800 && kill 1", // kill the container after 30 minutes 
 	)
