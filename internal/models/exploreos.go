@@ -2,5 +2,5 @@ package models
 
 type Exploreos struct {
 	 
-	    Osname  string 
+	    Osname  string `json:"osname"`
 }
