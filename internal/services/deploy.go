@@ -4,6 +4,7 @@ import (
 	"github.com/johngithiyon/Nodefy/internal/errors"
 	"github.com/johngithiyon/Nodefy/internal/models"
 	"github.com/johngithiyon/Nodefy/internal/repository/docker"
+	"github.com/johngithiyon/Nodefy/internal/repository/storage/postgres"
 	"github.com/johngithiyon/Nodefy/internal/repository/storage/redis"
 )
 
@@ -22,6 +23,12 @@ func Deployservices(sessionid string,Deploy *models.Deploy) error {
 
    if deployerr != nil {
 	    return  errors.ErrInternalserver
+   }
+
+   saverr := postgres.Savedeployinstance(username,*Deploy)
+
+   if saverr != nil {
+	  return errors.ErrInternalserver
    }
    
 	 return  nil 
