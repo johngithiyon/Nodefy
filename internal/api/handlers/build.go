@@ -55,6 +55,12 @@ func Buildhandler(w http.ResponseWriter, r *http.Request) {
 		 return
    }
 
+   if builderr != nil {
+	   response.Response(w,500,"Internal Server Error")
+	   return 
+   }
+
+
    response.Response(w,200,"Instances Build Successfully")
 
 }
