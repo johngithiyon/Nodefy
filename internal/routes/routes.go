@@ -16,6 +16,7 @@ func Routes() {
 	  http.HandleFunc("/",handlers.Renderhomepage)
 	  http.HandleFunc("/aboutpage",handlers.Renderaboutpage)
 	  http.HandleFunc("/buildinstancespage",handlers.RenderBuildpage)
+	  http.HandleFunc("/choosepage",handlers.RenderChoosepage)
 
 	  // Api endpoints
 	 
