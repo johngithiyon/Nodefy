@@ -23,11 +23,16 @@ func BuildInstances(sessionid string,Build *models.Build ) error  {
 
 	lowercase_username := utils.Lowercase(username)
 
+	checkerr := docker.Checknetwork(username)
+
+	if checkerr != nil { 
+
 	createrr := docker.Createnetwork(lowercase_username)
 
 	if createrr != nil {
 		return  errors.ErrInternalserver
 	}
+  }	
 
 	services := Build.Services
 
