@@ -30,3 +30,7 @@ func RenderBuildpage(w http.ResponseWriter, r *http.Request) {
 	services.Render(w,"build.html")
 }
 
+func RenderChoosepage(w http.ResponseWriter, r *http.Request) {
+	services.Render(w,"choose.html")
+}
+
