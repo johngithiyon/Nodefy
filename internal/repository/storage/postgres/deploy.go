@@ -2,7 +2,7 @@ package postgres
 
 import (
 	"log"
-
+   pq "github.com/lib/pq"
 	"github.com/johngithiyon/Nodefy/internal/models"
 )
 
@@ -21,4 +21,32 @@ func Savedeployinstance(username string , Deploy models.Deploy) error {
 	}
 
 	return nil 
+}
+
+func Getdeployinstance(username string) ([]models.Deployinfo,error) {
+
+     var Deployinfo models.Deployinfo
+	 var deployinfo []models.Deployinfo 
+
+     getquery := "select appname,services from deploy_instances where username=$1" 
+
+	 getrows,geterr :=  Database.Db.Query(getquery,username)
+
+	 if geterr != nil {
+		log.Println("Get Err in deploy instances",geterr)
+		return nil,geterr
+	 }
+
+	 for getrows.Next() {
+		 
+		scanerr := getrows.Scan(&Deployinfo.Appname,pq.Array(&Deployinfo.Services))
+		if scanerr != nil {
+            log.Println("Scan Err in deploy instances",scanerr)
+			return nil,scanerr
+		}
+
+		deployinfo = append(deployinfo, Deployinfo)
+	 }
+
+	 return deployinfo,nil 
 }
