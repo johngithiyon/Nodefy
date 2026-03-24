@@ -55,6 +55,6 @@ func Buildhandler(w http.ResponseWriter, r *http.Request) {
 		 return
    }
 
-   response.Response(w,200,"Instances Deployed Successfully")
+   response.Response(w,200,"Instances Build Successfully")
 
 }
