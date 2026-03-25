@@ -10,13 +10,17 @@ import (
 
 
 
-func BuildImage(instancename string,username string,servicename string) error {
+func BuildImage(instancename string,username string,servicename string) error {  
+
+             log.Println(instancename)
+			 log.Println(servicename)
 	
             //pull and run the docker contiainer 
 
 			cmd := exec.Command(
 				"docker", "run", "-d",
 				"--name",instancename+"-"+servicename,
+				"--network",username+"-"+"network",
 				"--label", "owner="+username,
 				"--label", "instance="+instancename+"-"+servicename,
 				 servicename,
@@ -25,12 +29,10 @@ func BuildImage(instancename string,username string,servicename string) error {
 			output,outputerr := cmd.CombinedOutput()
 	
 			if outputerr != nil {
-                    log.Println("Failed in the services containers",outputerr)
+                    log.Println("Failed in the services containers",outputerr,string(output))
 					return  outputerr
 			}
    
-		   log.Println(string(output))
-
 		  saverr :=  postgres.SaveInstance(instancename+"-"+servicename,username)
 
 		  if saverr != nil {
