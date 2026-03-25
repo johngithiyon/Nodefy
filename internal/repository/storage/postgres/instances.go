@@ -17,9 +17,9 @@ func SaveInstance(Instancename string,username string) error {
 		return errors.ErrInternalserver
 	}
 
-	saveinstance := "insert into instances(user_id, instance_name) Values($1,$2)"
+	saveinstance := "insert into instances(user_id, instance_name,status) Values($1,$2,$3)"
 
-	_,saverr := Database.Db.Exec(saveinstance,userid,Instancename)
+	_,saverr := Database.Db.Exec(saveinstance,userid,Instancename,"Running")
 
 	if saverr != nil {
 		log.Println("Save Instances Error",saverr)
