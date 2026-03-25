@@ -30,6 +30,7 @@ func Killcontainerservices(killinstancename string,sessionid string) error{
 		return errors.ErrInstancenotfound
 	}
 
+
 	killerr := docker.Killcontainer(killinstancename,username)
 
 	if killerr != nil {
