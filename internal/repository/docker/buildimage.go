@@ -12,9 +12,6 @@ import (
 
 func BuildImage(instancename string,username string,servicename string) error {  
 
-             log.Println(instancename)
-			 log.Println(servicename)
-	
             //pull and run the docker contiainer 
 
 			cmd := exec.Command(
