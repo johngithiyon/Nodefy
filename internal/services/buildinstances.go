@@ -37,7 +37,11 @@ func BuildInstances(sessionid string,Build *models.Build ) error  {
 	services := Build.Services
 
    for i:=0;i<len(services);i++ {
-	      docker.BuildImage(username,services[i])
+	    builderr :=   docker.BuildImage(Build.Instancename,username,services[i])
+
+		if builderr != nil {
+			return errors.ErrInternalserver
+		}
    }
 
    userexists := linux.CheckUserlinux(username)
