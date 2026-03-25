@@ -5,23 +5,20 @@ import (
 	"os/exec"
 
 	"github.com/johngithiyon/Nodefy/internal/errors"
-	"github.com/johngithiyon/Nodefy/internal/models"
 	"github.com/johngithiyon/Nodefy/internal/repository/storage/postgres"
 )
 
 
 
-func BuildImage(username string,servicename string) error {
-	    
-	         var Build models.Build
-
+func BuildImage(instancename string,username string,servicename string) error {
+	
             //pull and run the docker contiainer 
 
 			cmd := exec.Command(
 				"docker", "run", "-d",
-				"--name",Build.Instancename+"-"+servicename,
+				"--name",instancename+"-"+servicename,
 				"--label", "owner="+username,
-				"--label", "instance="+Build.Instancename+"-"+servicename,
+				"--label", "instance="+instancename+"-"+servicename,
 				 servicename,
 			)
 
@@ -34,7 +31,7 @@ func BuildImage(username string,servicename string) error {
    
 		   log.Println(string(output))
 
-		  saverr :=  postgres.SaveInstance(Build.Instancename+"-"+servicename,username)
+		  saverr :=  postgres.SaveInstance(instancename+"-"+servicename,username)
 
 		  if saverr != nil {
                 return errors.ErrInternalserver
