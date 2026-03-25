@@ -13,7 +13,7 @@ func Exploreos(username string,exploreos models.Exploreos) error {
 
 	cmd := exec.Command(
 		"docker", "run", "-d",
-		"--name", username,
+		"--name",exploreos.Instancename,
 		"--label", "owner="+username,
 		"--label", "instance="+exploreos.Instancename,
 		exploreos.Osname,
