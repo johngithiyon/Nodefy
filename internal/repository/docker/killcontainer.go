@@ -5,6 +5,7 @@ import (
 	"os/exec"
 
 	"github.com/johngithiyon/Nodefy/internal/errors"
+
 )
 
 func Killcontainer(killinstancename,username string) error {
@@ -14,7 +15,7 @@ func Killcontainer(killinstancename,username string) error {
 			"ps",
 			"-aq",
 			"--filter", "label=owner="+username,
-			"--filter", "label=instance="+killinstancename,
+			 "--filter","label=instance="+killinstancename,
 		)
 
 		output,outputerr :=  cmd.CombinedOutput()
@@ -23,6 +24,8 @@ func Killcontainer(killinstancename,username string) error {
 			log.Println("Docker Kill Error",outputerr)
 			return errors.ErrInternalserver
 		}
+
+		log.Println(string(output))
    
 		log.Println("Docker Kill Id Get output",string(output))
 
