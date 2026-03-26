@@ -14,13 +14,14 @@ func BuildImage(instancename string,username string,servicename string) error {
 
             //pull and run the docker contiainer 
 
-			cmd := exec.Command(
+            cmd := exec.Command(
 				"docker", "run", "-d",
-				"--name",instancename+"-"+servicename,
-				"--network",username+"-"+"network",
+				"--name", instancename+"-"+servicename,
+				"--network", username+"-"+"network",
 				"--label", "owner="+username,
 				"--label", "instance="+instancename+"-"+servicename,
-				 servicename,
+				"-e", "POSTGRES_HOST_AUTH_METHOD=trust", 
+				servicename,
 			)
 
 			output,outputerr := cmd.CombinedOutput()
