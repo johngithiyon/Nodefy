@@ -34,13 +34,14 @@ func Deploydocker(username string,Deploy models.Deploy) error {
 				"--name",Deploy.Appname+"-"+Deploy.Services[i],
 				"--label", "owner="+username,
 				"--label", "instance="+Deploy.Appname+"-"+Deploy.Services[i],
+				"-e", "POSTGRES_HOST_AUTH_METHOD=trust",
 				 Deploy.Services[i],
 			)
 
 			output,outputerr := servicecmd.CombinedOutput()
 	
 			if outputerr != nil {
-                    log.Println("Failed in the services containers",outputerr)
+                    log.Println("Failed in the services containers",outputerr,string(output))
 					return  outputerr
 			}
    
@@ -64,7 +65,7 @@ func Deploydocker(username string,Deploy models.Deploy) error {
 
 		if outputerr != nil {
 
-		log.Println("Deploy Build Err",outputerr)
+		log.Println("Deploy Build Err",outputerr,string(output))
 		return  outputerr
 
 		}
@@ -82,7 +83,7 @@ func Deploydocker(username string,Deploy models.Deploy) error {
 		runout,runerr := runcmd.CombinedOutput()
 
 		if runerr != nil {
-             log.Println("Run Err from deploy container",runerr)
+             log.Println("Run Err from deploy container",runerr,string(runout))
 			 return  runerr 
 		}
 
