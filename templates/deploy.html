@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nodefy - Deploy Repo</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* --- 1. CORE VARIABLES & THEME --- */
+        :root {
+            --bg-gradient-start: #050505;
+            --bg-gradient-end: #1a0b2e;
+            --accent-color: #8b5cf6;
+            --accent-hover: #7c3aed;
+            --accent-glow: rgba(139, 92, 246, 0.4);
+
+            --text-main: #FFFFFF;
+            --text-muted: #A1A1AA;
+            --text-dark: #52525B;
+
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(255, 255, 255, 0.2);
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-blur: blur(16px);
+
+            --font-ui: 'Inter', sans-serif;
+            --font-code: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-ui);
+            background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+            background-attachment: fixed;
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* ---------- BACKGROUND ANIMATIONS ---------- */
+        .ambient-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background:
+                radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.15), transparent 35%),
+                radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.12), transparent 35%),
+                radial-gradient(circle at 40% 80%, rgba(139, 92, 246, 0.1), transparent 40%);
+            z-index: -2;
+            pointer-events: none;
+            transition: transform 0.1s ease-out;
+            animation: pulseGlow 12s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            0% { opacity: 0.4; transform: scale(1); filter: blur(0px); }
+            50% { opacity: 0.8; transform: scale(1.02); filter: blur(2px); }
+            100% { opacity: 0.5; transform: scale(1); filter: blur(0px); }
+        }
+
+        .mesh-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image:
+                linear-gradient(rgba(139, 92, 246, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(139, 92, 246, 0.02) 1px, transparent 1px);
+            background-size: 60px 60px;
+            z-index: -2;
+            pointer-events: none;
+            animation: meshMove 20s linear infinite alternate;
+        }
+
+        @keyframes meshMove {
+            0% { transform: translate(0, 0) rotate(0deg); opacity: 0.3; }
+            100% { transform: translate(-10px, -10px) rotate(0.5deg); opacity: 0.7; }
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -2;
+            pointer-events: none;
+            overflow: hidden;
+            transition: transform 0.1s ease-out;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(139, 92, 246, 0.2);
+            border-radius: 50%;
+            box-shadow: 0 0 15px 2px rgba(139, 92, 246, 0.2);
+            animation: floatParticle 18s infinite ease-in-out;
+        }
+
+        @keyframes floatParticle {
+            0% { transform: translateY(0) translateX(0) scale(1); opacity: 0.2; }
+            50% { transform: translateY(-120px) translateX(40px) scale(1.5); opacity: 0.6; }
+            100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.2; }
+        }
+
+        .bubbles-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -2;
+            pointer-events: none;
+            overflow: hidden;
+            transition: transform 0.2s ease-out;
+        }
+
+        .bubble {
+            position: absolute;
+            bottom: -100px;
+            background: radial-gradient(circle at 30% 30%, rgba(139, 92, 246, 0.08), rgba(139, 92, 246, 0.01) 60%, transparent 80%);
+            border-radius: 50%;
+            border: 1px solid rgba(139, 92, 246, 0.05);
+            animation: riseBubble 25s infinite ease-in;
+            filter: blur(2px);
+        }
+
+        @keyframes riseBubble {
+            0% { transform: translateY(0) translateX(0) scale(0.8); opacity: 0; }
+            20% { opacity: 0.5; }
+            80% { opacity: 0.5; }
+            100% { transform: translateY(-120vh) translateX(50px) scale(1.2); opacity: 0; }
+        }
+
+        .glow-spot {
+            position: fixed;
+            width: 60vw;
+            height: 60vw;
+            background: radial-gradient(circle at center, rgba(139, 92, 246, 0.05), transparent 70%);
+            border-radius: 50%;
+            z-index: -2;
+            pointer-events: none;
+            animation: spotMove 25s infinite alternate;
+            transition: transform 0.2s ease-out;
+        }
+
+        .spot1 { top: -20vh; right: -10vw; }
+        .spot2 {
+            bottom: -30vh; left: -10vw; animation-delay: -5s;
+            width: 80vw; height: 80vw;
+            background: radial-gradient(circle at center, rgba(59, 130, 246, 0.04), transparent 70%);
+        }
+
+        @keyframes spotMove {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(5%, 5%) scale(1.1); }
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 1200px;
+            height: 64px;
+            background: rgba(10, 10, 15, 0.7);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border-subtle);
+            border-radius: 100px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 32px;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translate(-50%, -20px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+
+        .nav-logo {
+            font-weight: 800;
+            font-size: 1.25rem;
+            letter-spacing: -0.02em;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .nav-logo span { color: var(--accent-color); }
+
+        .nav-links { display: flex; gap: 32px; }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: var(--accent-color);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover { color: var(--text-main); }
+        .nav-links a:hover::after { width: 100%; }
+
+        /* --- MAIN LAYOUT --- */
+        main {
+            flex: 1;
+            padding-top: 120px;
+            padding-bottom: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .wizard-container {
+            width: 90%;
+            max-width: 1100px;
+            position: relative;
+        }
+
+        .step-header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: slideDown 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #fff 30%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .step-header p {
+            font-size: 1rem;
+            color: var(--text-muted);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* --- INFO BOX --- */
+        .info-box {
+            margin: 20px auto 30px auto;
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 12px 20px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-align: center;
+            display: none;
+            animation: fadeIn 0.4s ease forwards;
+            line-height: 1.5;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- GRID --- */
+        .selection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 260px));
+            justify-content: center;
+            gap: 20px;
+            perspective: 1000px;
+            align-items: stretch;
+        }
+
+        /* --- CARD --- */
+        .service-card {
+            background: rgba(20, 20, 25, 0.6);
+            border: 1px solid var(--border-subtle);
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transform-style: preserve-3d;
+            position: relative;
+            overflow: hidden;
+            height: 200px;
+            z-index: 10;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.04), transparent);
+            transition: 0.6s;
+            pointer-events: none;
+        }
+
+        .service-card:hover::before { left: 100%; }
+
+        .service-card:hover {
+            border-color: rgba(139, 92, 246, 0.3);
+            background: rgba(30, 30, 40, 0.7);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px -10px rgba(0, 0, 0, 0.6), 0 0 20px rgba(139, 92, 246, 0.15);
+        }
+
+        .service-icon-box {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            border: 1px solid var(--border-subtle);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            z-index: 2;
+            flex-shrink: 0;
+        }
+
+        .service-icon-box img,
+        .service-icon-box svg {
+            max-width: 70%;
+            max-height: 70%;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .service-card:hover .service-icon-box {
+            background: rgba(139, 92, 246, 0.1);
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+
+        .service-card:hover .service-icon-box img,
+        .service-card:hover .service-icon-box svg {
+            transform: scale(1.15);
+        }
+
+        .service-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-main);
+            z-index: 2;
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
+
+        /* --- SELECTED STATE --- */
+        .service-card.selected {
+            border-color: var(--accent-color);
+            background: linear-gradient(145deg, rgba(139, 92, 246, 0.15), rgba(20, 20, 25, 0.9));
+            box-shadow: 0 0 0 1px var(--accent-color), 0 0 30px rgba(139, 92, 246, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .service-card.selected .service-icon-box {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+        }
+
+        .service-card.selected::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 24px;
+            border: 2px solid transparent;
+            background: linear-gradient(45deg, var(--accent-color), transparent, transparent) border-box;
+            -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: destination-out;
+            mask-composite: exclude;
+            animation: borderPulse 4s linear infinite;
+        }
+
+        @keyframes borderPulse {
+            0% { opacity: 0.2; }
+            50% { opacity: 0.6; }
+            100% { opacity: 0.2; }
+        }
+
+        /* --- CUSTOM INPUT --- */
+        .custom-input-area {
+            grid-column: 1 / -1;
+            margin-top: 24px;
+            display: none;
+            animation: expandFade 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes expandFade {
+            from { opacity: 0; transform: translateY(-10px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .code-editor {
+            width: 100%;
+            background: #0f0f13;
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            color: #e4e4e7;
+            font-family: var(--font-code);
+            padding: 20px;
+            font-size: 0.95rem;
+            resize: vertical;
+            min-height: 150px;
+            outline: none;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.6);
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent-color) #0f0f13;
+        }
+
+        .code-editor:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2), inset 0 4px 12px rgba(0, 0, 0, 0.6);
+        }
+
+        /* --- BUTTONS --- */
+        .actions {
+            margin-top: 40px;
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            perspective: 500px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--accent-color);
+            color: white;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.25);
+            z-index: 1;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            background: var(--accent-hover);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--border-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-skip {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 14px 24px;
+        }
+
+        .btn-skip svg {
+            width: 16px;
+            height: 16px;
+            opacity: 0.7;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-skip:hover {
+            color: white;
+            border-color: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.03);
+            transform: translateX(4px);
+        }
+
+        .btn-skip:hover svg {
+            transform: translateX(4px);
+            opacity: 1;
+        }
+
+        /* --- STEPS --- */
+        .wizard-step {
+            display: none;
+        }
+
+        .wizard-step.active {
+            display: block;
+            animation: stepReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes stepReveal {
+            from { opacity: 0; transform: translateY(15px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* --- SUMMARY --- */
+        .summary-list {
+            background: rgba(20, 20, 25, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-subtle);
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 24px;
+            width: 100%;
+            max-width: 550px;
+            margin: 0 auto;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .summary-value {
+            color: var(--text-main);
+            font-weight: 600;
+            font-family: var(--font-code);
+            font-size: 0.95rem;
+            text-align: right;
+            max-width: 60%;
+            word-break: break-all;
+        }
+
+        .summary-value.custom {
+            color: var(--accent-color);
+        }
+
+        .summary-value.skipped {
+            color: var(--text-muted);
+            font-style: italic;
+            font-family: var(--font-ui);
+        }
+
+        /* --- OVERLAY --- */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 5, 10, 0.85);
+            backdrop-filter: blur(12px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, transparent 0deg, var(--accent-color) 360deg);
+            position: relative;
+            animation: rotateSpinner 1s linear infinite;
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+        }
+
+        .spinner::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            right: 4px;
+            bottom: 4px;
+            background: #050505;
+            border-radius: 50%;
+        }
+
+        @keyframes rotateSpinner {
+            100% { transform: rotate(360deg); }
+        }
+
+        /* --- TOAST NOTIFICATIONS --- */
+        .toast-container {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            pointer-events: none;
+        }
+
+        .toast {
+            position: relative;
+            pointer-events: auto;
+            background: rgba(20, 20, 25, 0.85);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 16px 20px;
+            color: white;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            min-width: 340px;
+            max-width: 420px;
+            overflow: hidden;
+            transform-origin: right center;
+            animation: toastIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .toast-icon-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            flex-shrink: 0;
+            font-size: 18px;
+        }
+
+        .toast.success .toast-icon-wrapper {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .toast.error .toast-icon-wrapper {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .toast.info .toast-icon-wrapper {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .toast-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-right: 8px;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 4px;
+            color: #f3f4f6;
+            letter-spacing: 0.01em;
+        }
+
+        .toast-message {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .toast-close {
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .toast-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .toast-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            width: 100%;
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-hover));
+            transform-origin: left;
+            animation: toastTimer 5s linear forwards;
+        }
+
+        .toast.success .toast-progress { background: #10b981; }
+        .toast.error .toast-progress { background: #ef4444; }
+        .toast.info .toast-progress { background: #3b82f6; }
+
+        @keyframes toastTimer {
+            from { transform: scaleX(1); }
+            to { transform: scaleX(0); }
+        }
+
+        @keyframes toastIn {
+            from { transform: translateX(100%) skewX(-10deg); opacity: 0; }
+            to { transform: translateX(0) skewX(0); opacity: 1; }
+        }
+
+        @keyframes toastOut {
+            to { transform: translateX(50px) scale(0.9); opacity: 0; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .step-header h2 { font-size: 2rem; }
+            .selection-grid { grid-template-columns: 1fr; justify-content: center; }
+            .service-card { height: 160px; flex-direction: row; padding: 16px; justify-content: flex-start; gap: 16px; }
+            .service-icon-box { margin-bottom: 0; width: 50px; height: 50px; }
+            nav { width: 95%; padding: 0 20px; }
+            .nav-links a { display: none; }
+            .toast-container { right: 20px; left: 20px; bottom: 20px; }
+            .toast { width: 100%; min-width: auto; max-width: none; }
+            .actions { flex-direction: column-reverse; width: 100%; }
+            .btn { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Backgrounds -->
+    <div class="ambient-glow" id="ambient-glow"></div>
+    <div class="mesh-bg"></div>
+    <div class="glow-spot spot1" id="spot1"></div>
+    <div class="glow-spot spot2" id="spot2"></div>
+    <div class="bubbles-container" id="bubbles-container">
+        <div class="bubble" style="left: 10%; width: 150px; height: 150px; animation-duration: 35s; animation-delay: 0s;"></div>
+        <div class="bubble" style="left: 30%; width: 80px; height: 80px; animation-duration: 45s; animation-delay: -5s;"></div>
+        <div class="bubble" style="left: 60%; width: 200px; height: 200px; animation-duration: 55s; animation-delay: -10s;"></div>
+        <div class="bubble" style="left: 85%; width: 120px; height: 120px; animation-duration: 25s; animation-delay: -2s;"></div>
+        <div class="bubble" style="left: 45%; width: 60px; height: 60px; animation-duration: 30s; animation-delay: -15s;"></div>
+    </div>
+    <div class="particles" id="particles">
+        <div class="particle" style="top: 20%; left: 15%; animation-duration: 25s;"></div>
+        <div class="particle" style="top: 70%; left: 80%; width: 6px; height: 6px; animation-duration: 30s; animation-delay: -2s;"></div>
+        <div class="particle" style="top: 40%; left: 40%; width: 3px; height: 3px; animation-duration: 22s; animation-delay: -5s;"></div>
+        <div class="particle" style="top: 10%; left: 90%; animation-duration: 28s;"></div>
+        <div class="particle" style="top: 80%; left: 10%; animation-duration: 32s; animation-delay: -12s;"></div>
+        <div class="particle" style="top: 30%; left: 5%; width: 2px; height: 2px; animation-duration: 12s; animation-delay: -4s;"></div>
+        <div class="particle" style="top: 60%; left: 50%; width: 5px; height: 5px; animation-duration: 20s; animation-delay: -12s;"></div>
+        <div class="particle" style="top: 15%; left: 70%; width: 3px; height: 3px; animation-duration: 15s; animation-delay: -6s;"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="/" class="nav-logo">
+            <!-- Logo from build.html reference -->
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="var(--accent-color)" />
+                <path d="M2 17L12 22L22 17" stroke="white" />
+                <path d="M2 12L12 17L22 12" stroke="white" />
+            </svg>
+            Nodefy
+        </a>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="#features">Features</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="wizard-container">
+
+            <!-- STEP 1: APP NAME -->
+            <div id="step-1" class="wizard-step active">
+                <div class="step-header">
+                    <h2>Name Your Application</h2>
+                    <p>Give your deployment a unique name</p>
+                </div>
+
+                <div class="custom-input-area" style="display: block; margin-bottom: 30px; max-width: 550px; margin-left: auto; margin-right: auto;">
+                    <p style="margin-bottom: 12px; color: var(--accent-color); font-size: 0.9rem; font-weight: 500;">Application Name:</p>
+                    <input type="text" id="app-name" class="code-editor" placeholder="e.g., my-cool-app" style="min-height: 50px; height: 50px;">
+                </div>
+
+                <div class="actions">
+                    <div></div> <!-- Spacer -->
+                    <button class="btn btn-primary" onclick="nextStep(1)">Continue</button>
+                </div>
+            </div>
+
+            <!-- STEP 2: GIT REPO -->
+            <div id="step-2" class="wizard-step">
+                <div class="step-header">
+                    <h2>Connect Repository</h2>
+                    <p>Provide the URL to your Git repository</p>
+                </div>
+
+                <div class="custom-input-area" style="display: block; margin-bottom: 30px; max-width: 550px; margin-left: auto; margin-right: auto;">
+                    <p style="margin-bottom: 12px; color: var(--accent-color); font-size: 0.9rem; font-weight: 500;">Git Repository URL:</p>
+                    <input type="text" id="git-repo" class="code-editor" placeholder="https://github.com/username/repo.git" style="min-height: 50px; height: 50px;">
+                </div>
+
+                <div class="actions">
+                    <button class="btn btn-secondary" onclick="prevStep(2)">Back</button>
+                    <button class="btn btn-primary" onclick="nextStep(2)">Continue</button>
+                </div>
+            </div>
+
+            <!-- STEP 3: LANGUAGE -->
+            <div id="step-3" class="wizard-step">
+                <div class="step-header">
+                    <h2>Select Language</h2>
+                    <p>Choose the primary runtime for your application</p>
+                </div>
+
+                <div class="selection-grid">
+                    <div class="service-card" onclick="selectLanguage(this, 'nodejs')">
+                        <div class="service-icon-box">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M12 8v8M8 12h8"></path>
+                            </svg>
+                        </div>
+                        <div class="service-name">Node.js</div>
+                    </div>
+
+                    <div class="service-card" onclick="selectLanguage(this, 'python3')">
+                        <div class="service-icon-box">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M8 12h8M12 8v8"></path>
+                            </svg>
+                        </div>
+                        <div class="service-name">Python</div>
+                    </div>
+
+                    <!-- BUG FIX: Changed 'golang' to 'go' -->
+                    <div class="service-card" onclick="selectLanguage(this, 'golang-go')">
+                        <div class="service-icon-box">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M8 12h8M12 8v8"></path>
+                            </svg>
+                        </div>
+                        <div class="service-name">Go</div>
+                    </div>
+
+                    <div class="service-card" onclick="selectLanguage(this, 'rust')">
+                        <div class="service-icon-box">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M8 12h8M12 8v8"></path>
+                            </svg>
+                        </div>
+                        <div class="service-name">Rust</div>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button class="btn btn-secondary" onclick="prevStep(3)">Back</button>
+                    <button class="btn btn-primary" onclick="nextStep(3)">Continue</button>
+                </div>
+            </div>
+
+            <!-- STEP 4: SERVICES -->
+            <div id="step-4" class="wizard-step">
+                <div class="step-header">
+                    <h2>Select Services</h2>
+                    <p>Pick the services you need (Database, Cache, etc.)</p>
+                </div>
+
+                <div class="selection-grid">
+                    <!-- BUG FIX: Changed 'postgresql' to 'postgres' -->
+                    <div class="service-card" onclick="toggleService(this, 'postgres')">
+                        <div class="service-icon-box"><img src="../static/images/postgresql.png" alt="Postgres"></div>
+                        <div class="service-name">PostgreSQL</div>
+                    </div>
+
+                    <div class="service-card" onclick="toggleService(this, 'redis')">
+                        <div class="service-icon-box"><img src="../static/images/redis.png" alt="Redis"></div>
+                        <div class="service-name">Redis</div>
+                    </div>
+
+                    <div class="service-card" onclick="toggleService(this, 'mongodb')">
+                        <div class="service-icon-box"><img src="../static/images/mongodb.png" alt="MongoDB"></div>
+                        <div class="service-name">MongoDB</div>
+                    </div>
+
+                    <div class="service-card" onclick="toggleService(this, 'mysql')">
+                        <div class="service-icon-box"><img src="../static/images/mysql.png" alt="MySQL"></div>
+                        <div class="service-name">MySQL</div>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button class="btn btn-secondary" onclick="prevStep(4)">Back</button>
+                    <button class="btn btn-skip" onclick="skipServices()">Skip this step <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></button>
+                    <button class="btn btn-primary" onclick="nextStep(4)">Review & Deploy</button>
+                </div>
+            </div>
+
+            <!-- STEP 5: SUMMARY -->
+            <div id="step-5" class="wizard-step">
+                <div class="step-header">
+                    <h2>Ready to Deploy</h2>
+                    <p>Review your configuration</p>
+                </div>
+
+                <div class="summary-list">
+                    <div class="summary-item">
+                        <span class="summary-label">App Name</span>
+                        <span class="summary-value" id="summary-appname">None</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Repository</span>
+                        <span class="summary-value custom" id="summary-repo">None</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Language</span>
+                        <span class="summary-value" id="summary-language">None</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Services</span>
+                        <span class="summary-value" id="summary-services">None</span>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button class="btn btn-secondary" onclick="prevStep(5)">Back</button>
+                    <button class="btn btn-primary" onclick="deployProject()">Deploy Project</button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div class="overlay" id="loading-overlay">
+        <div class="spinner"></div>
+        <h3 style="font-weight: 600; margin-top: 24px;">Deploying Project...</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 8px;">Building container from source...</p>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Parallax logic
+            const ambientGlow = document.getElementById('ambient-glow');
+            const spot1 = document.getElementById('spot1');
+            const spot2 = document.getElementById('spot2');
+            const particles = document.getElementById('particles');
+            const bubblesContainer = document.getElementById('bubbles-container');
+
+            if (ambientGlow || spot1 || spot2 || particles || bubblesContainer) {
+                document.addEventListener('mousemove', (e) => {
+                    const x = (window.innerWidth - e.pageX * 2) / 100;
+                    const y = (window.innerHeight - e.pageY * 2) / 100;
+                    if (ambientGlow) ambientGlow.style.transform = `translate(${x}px, ${y}px)`;
+                    if (spot1) spot1.style.transform = `translate(${x * 1.5}px, ${y * 1.5}px)`;
+                    if (spot2) spot2.style.transform = `translate(${x * 0.5}px, ${y * 0.5}px)`;
+                    if (particles) particles.style.transform = `translate(${x * -0.5}px, ${y * -0.5}px)`;
+                    if (bubblesContainer) bubblesContainer.style.transform = `translate(${x * -0.2}px, ${y * -0.2}px)`;
+                });
+            }
+        });
+
+        // State
+        let selectedLanguage = null;
+        let selectedServices = [];
+        let currentStep = 1;
+
+        // Navigation Logic
+        function goToStep(stepNumber) {
+            document.querySelectorAll('.wizard-step').forEach(el => el.classList.remove('active'));
+            const target = document.getElementById(`step-${stepNumber}`);
+            if (target) target.classList.add('active');
+            currentStep = stepNumber;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function nextStep(stepNumParam) {
+            if (stepNumParam === 1) {
+                let name = document.getElementById('app-name').value.trim();
+                if (!name) {
+                    showToast("Name Required", "Please enter an application name", "error");
+                    return;
+                }
+                goToStep(2);
+                return;
+            }
+
+            if (stepNumParam === 2) {
+                let repo = document.getElementById('git-repo').value.trim();
+                if (!repo) {
+                    showToast("Repo Required", "Please enter a Git repository URL", "error");
+                    return;
+                }
+                // Basic URL validation (optional but good UX)
+                if (!repo.startsWith('http') && !repo.startsWith('git@')) {
+                    showToast("Invalid URL", "Please enter a valid Git URL (http/https/ssh)", "error");
+                    return;
+                }
+                goToStep(3);
+                return;
+            }
+
+            if (stepNumParam === 3) {
+                if (!selectedLanguage) {
+                    showToast("Selection Required", "Please select a language", "error");
+                    return;
+                }
+                goToStep(4);
+                return;
+            }
+
+            if (stepNumParam === 4) {
+                updateSummary();
+                goToStep(5);
+                return;
+            }
+        }
+
+        function prevStep(stepNumParam) {
+            goToStep(stepNumParam - 1);
+        }
+
+        // Selection Logic
+        function selectLanguage(card, lang) {
+            document.querySelectorAll('#step-3 .service-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            selectedLanguage = lang;
+        }
+
+        function toggleService(card, service) {
+            card.classList.toggle('selected');
+            if (selectedServices.includes(service)) {
+                selectedServices = selectedServices.filter(s => s !== service);
+            } else {
+                selectedServices.push(service);
+            }
+        }
+
+        function skipServices() {
+            selectedServices = [];
+            document.querySelectorAll('#step-4 .service-card').forEach(c => c.classList.remove('selected'));
+            showToast("Skipped", "No additional services selected", "info");
+            updateSummary();
+            goToStep(5);
+        }
+
+        function updateSummary() {
+            document.getElementById('summary-appname').innerText = document.getElementById('app-name').value.trim() || "N/A";
+            document.getElementById('summary-repo').innerText = document.getElementById('git-repo').value.trim() || "N/A";
+            
+            // Handle Language Display (capitalize first letter)
+            document.getElementById('summary-language').innerText = selectedLanguage ? selectedLanguage.charAt(0).toUpperCase() + selectedLanguage.slice(1) : "N/A";
+            
+            const servicesEl = document.getElementById('summary-services');
+            if (selectedServices.length > 0) {
+                servicesEl.innerText = selectedServices.join(', ');
+                servicesEl.classList.remove('skipped');
+            } else {
+                servicesEl.innerText = "Skipped";
+                servicesEl.classList.add('skipped');
+            }
+        }
+
+        // Deploy Logic
+        async function deployProject() {
+            const overlay = document.getElementById('loading-overlay');
+            overlay.style.display = 'flex';
+
+            const payload = {
+                appname: document.getElementById('app-name').value.trim(),
+                gitrepo: document.getElementById('git-repo').value.trim(),
+                languages: selectedLanguage ? [selectedLanguage] : [],
+                services: selectedServices
+            };
+
+            try {
+                const response = await fetch('/deployinstance', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const responseText = await response.text();
+                let message = responseText;
+
+                // Try to parse JSON error if exists, otherwise use text
+                try {
+                    const jsonErr = JSON.parse(responseText);
+                    if(jsonErr.error) message = jsonErr.error;
+                } catch(e) {
+                    // Not JSON, use raw text
+                }
+
+                if (response.ok) {
+                    showToast("Success", "Project deployed successfully!", "success");
+                    setTimeout(() => { window.location.href = '/'; }, 2000);
+                } else {
+                    showToast("Deployment Failed", message, "error");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                showToast("Error", "Could not connect to server", "error");
+            } finally {
+                overlay.style.display = 'none';
+            }
+        }
+
+        /* --- TOAST NOTIFICATION SYSTEM --- */
+        function showToast(title, message, type = "success") {
+            const container = document.getElementById('toast-container');
+            if (container.children.length >= 3) { container.removeChild(container.firstChild); }
+
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+
+            let iconSvg = '';
+            if (type === 'success') iconSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+            else if (type === 'error') iconSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`;
+            else iconSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`;
+
+            toast.innerHTML = `
+                <div class="toast-icon-wrapper">${iconSvg}</div>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+                <button class="toast-close" onclick="this.parentElement.remove()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+                <div class="toast-progress"></div>
+            `;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'toastOut 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
+                toast.addEventListener('animationend', () => { if (toast.parentElement) toast.remove(); });
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
