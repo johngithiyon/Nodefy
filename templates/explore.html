@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nodefy - Explore OS</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- 1. CORE VARIABLES & THEME --- */
+        :root {
+            --bg-gradient-start: #050505;
+            --bg-gradient-end: #1a0b2e;
+            --accent-color: #8b5cf6;      
+            --accent-hover: #7c3aed;
+            --accent-glow: rgba(139, 92, 246, 0.4);
+            
+            --text-main: #FFFFFF;
+            --text-muted: #A1A1AA;
+            --text-dark: #52525B;
+            
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(255, 255, 255, 0.2);
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-blur: blur(16px);
+            
+            --font-ui: 'Inter', sans-serif;
+            --font-code: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-ui);
+            background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+            background-attachment: fixed;
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* ---------- BACKGROUND ANIMATIONS ---------- */
+        .ambient-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: 
+                radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.15), transparent 35%),
+                radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.12), transparent 35%),
+                radial-gradient(circle at 40% 80%, rgba(139, 92, 246, 0.1), transparent 40%);
+            z-index: -2;
+            pointer-events: none;
+            transition: transform 0.1s ease-out;
+            animation: pulseGlow 12s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            0% { opacity: 0.4; transform: scale(1); filter: blur(0px); }
+            50% { opacity: 0.8; transform: scale(1.02); filter: blur(2px); }
+            100% { opacity: 0.5; transform: scale(1); filter: blur(0px); }
+        }
+
+        .mesh-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: 
+                linear-gradient(rgba(139, 92, 246, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(139, 92, 246, 0.02) 1px, transparent 1px);
+            background-size: 60px 60px;
+            z-index: -2;
+            pointer-events: none;
+            animation: meshMove 20s linear infinite alternate;
+        }
+
+        @keyframes meshMove {
+            0% { transform: translate(0, 0) rotate(0deg); opacity: 0.3; }
+            100% { transform: translate(-10px, -10px) rotate(0.5deg); opacity: 0.7; }
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -2;
+            pointer-events: none;
+            overflow: hidden;
+            transition: transform 0.1s ease-out;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(139, 92, 246, 0.2);
+            border-radius: 50%;
+            box-shadow: 0 0 15px 2px rgba(139, 92, 246, 0.2);
+            animation: floatParticle 18s infinite ease-in-out;
+        }
+
+        @keyframes floatParticle {
+            0% { transform: translateY(0) translateX(0) scale(1); opacity: 0.2; }
+            50% { transform: translateY(-120px) translateX(40px) scale(1.5); opacity: 0.6; }
+            100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.2; }
+        }
+
+        .bubbles-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -2;
+            pointer-events: none;
+            overflow: hidden;
+            transition: transform 0.2s ease-out;
+        }
+
+        .bubble {
+            position: absolute;
+            bottom: -100px;
+            background: radial-gradient(circle at 30% 30%, rgba(139, 92, 246, 0.08), rgba(139, 92, 246, 0.01) 60%, transparent 80%);
+            border-radius: 50%;
+            border: 1px solid rgba(139, 92, 246, 0.05);
+            animation: riseBubble 25s infinite ease-in;
+            filter: blur(2px);
+        }
+
+        @keyframes riseBubble {
+            0% { transform: translateY(0) translateX(0) scale(0.8); opacity: 0; }
+            20% { opacity: 0.5; }
+            80% { opacity: 0.5; }
+            100% { transform: translateY(-120vh) translateX(50px) scale(1.2); opacity: 0; }
+        }
+
+        .glow-spot {
+            position: fixed;
+            width: 60vw;
+            height: 60vw;
+            background: radial-gradient(circle at center, rgba(139, 92, 246, 0.05), transparent 70%);
+            border-radius: 50%;
+            z-index: -2;
+            pointer-events: none;
+            animation: spotMove 25s infinite alternate;
+            transition: transform 0.2s ease-out;
+        }
+        .spot1 { top: -20vh; right: -10vw; }
+        .spot2 { bottom: -30vh; left: -10vw; animation-delay: -5s; width: 80vw; height: 80vw; background: radial-gradient(circle at center, rgba(59, 130, 246, 0.04), transparent 70%); }
+        
+        @keyframes spotMove {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(5%, 5%) scale(1.1); }
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 1200px;
+            height: 64px;
+            background: rgba(10, 10, 15, 0.7);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border-subtle);
+            border-radius: 100px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 32px;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .nav-logo {
+            font-weight: 800;
+            font-size: 1.25rem;
+            letter-spacing: -0.02em;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .nav-logo span { color: var(--accent-color); }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s;
+            position: relative;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: var(--accent-color);
+            transition: width 0.3s;
+        }
+        .nav-links a:hover { color: var(--text-main); }
+        .nav-links a:hover::after { width: 100%; }
+
+        /* --- MAIN LAYOUT --- */
+        main {
+            flex: 1;
+            padding-top: 130px;
+            padding-bottom: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+            width: 100%;
+        }
+
+        .wizard-container {
+            width: 90%;
+            max-width: 1000px; /* Slightly narrower for the new layout */
+            position: relative;
+        }
+
+        .step-header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: floatDown 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        @keyframes floatDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .step-header h2 {
+            font-size: 2.5rem; margin-bottom: 16px;
+            background: linear-gradient(135deg, #fff 30%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800; letter-spacing: -1px;
+        }
+        .step-header p {
+            font-size: 1.1rem; color: var(--text-muted);
+            max-width: 600px; margin: 0 auto;
+        }
+
+        /* --- GRID SYSTEMS --- */
+        .selection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 24px;
+            perspective: 1000px;
+        }
+
+        /* --- OS CARD STYLES --- */
+        .os-card {
+            background: rgba(20, 20, 25, 0.4);
+            border: 1px solid var(--border-subtle);
+            border-radius: 24px;
+            padding: 32px 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+            position: relative;
+            overflow: hidden;
+            height: 240px;
+            z-index: 10;
+        }
+
+        .os-card::before {
+            content: ''; position: absolute; top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
+            transition: 0.5s; pointer-events: none;
+        }
+        .os-card:hover::before { left: 100%; }
+
+        .os-card:hover {
+            border-color: rgba(139, 92, 246, 0.4);
+            background: rgba(30, 30, 40, 0.6);
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px -10px rgba(0,0,0,0.6), 0 0 20px rgba(139, 92, 246, 0.1);
+        }
+
+        .os-icon-box {
+            width: 90px; height: 90px;
+            margin-bottom: 24px;
+            display: flex; align-items: center; justify-content: center;
+            background: transparent;
+            border: none;
+            border-radius: 0;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .os-icon-box img {
+            max-width: 70%; max-height: 70%;
+            object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+            transition: transform 0.3s ease;
+        }
+        
+        .os-name { 
+            font-size: 1.2rem; font-weight: 600; color: var(--text-main);
+            z-index: 2; letter-spacing: 0.5px;
+        }
+
+        .os-card.selected {
+            border-color: var(--accent-color);
+            background: linear-gradient(145deg, rgba(139, 92, 246, 0.15), rgba(20, 20, 25, 0.8));
+            box-shadow: 0 0 0 1px var(--accent-color), 0 0 30px rgba(139, 92, 246, 0.2);
+            transform: translateY(-5px);
+        }
+
+        /* --- FORM STYLES --- */
+        .config-form {
+            max-width: 500px;
+            margin: 0 auto;
+            background: rgba(20, 20, 25, 0.4);
+            padding: 30px;
+            border-radius: 16px;
+            border: 1px solid var(--border-subtle);
+            text-align: center;
+            display: none;
+            animation: expandFade 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .form-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-subtle);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-family: var(--font-code);
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+        }
+
+        /* --- PRO DROPDOWN CENTERED --- */
+        .dropdown-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+            animation: expandFade 0.6s ease-out;
+        }
+
+        .pro-select {
+            appearance: none;
+            width: 300px;
+            background-color: rgba(10, 10, 15, 0.8);
+            border: 1px solid var(--accent-color); /* Theme color border */
+            color: var(--text-main);
+            padding: 14px 20px;
+            border-radius: 50px; /* Pill shape */
+            font-family: var(--font-ui);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            /* Custom Arrow */
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238b5cf6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 20px center;
+            background-size: 1.2em;
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
+        }
+
+        .pro-select:focus {
+            outline: none;
+            box-shadow: 0 0 25px rgba(139, 92, 246, 0.4);
+            border-color: #a78bfa;
+        }
+        
+        .pro-select:hover {
+            transform: scale(1.02);
+        }
+
+        /* --- NEW COMMAND LIST LAYOUT (Terminal Style) --- */
+        #command-library {
+            display: none;
+            width: 100%;
+            animation: expandFade 0.6s ease-out;
+        }
+
+        #step-3.active #command-library {
+            display: block;
+        }
+
+        .command-list-container {
+            background: rgba(15, 15, 20, 0.7); /* Darker, theme-matched box */
+            border: 1px solid rgba(139, 92, 246, 0.2); /* Subtle purple border */
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px -10px rgba(0,0,0,0.5);
+            max-height: 600px;
+            overflow-y: auto;
+            /* Custom Scrollbar */
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent-color) rgba(15, 15, 20, 0.5);
+        }
+        
+        .command-list-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        .command-list-container::-webkit-scrollbar-track {
+            background: rgba(15, 15, 20, 0.5);
+        }
+        .command-list-container::-webkit-scrollbar-thumb {
+            background-color: var(--accent-color);
+            border-radius: 20px;
+        }
+
+        .command-row {
+            padding: 20px 30px;
+            border-bottom: 1px solid var(--border-subtle);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .command-row:last-child {
+            border-bottom: none;
+        }
+
+        .command-row:hover {
+            background: rgba(139, 92, 246, 0.1); /* Purple tint on hover */
+            padding-left: 35px; /* Slight shift effect */
+        }
+
+        .cmd-top {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .cmd-icon {
+            color: var(--accent-color);
+            opacity: 0.5;
+        }
+
+        .cmd-text {
+            font-family: var(--font-code);
+            color: #e4e4e7;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .cmd-desc {
+            margin-top: 8px;
+            padding-left: 28px; /* Align with text */
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        /* Hover Effect: Reveal Description */
+        .command-row:hover .cmd-desc {
+            opacity: 1;
+            max-height: 100px; /* Approximate max height */
+            margin-top: 12px;
+        }
+        
+        .command-row:hover .cmd-text {
+            color: var(--accent-color);
+        }
+        
+        .command-row:hover .cmd-icon {
+            opacity: 1;
+        }
+
+        .empty-state {
+            padding: 60px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* --- BUTTONS --- */
+        .actions {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+        }
+
+        .btn {
+            padding: 14px 32px; border-radius: 8px; font-weight: 600;
+            font-size: 1rem; cursor: pointer; transition: all 0.3s;
+            border: none; display: inline-flex; align-items: center; gap: 8px;
+            letter-spacing: 0.5px;
+            position: relative; overflow: hidden;
+        }
+
+        .btn-primary {
+            background: var(--accent-color); color: white;
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
+            z-index: 1;
+        }
+        
+        .btn-primary::before {
+            content: ''; position: absolute; top: 0; left: -100%;
+            width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent);
+            transform: skewX(-25deg);
+            transition: 0.5s;
+            z-index: -1;
+        }
+        .btn-primary:hover::before { left: 150%; transition: 0.7s; }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            background: var(--accent-hover);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.5);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.05); color: white;
+            border: 1px solid var(--border-subtle);
+        }
+        .btn-secondary:hover { 
+            background: rgba(255,255,255,0.1); 
+            border-color: var(--border-hover);
+        }
+
+        /* --- STEPS & TRANSITIONS --- */
+        .wizard-step { display: none; }
+        .wizard-step.active { display: block; animation: stepReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+
+        @keyframes stepReveal {
+            from { opacity: 0; transform: translateY(15px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes expandFade {
+            from { opacity: 0; transform: translateY(10px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* --- OVERLAYS & TOASTS --- */
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 5, 10, 0.85); backdrop-filter: blur(12px);
+            z-index: 2000;
+            display: none; align-items: center; justify-content: center;
+            flex-direction: column;
+        }
+        
+        .spinner {
+            width: 60px; height: 60px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, transparent 0deg, var(--accent-color) 360deg);
+            position: relative;
+            animation: rotateSpinner 1s linear infinite;
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+        }
+        .spinner::after {
+            content: ''; position: absolute; top: 4px; left: 4px; right: 4px; bottom: 4px;
+            background: #050505; border-radius: 50%;
+        }
+        @keyframes rotateSpinner { 100% { transform: rotate(360deg); } }
+
+        .toast-container {
+            position: fixed; bottom: 40px; right: 40px; z-index: 3000;
+            display: flex; flex-direction: column; gap: 12px;
+        }
+        .toast {
+            background: rgba(20, 20, 25, 0.9);
+            backdrop-filter: blur(10px);
+            border-left: 4px solid var(--accent-color);
+            padding: 18px 24px; border-radius: 8px; color: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            animation: slideInRight 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex; align-items: center; gap: 14px;
+            border: 1px solid var(--border-subtle);
+            min-width: 300px;
+        }
+        .toast.error { border-left-color: #ef4444; }
+        .toast.success { border-left-color: #10b981; }
+
+        @keyframes slideInRight { from { transform: translateX(50px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .step-header h2 { font-size: 2rem; }
+            .nav-links a { display: none; }
+            .pro-select { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Backgrounds -->
+    <div class="ambient-glow" id="ambient-glow"></div>
+    <div class="mesh-bg"></div>
+    <div class="glow-spot spot1" id="spot1"></div>
+    <div class="glow-spot spot2" id="spot2"></div>
+    <div class="bubbles-container" id="bubbles-container">
+        <div class="bubble" style="left: 10%; width: 150px; height: 150px; animation-duration: 22s; animation-delay: 0s;"></div>
+        <div class="bubble" style="left: 30%; width: 80px; height: 80px; animation-duration: 28s; animation-delay: -5s;"></div>
+        <div class="bubble" style="left: 60%; width: 200px; height: 200px; animation-duration: 35s; animation-delay: -10s;"></div>
+    </div>
+    <div class="particles" id="particles">
+        <div class="particle" style="top: 20%; left: 15%; animation-duration: 16s;"></div>
+        <div class="particle" style="top: 70%; left: 80%; width: 6px; height: 6px; animation-duration: 22s; animation-delay: -2s;"></div>
+        <div class="particle" style="top: 40%; left: 40%; width: 3px; height: 3px; animation-duration: 14s; animation-delay: -5s;"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="home.html" class="nav-logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="var(--accent-color)"/>
+                <path d="M2 17L12 22L22 17" stroke="white"/>
+                <path d="M2 12L12 17L22 12" stroke="white"/>
+            </svg>
+            Nodefy
+        </a>
+        <div class="nav-links">
+            <a href="home.html">Home</a>
+            <a href="#about">About</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="wizard-container">
+            
+            <!-- STEP 1: SELECT OS -->
+            <div id="step-1" class="wizard-step active">
+                <div class="step-header">
+                    <h2>Choose OS to Explore</h2>
+                    <p>Select a system to start learning commands</p>
+                </div>
+
+                <div class="selection-grid">
+                    <!-- Ubuntu -->
+                    <div class="os-card" onclick="selectOS('ubuntu')">
+                        <div class="os-icon-box">
+                            <img src="../static/images/ubantu.png" alt="Ubuntu">
+                        </div>
+                        <div class="os-name">Ubuntu</div>
+                    </div>
+
+                    <!-- Alpine -->
+                    <div class="os-card" onclick="selectOS('alpine')">
+                        <div class="os-icon-box">
+                            <img src="../static/images/alpine.webp" alt="Alpine">
+                        </div>
+                        <div class="os-name">Alpine</div>
+                    </div>
+
+                    <!-- Fedora -->
+                    <div class="os-card" onclick="selectOS('fedora')">
+                        <div class="os-icon-box">
+                            <img src="../static/images/fedora.webp" alt="Fedora">
+                        </div>
+                        <div class="os-name">Fedora</div>
+                    </div>
+
+                    <!-- CentOS -->
+                    <div class="os-card" onclick="selectOS('quay.io/centos/centos:stream9')">
+                        <div class="os-icon-box">
+                            <img src="../static/images/CentOS.png" alt="CentOS">
+                        </div>
+                        <div class="os-name">CentOS</div>
+                    </div>
+
+                    <!-- Kali -->
+                    <div class="os-card" onclick="selectOS('kalilinux/kali-rolling')">
+                        <div class="os-icon-box">
+                            <img src="../static/images/Kali.png" alt="Kali Linux">
+                        </div>
+                        <div class="os-name">Kali Linux</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2: INSTANCE CONFIGURATION -->
+            <div id="step-2" class="wizard-step">
+                <div class="step-header">
+                    <h2>Instance Details</h2>
+                    <p>Name your exploration session</p>
+                </div>
+
+                <div class="config-form" style="display: block;">
+                    <div class="form-group">
+                        <label class="form-label">Instance Name</label>
+                        <input type="text" id="instance-name" class="form-input" placeholder="e.g. myubuntulab">
+                    </div>
+                    <div class="actions">
+                        <button class="btn btn-secondary" onclick="goToStep(1)">Back</button>
+                        <button class="btn btn-primary" onclick="initiateExploration()">Start Exploration</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 3: COMMAND LIBRARY WITH NEW LAYOUT -->
+            <div id="step-3" class="wizard-step">
+                <div class="step-header">
+                    <h2>Command Library</h2>
+                    <p>Select a module below to view commands.</p>
+                </div>
+
+                <!-- Centered Dropdown -->
+                <div class="dropdown-wrapper">
+                    <select id="module-selector" class="pro-select" onchange="handleModuleChange()">
+                        <option value="" disabled selected>Select a Module</option>
+                        <!-- Options injected via JS -->
+                    </select>
+                </div>
+
+                <!-- New List Layout -->
+                <div id="command-library">
+                    <div class="command-list-container" id="command-list-container">
+                        <div class="empty-state">Select a module to see commands here.</div>
+                    </div>
+                </div>
+                
+                <div class="actions">
+                    <button class="btn btn-secondary" onclick="window.location.href='home.html'">Back to Home</button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div class="overlay" id="loading-overlay">
+        <div class="spinner"></div>
+        <h3 style="font-weight: 600; margin-top: 24px;">Initializing Environment...</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 8px;">Configuring OS & Preparing Lessons</p>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- PARALLAX BACKGROUND EFFECT ---
+            const ambientGlow = document.getElementById('ambient-glow');
+            const spot1 = document.getElementById('spot1');
+            const spot2 = document.getElementById('spot2');
+            const particles = document.getElementById('particles');
+            const bubblesContainer = document.getElementById('bubbles-container');
+
+            if(ambientGlow || spot1 || spot2 || particles || bubblesContainer) {
+                document.addEventListener('mousemove', (e) => {
+                    const x = (window.innerWidth - e.pageX * 2) / 100;
+                    const y = (window.innerHeight - e.pageY * 2) / 100;
+
+                    if(ambientGlow) ambientGlow.style.transform = `translate(${x}px, ${y}px)`;
+                    if(spot1) spot1.style.transform = `translate(${x * 1.5}px, ${y * 1.5}px)`;
+                    if(spot2) spot2.style.transform = `translate(${x * 0.5}px, ${y * 0.5}px)`;
+                    if(particles) particles.style.transform = `translate(${x * -0.5}px, ${y * -0.5}px)`;
+                    if(bubblesContainer) bubblesContainer.style.transform = `translate(${x * -0.2}px, ${y * -0.2}px)`;
+                });
+            }
+        });
+
+        let selectedOS = "";
+        let allCommandsData = [];
+
+        /* --- OS SELECTION --- */
+        function selectOS(osName) {
+            selectedOS = osName;
+            
+            // Visual feedback
+            document.querySelectorAll('.os-card').forEach(card => {
+                card.classList.remove('selected');
+                card.style.borderColor = 'var(--border-subtle)';
+                card.style.background = 'rgba(20, 20, 25, 0.4)';
+            });
+            
+            const activeCard = event.currentTarget;
+            activeCard.classList.add('selected');
+            activeCard.style.borderColor = 'var(--accent-color)';
+
+            // Move to Step 2
+            goToStep(2);
+        }
+
+        /* --- NAVIGATION LOGIC --- */
+        function goToStep(stepNumber) {
+            document.querySelectorAll('.wizard-step').forEach(el => {
+                el.classList.remove('active');
+            });
+            const target = document.getElementById(`step-${stepNumber}`);
+            if (target) target.classList.add('active');
+        }
+
+        /* --- API CALL & INITIALIZATION --- */
+        async function initiateExploration() {
+            const instancename = document.getElementById('instance-name').value.trim();
+
+            if (!selectedOS) {
+                showToast("Please select an OS first.", "error");
+                goToStep(1);
+                return;
+            }
+
+            if (!instancename) {
+                showToast("Please enter an Instance Name.", "error");
+                return;
+            }
+
+            // --- VALIDATION LOGIC ADDED HERE ---
+            // Check for spaces
+            if (/\s/.test(instancename)) {
+                showToast("Instance name cannot contain spaces.", "error");
+                return;
+            }
+
+            // Check for capital letters
+            if (instancename !== instancename.toLowerCase()) {
+                showToast("Only lowercase letters are allowed.", "error");
+                return;
+            }
+            // ------------------------------------
+
+            const payload = {
+                osname: selectedOS,
+                instancename: instancename
+            };
+
+            const overlay = document.getElementById('loading-overlay');
+            overlay.style.display = 'flex';
+
+            try {
+                // Call the Go Backend: /exploreos
+                const response = await fetch('/exploreos', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include', // Send session-id cookie
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showToast(data.message || "Environment Ready!", "success");
+                    
+                    // Load Data
+                    loadCommands(selectedOS);
+                    
+                    // Setup Dropdown
+                    setupDropdown();
+
+                    goToStep(3);
+                } else {
+                    if (response.status === 400 && data.message === "Cookie not found") {
+                        showToast("Session expired. Please login.", "error");
+                        setTimeout(() => window.location.href = 'login.html', 2000);
+                    } else {
+                        showToast(data.message || "Initialization Failed", "error");
+                    }
+                }
+            } catch (error) {
+                console.error(error);
+                showToast("Network Error", "error");
+            } finally {
+                overlay.style.display = 'none';
+            }
+        }
+
+        /* --- SETUP DROPDOWN OPTIONS --- */
+        function setupDropdown() {
+            const select = document.getElementById('module-selector');
+            select.innerHTML = '<option value="" disabled selected>Select a Module</option>';
+            
+            const capitalOS = selectedOS.charAt(0).toUpperCase() + selectedOS.slice(1);
+            
+            // Add Options
+            const options = [
+                { val: 'wireguard', text: 'WireGuard Configuration' },
+                { val: 'ssh', text: 'SSH Access' },
+                { val: 'os', text: `${capitalOS} Commands` }
+            ];
+
+            options.forEach(opt => {
+                const el = document.createElement('option');
+                el.value = opt.val;
+                el.textContent = opt.text;
+                select.appendChild(el);
+            });
+        }
+
+        /* --- HANDLE DROPDOWN CHANGE --- */
+        function handleModuleChange() {
+            const select = document.getElementById('module-selector');
+            const category = select.value;
+            
+            if (!category) return;
+
+            const filtered = allCommandsData.filter(cmd => cmd.category === category);
+            renderList(filtered);
+        }
+
+        /* --- COMMAND LIBRARY DATA & RENDERER --- */
+        function loadCommands(os) {
+            let commands = [];
+
+            // 1. Common Linux Commands (Category: 'os')
+            const commonLinux = [
+                { cmd: "ls -la", desc: "Lists all files in long format, including hidden files.", category: "os" },
+                { cmd: "pwd", desc: "Print Working Directory. Shows where you are.", category: "os" },
+                { cmd: "cd /home", desc: "Change Directory to /home.", category: "os" },
+                { cmd: "mkdir new_folder", desc: "Make a new directory named 'new_folder'.", category: "os" },
+                { cmd: "rm file.txt", desc: "Remove a file permanently.", category: "os" },
+                { cmd: "rm -rf folder", desc: "Force remove a folder and its contents recursively.", category: "os" },
+                { cmd: "cp file1 file2", desc: "Copy file1 to file2.", category: "os" },
+                { cmd: "mv old_name new_name", desc: "Move or Rename a file/directory.", category: "os" },
+                { cmd: "cat filename", desc: "Concatenate and display file content.", category: "os" },
+                { cmd: "tail -f log.txt", desc: "Follow the end of a file as it grows (good for logs).", category: "os" },
+                { cmd: "grep 'pattern' file", desc: "Search for a text pattern inside a file.", category: "os" },
+                { cmd: "chmod 755 script.sh", desc: "Change file permissions to read/execute for owner/group.", category: "os" },
+                { cmd: "chown user:group file", desc: "Change owner and group of a file.", category: "os" },
+                { cmd: "ps aux", desc: "Report a snapshot of current processes.", category: "os" },
+                { cmd: "kill PID", desc: "Terminate a process by its ID.", category: "os" },
+                { cmd: "top", desc: "Display real-time system processes and resource usage.", category: "os" },
+                { cmd: "df -h", desc: "Report file system disk space usage (human readable).", category: "os" },
+                { cmd: "du -sh folder", desc: "Estimate file and directory space usage.", category: "os" },
+                { cmd: "tar -czvf archive.tar.gz /path", desc: "Create a compressed tar archive.", category: "os" },
+                { cmd: "tar -xzvf archive.tar.gz", desc: "Extract a compressed tar archive.", category: "os" },
+                { cmd: "history", desc: "Shows the command line history.", category: "os" },
+                { cmd: "man command", desc: "Displays the manual page for a command.", category: "os" },
+                { cmd: "systemctl status nginx", desc: "Check if a service (like nginx) is running.", category: "os" },
+                { cmd: "journalctl -u service", desc: "View logs for a specific systemd service.", category: "os" },
+                { cmd: "wget url", desc: "Download files from the web.", category: "os" },
+                { cmd: "curl url", desc: "Transfer data from or to a server.", category: "os" },
+                { cmd: "find . -name '*.txt'", desc: "Search for files in a directory hierarchy.", category: "os" },
+                { cmd: "ln -s target link", desc: "Create a symbolic link to a target.", category: "os" },
+                { cmd: "head -n 5 file", desc: "Output the first part of files (first 5 lines).", category: "os" }
+            ];
+
+            // 2. SSH Commands (Category: 'ssh')
+            const sshCommands = [
+                { cmd: "ssh user@remote_ip", desc: "Connect to a remote server securely via SSH.", category: "ssh" },
+                { cmd: "ssh-keygen -t ed25519", desc: "Generate a new SSH key pair for secure authentication.", category: "ssh" },
+                { cmd: "ssh-copy-id user@host", desc: "Copy your SSH public key to a remote server for passwordless login.", category: "ssh" },
+                { cmd: "scp file.txt user@remote:/path", desc: "Securely copy a file from local to remote machine over SSH.", category: "ssh" },
+                { cmd: "scp user@remote:/path/file.txt .", desc: "Download a file from remote server to current local directory.", category: "ssh" },
+                { cmd: "ssh -L 8080:localhost:80 user@host", desc: "Create an SSH tunnel to forward a local port to a remote server.", category: "ssh" },
+                { cmd: "ssh -i /path/to/key user@host", desc: "Connect using a specific private key file.", category: "ssh" },
+                { cmd: "ssh -p 2222 user@host", desc: "Connect to a remote server on a specific port (2222).", category: "ssh" }
+            ];
+
+            // 3. WireGuard Commands (Category: 'wireguard')
+            const wireguardLogic = [
+                { cmd: "wg genkey | tee privatekey | wg pubkey > publickey", desc: "Generate a WireGuard private key and derive the public key.", category: "wireguard" },
+                { cmd: "sudo ip link add wg0 type wireguard", desc: "Create a new virtual network interface named wg0.", category: "wireguard" },
+                { cmd: "sudo ip address add dev wg0 10.0.0.1/24", desc: "Assign an IP address to the WireGuard interface.", category: "wireguard" },
+                { cmd: "sudo wg-quick up wg0", desc: "Bring up the WireGuard interface using a configuration file.", category: "wireguard" },
+                { cmd: "sudo wg-quick down wg0", desc: "Bring down the WireGuard interface.", category: "wireguard" },
+                { cmd: "sudo wg show", desc: "Display the current status of the WireGuard interface and connected peers.", category: "wireguard" },
+                { cmd: "sudo wg showconf wg0", desc: "Show the current configuration of the WireGuard interface.", category: "wireguard" }
+            ];
+
+            // --- OS SPECIFIC CONFIGURATIONS (Category: 'os') ---
+
+            // Alpine Specific
+            const alpineCmds = [
+                { cmd: "apk update", desc: "Update repository indexes.", category: "os" },
+                { cmd: "apk add nginx", desc: "Install a package (e.g., nginx).", category: "os" },
+                { cmd: "apk del nginx", desc: "Remove a package.", category: "os" },
+                { cmd: "apk search git", desc: "Search for a package in repositories.", category: "os" },
+                { cmd: "rc-service nginx start", desc: "OpenRC command to start a service.", category: "os" },
+                { cmd: "apk add wireguard-tools", desc: "Install WireGuard tools on Alpine Linux.", category: "os" },
+                { cmd: "apk add openssh", desc: "Install OpenSSH server on Alpine.", category: "os" }
+            ];
+
+            // Kali Specific
+            const kaliCmds = [
+                { cmd: "nmap -sV target", desc: "Scan target and detect service versions.", category: "os" },
+                { cmd: "hydra -l user -P pass.txt ssh://target", desc: "Brute force SSH login.", category: "os" },
+                { cmd: "sqlmap -u url", desc: "Automated SQL injection tool.", category: "os" },
+                { cmd: "airmon-ng start wlan0", desc: "Start monitor mode on wireless card.", category: "os" },
+                { cmd: "airodump-ng wlan0mon", desc: "Capture wireless packets.", category: "os" },
+                { cmd: "sudo apt install wireguard", desc: "Install WireGuard on Kali (Debian based).", category: "os" }
+            ];
+
+            // Ubuntu/Debian Specific
+            const ubuntuCmds = [
+                { cmd: "sudo apt update", desc: "Update package list for Ubuntu.", category: "os" },
+                { cmd: "sudo apt install package", desc: "Install a package on Ubuntu.", category: "os" },
+                { cmd: "sudo apt install wireguard", desc: "Install WireGuard on Ubuntu.", category: "os" }
+            ];
+
+            // Fedora Specific
+            const fedoraCmds = [
+                { cmd: "sudo dnf install package", desc: "Install a package on Fedora.", category: "os" },
+                { cmd: "sudo dnf install wireguard-tools", desc: "Install WireGuard tools on Fedora.", category: "os" }
+            ];
+
+            // CentOS Specific
+            const centosCmds = [
+                { cmd: "sudo yum install package", desc: "Install a package on CentOS.", category: "os" },
+                { cmd: "sudo yum install wireguard-tools", desc: "Install WireGuard tools on CentOS (requires EPEL).", category: "os" }
+            ];
+
+            // --- MERGE LOGIC ---
+            commands = [...commonLinux, ...sshCommands, ...wireguardLogic];
+
+            if (os === 'alphine') {
+                commands = [...commands, ...alpineCmds];
+            } else if (os === 'kali') {
+                commands = [...commands, ...kaliCmds];
+            } else if (os === 'ubuntu') {
+                commands = [...commands, ...ubuntuCmds];
+            } else if (os === 'fedora') {
+                commands = [...commands, ...fedoraCmds];
+            } else if (os === 'centos') {
+                commands = [...commands, ...centosCmds];
+            }
+
+            // Save to global variable
+            allCommandsData = commands;
+            
+            // Reset Display
+            document.getElementById('command-list-container').innerHTML = '<div class="empty-state">Select a module to see commands here.</div>';
+        }
+
+        /* --- RENDER NEW LIST LAYOUT --- */
+        function renderList(commands) {
+            const container = document.getElementById('command-list-container');
+            container.innerHTML = '';
+
+            if (commands.length === 0) {
+                container.innerHTML = '<div class="empty-state">No commands found.</div>';
+                return;
+            }
+
+            commands.forEach(item => {
+                const row = document.createElement('div');
+                row.className = 'command-row';
+                row.innerHTML = `
+                    <div class="cmd-top">
+                        <span class="cmd-icon">>></span>
+                        <div class="cmd-text">${item.cmd}</div>
+                    </div>
+                    <div class="cmd-desc">${item.desc}</div>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        /* --- TOAST NOTIFICATIONS --- */
+        function showToast(message, type = "success") {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            let icon = '';
+            if(type === 'success') icon = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+            else icon = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>';
+
+            toast.innerHTML = `${icon}<span>${message}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'slideInRight 0.3s ease reverse forwards';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
