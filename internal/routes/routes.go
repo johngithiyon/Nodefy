@@ -18,6 +18,7 @@ func Routes() {
 	  http.HandleFunc("/buildinstancespage",handlers.RenderBuildpage)
 	  http.HandleFunc("/choosepage",handlers.RenderChoosepage)
 	  http.HandleFunc("/deploypage",handlers.RenderDeploypage)
+	  http.HandleFunc("/explorepage",handlers.RenderExplorepage)
 
 	  // Api endpoints
 	 
