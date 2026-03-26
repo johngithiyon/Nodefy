@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nodefy - Simplify Your Cloud</title>
+    <title>Nodefy - Explore, Build, Deploy</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -130,7 +130,7 @@
             100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.2; }
         }
 
-        /* NEW: Floating Bubbles (Large Soft Orbs) */
+        /* Floating Bubbles (Large Soft Orbs) */
         .bubbles-container {
             position: fixed;
             top: 0;
@@ -599,7 +599,7 @@
         }
 
         .roadmap-item::after {
-            content: 'PLANNED';
+            content: 'UPCOMING';
             position: absolute;
             top: 10px;
             right: 10px;
@@ -622,7 +622,7 @@
         .comm-card {
             background: #111;
             border: 1px solid var(--border-subtle);
-            padding: 40px 30px; /* Increased padding */
+            padding: 40px 30px;
             border-radius: 16px;
             width: 250px;
             text-align: center;
@@ -799,7 +799,7 @@
     <div class="glow-spot spot1" id="spot1"></div>
     <div class="glow-spot spot2" id="spot2"></div>
     
-    <!-- NEW: Floating Bubbles Layer -->
+    <!-- Floating Bubbles Layer -->
     <div class="bubbles-container" id="bubbles-container">
         <!-- Large Bubbles -->
         <div class="bubble" style="left: 10%; width: 150px; height: 150px; animation-duration: 22s; animation-delay: 0s;"></div>
@@ -840,7 +840,7 @@
             <a href="#roadmap">Roadmap</a>
             <a href="#community">Community</a>
         </div>
-        <a href="#" class="btn btn-primary" style="padding: 8px 20px; font-size: 0.9rem;">Get Started</a>
+        <a href="#" class="btn btn-primary" style="padding: 8px 20px; font-size: 0.9rem;">Start Building</a>
     </nav>
 
     <!-- HERO SECTION -->
@@ -848,10 +848,11 @@
         <div class="container hero-content">
             <h1>Play With Cloud Infrastructure.<br><span class="gradient-text">To Learn Infrastructure.</span></h1>
             <p>
-                Nodefy also provides a hands-on environment for students to explore operating systems, containers, and cloud infrastructure—helping them learn how real-world systems work while building and deploying their own applications.
+                The simplest way to launch your code. Explore the operating system, select the services you need, and deploy directly from your GitHub repository in seconds.
             </p>
             <div class="hero-btns">
-                <a href="#" class="btn btn-primary">Get Started</a>
+                <a href="#" class="btn btn-primary">Start Building</a>
+                <a href="#how-it-works" class="btn btn-secondary">See How It Works</a>
             </div>
         </div>
     </section>
@@ -863,7 +864,7 @@
                 <h2>What is Nodefy?</h2>
                 <div class="about-box">
                     <p style="margin-bottom: 20px;">
-                        Nodefy also provides a hands-on environment for students to explore operating systems, containers, and cloud infrastructure—helping them learn how real-world systems work while building and deploying their own applications.
+                        Nodefy bridges the gap between learning infrastructure and shipping applications. We provide a hands-on environment where you can deep dive into the OS, stack the services you require via an intuitive selector, and automate your deployment workflow using your existing GitHub repositories.
                     </p>
                 </div>
             </div>
@@ -874,44 +875,44 @@
     <section id="features">
         <div class="container">
             <div class="section-header reveal">
-                <h2>Powerful Infrastructure.<br><span class="gradient-text">Complete Freedom.</span></h2>
+                <h2>Powerful Infrastructure.<br><span class="gradient-text">Simple Workflow.</span></h2>
             </div>
             <div class="features-grid">
                 <!-- Card 1 -->
                 <div class="feature-card reveal js-tilt">
                     <div class="feature-icon">🖥</div>
-                    <h3>Full OS-Level Control</h3>
-                    <p>Access root-level customization and configure system services without restrictions.</p>
+                    <h3>Explore the OS</h3>
+                    <p>Get full, root-level access to your operating system. Learn system internals, manage files, and understand how your environment runs under the hood.</p>
                 </div>
                 <!-- Card 2 -->
                 <div class="feature-card reveal js-tilt">
-                    <div class="feature-icon">🐧</div>
-                    <h3>Ubuntu-Based Environments</h3>
-                    <p>Deploy flexible Linux nodes powered by Ubuntu for stability and compatibility.</p>
+                    <div class="feature-icon">🧩</div>
+                    <h3>Select Your Services</h3>
+                    <p>Build your stack by selecting exactly what you need. Toggle on Nginx, PostgreSQL, Redis, or Docker with a single click.</p>
                 </div>
                 <!-- Card 3 -->
                 <div class="feature-card reveal js-tilt">
-                    <div class="feature-icon">🧩</div>
-                    <h3>Modular Architecture</h3>
-                    <p>Extend functionality with a scalable and plug-and-play system design.</p>
+                    <div class="feature-icon">🐙</div>
+                    <h3>Deploy via GitHub</h3>
+                    <p>No complex git commands. Simply paste your GitHub repository URL, and Nodefy handles the cloning, building, and serving.</p>
                 </div>
                 <!-- Card 4 -->
                 <div class="feature-card reveal js-tilt">
-                    <div class="feature-icon">🔐</div>
-                    <h3>Secure by Design</h3>
-                    <p>Isolated nodes with secure authentication and environment control.</p>
+                    <div class="feature-icon">🚀</div>
+                    <h3>Instant CI/CD</h3>
+                    <p>Push to your main branch and watch your environment update automatically. Streamline your development loop.</p>
                 </div>
                 <!-- Card 5 -->
                 <div class="feature-card reveal js-tilt">
-                    <div class="feature-icon">⚙</div>
-                    <h3>Developer-Friendly Dashboard</h3>
-                    <p>Manage, monitor, and configure nodes with an intuitive UI.</p>
+                    <div class="feature-icon">🔐</div>
+                    <h3>Secure Isolation</h3>
+                    <p>Every node runs in a secure, isolated environment with dedicated resources, ensuring your data and code remain safe.</p>
                 </div>
                 <!-- Card 6 -->
                 <div class="feature-card reveal js-tilt">
                     <div class="feature-icon">🌐</div>
-                    <h3>Open Source & Community Driven</h3>
-                    <p>Fully transparent codebase with community contributions.</p>
+                    <h3>Open Source & Extensible</h3>
+                    <p>Contribute to the platform, add custom service templates, and help shape the future of accessible cloud infrastructure.</p>
                 </div>
             </div>
         </div>
@@ -921,14 +922,14 @@
     <section style="background: rgba(0,0,0,0.2);">
         <div class="container">
             <div class="section-header reveal">
-                <h2>Built for Builders</h2>
+                <h2>Built for Modern Developers</h2>
             </div>
             <div class="audience-grid">
-                <div class="audience-pill">🎓 Students learning DevOps & Cloud</div>
-                <div class="audience-pill">🚀 Startups building scalable apps</div>
-                <div class="audience-pill">🧠 Backend Engineers</div>
-                <div class="audience-pill">🏠 Self-hosters & Infrastructure Enthusiasts</div>
-                <div class="audience-pill">🛠 Developers building their own cloud platforms</div>
+                <div class="audience-pill">🎓 Students learning Linux & SysAdmin</div>
+                <div class="audience-pill">🚀 Frontend Devs needing quick backends</div>
+                <div class="audience-pill">🐙 Open Source Contributors</div>
+                <div class="audience-pill">🛠 Full-Stack Developers</div>
+                <div class="audience-pill">🏗 Teams prototyping Microservices</div>
             </div>
         </div>
     </section>
@@ -937,29 +938,24 @@
     <section id="how-it-works">
         <div class="container">
             <div class="section-header reveal">
-                <h2>Deploy in Minutes</h2>
-                <p>Simple. Powerful. Transparent.</p>
+                <h2>From Repo to Live in 3 Steps</h2>
+                <p>Focus on code. We handle the heavy lifting.</p>
             </div>
             <div class="steps-container">
                 <div class="step-item reveal">
                     <div class="step-number">1</div>
-                    <h3>Create your Node</h3>
+                    <h3>Explore the OS</h3>
+                    <p style="font-size: 0.9rem;">Select your distro and get root access.</p>
                 </div>
                 <div class="step-item reveal">
                     <div class="step-number">2</div>
-                    <h3>Choose Configuration</h3>
+                    <h3>Select Services</h3>
+                    <p style="font-size: 0.9rem;">Pick databases, languages, and tools.</p>
                 </div>
                 <div class="step-item reveal">
                     <div class="step-number">3</div>
-                    <h3>Access via SSH</h3>
-                </div>
-                <div class="step-item reveal">
-                    <div class="step-number">4</div>
-                    <h3>Customize Environment</h3>
-                </div>
-                <div class="step-item reveal">
-                    <div class="step-number">5</div>
-                    <h3>Deploy Applications</h3>
+                    <h3>Deploy Repo</h3>
+                    <p style="font-size: 0.9rem;">Paste GitHub URL & go live.</p>
                 </div>
             </div>
         </div>
@@ -972,30 +968,26 @@
                 
                 <!-- Why Choose -->
                 <div class="reveal">
-                    <h2>Freedom Over Restriction</h2>
+                    <h2>Why Use Nodefy?</h2>
                     <p style="margin-bottom: 30px; color: var(--text-muted);">
-                        Traditional cloud platforms abstract infrastructure. Nodefy gives it back to you.
+                        Traditional clouds are complex. Nodefy simplifies the journey from writing code to running it on a real operating system.
                     </p>
                     <ul class="list-check">
                         <li>
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            No unnecessary OS limitations
+                            Direct GitHub Integration
                         </li>
                         <li>
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            Full customization
+                            Visual Service Selection
                         </li>
                         <li>
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            Transparent infrastructure control
+                            Real OS Terminal Access
                         </li>
                         <li>
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            Designed for learning and experimentation
-                        </li>
-                        <li>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            Open-source innovation
+                            Zero Config Deployment
                         </li>
                     </ul>
                 </div>
@@ -1004,11 +996,11 @@
                 <div class="reveal">
                     <h2 style="margin-bottom: 30px;">What’s Next?</h2>
                     <div class="roadmap-grid">
-                        <div class="roadmap-item">🔄 One-click App Deployment</div>
-                        <div class="roadmap-item">📦 Container Support (Docker Integration)</div>
-                        <div class="roadmap-item">☁ Multi-Node Clustering</div>
-                        <div class="roadmap-item">📈 Advanced Monitoring & Analytics</div>
-                        <div class="roadmap-item">🔐 Role-Based Access Control</div>
+                        <div class="roadmap-item">🔄 Dockerfile Support</div>
+                        <div class="roadmap-item">📦 Private Repo Integration</div>
+                        <div class="roadmap-item">📊 Real-time Resource Monitoring</div>
+                        <div class="roadmap-item">🔑 SSH Key Management</div>
+                        <div class="roadmap-item">☁ Multi-Region Deployment</div>
                     </div>
                 </div>
             </div>
@@ -1020,7 +1012,7 @@
         <div class="container">
             <div class="section-header reveal">
                 <h2>Join the Nodefy Community</h2>
-                <p>Contribute to the project, suggest features, and build the future of open cloud infrastructure together.</p>
+                <p>Contribute service templates, report issues, and help us simplify cloud infrastructure for everyone.</p>
             </div>
             <div class="community-cards">
                 <a href="#" class="comm-card reveal">
@@ -1031,7 +1023,7 @@
                         </svg>
                     </div>
                     <h3>GitHub</h3>
-                    <p style="font-size: 0.9rem;">View Source Code</p>
+                    <p style="font-size: 0.9rem;">Star & Contribute</p>
                 </a>
             </div>
         </div>
@@ -1051,7 +1043,7 @@
                         </svg>
                         Nodefy
                     </h3>
-                    <p>The open-source platform for total node management. Build, control, and deploy your infrastructure with absolute freedom.</p>
+                    <p>The platform for exploring OS, selecting services, and deploying from GitHub. Simplifying infrastructure for developers and students.</p>
                 </div>
 
                 <!-- Links Column 1 -->
@@ -1059,9 +1051,9 @@
                     <h4>Product</h4>
                     <ul>
                         <li><a href="#features">Features</a></li>
+                        <li><a href="#how-it-works">How it Works</a></li>
                         <li><a href="#roadmap">Roadmap</a></li>
                         <li><a href="#">Pricing</a></li>
-                        <li><a href="#">Changelog</a></li>
                     </ul>
                 </div>
 
@@ -1070,9 +1062,9 @@
                     <h4>Resources</h4>
                     <ul>
                         <li><a href="#">Documentation</a></li>
-                        <li><a href="#">API Reference</a></li>
-                        <li><a href="#">Community Guide</a></li>
-                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Service Templates</a></li>
+                        <li><a href="#">GitHub Guide</a></li>
+                        <li><a href="#">API Status</a></li>
                     </ul>
                 </div>
 
@@ -1080,7 +1072,7 @@
                 <div class="footer-col">
                     <h4>Company</h4>
                     <ul>
-                        <li><a href="#">About</a></li>
+                        <li><a href="#">About Nodefy</a></li>
                         <li><a href="#">Blog</a></li>
                         <li><a href="#">Careers</a></li>
                         <li><a href="#">Contact</a></li>
