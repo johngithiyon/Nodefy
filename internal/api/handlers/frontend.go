@@ -37,3 +37,7 @@ func RenderChoosepage(w http.ResponseWriter, r *http.Request) {
 func RenderDeploypage(w http.ResponseWriter, r *http.Request) {
 	services.Render(w,"deploy.html")
 }
+
+func RenderExplorepage(w http.ResponseWriter, r *http.Request) {
+	services.Render(w,"explore.html")
+}
