@@ -23,7 +23,7 @@ func Exploreos(username string,exploreos models.Exploreos) error {
 	output,outputerr := cmd.CombinedOutput()
 
 	if outputerr != nil {
-		log.Println("Err in Explore Os",outputerr.Error())
+		log.Println("Err in Explore Os",outputerr.Error(),string(output))
 		return outputerr
 	}
 
