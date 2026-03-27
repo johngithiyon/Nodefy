@@ -13,7 +13,7 @@ func Exploreos(username string,exploreos models.Exploreos) error {
 
 	cmd := exec.Command(
 		"docker", "run", "-d",
-		"--name", username,
+		"--name",exploreos.Instancename,
 		"--label", "owner="+username,
 		"--label", "instance="+exploreos.Instancename,
 		exploreos.Osname,
@@ -23,7 +23,7 @@ func Exploreos(username string,exploreos models.Exploreos) error {
 	output,outputerr := cmd.CombinedOutput()
 
 	if outputerr != nil {
-		log.Println("Err in Explore Os",outputerr.Error())
+		log.Println("Err in Explore Os",outputerr.Error(),string(output))
 		return outputerr
 	}
 

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nodefy - Build Stack</title>
+    <title>Nodefy - Deploy Repo</title>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -76,23 +76,9 @@
         }
 
         @keyframes pulseGlow {
-            0% {
-                opacity: 0.4;
-                transform: scale(1);
-                filter: blur(0px);
-            }
-
-            50% {
-                opacity: 0.8;
-                transform: scale(1.02);
-                filter: blur(2px);
-            }
-
-            100% {
-                opacity: 0.5;
-                transform: scale(1);
-                filter: blur(0px);
-            }
+            0% { opacity: 0.4; transform: scale(1); filter: blur(0px); }
+            50% { opacity: 0.8; transform: scale(1.02); filter: blur(2px); }
+            100% { opacity: 0.5; transform: scale(1); filter: blur(0px); }
         }
 
         .mesh-bg {
@@ -111,15 +97,8 @@
         }
 
         @keyframes meshMove {
-            0% {
-                transform: translate(0, 0) rotate(0deg);
-                opacity: 0.3;
-            }
-
-            100% {
-                transform: translate(-10px, -10px) rotate(0.5deg);
-                opacity: 0.7;
-            }
+            0% { transform: translate(0, 0) rotate(0deg); opacity: 0.3; }
+            100% { transform: translate(-10px, -10px) rotate(0.5deg); opacity: 0.7; }
         }
 
         .particles {
@@ -145,20 +124,9 @@
         }
 
         @keyframes floatParticle {
-            0% {
-                transform: translateY(0) translateX(0) scale(1);
-                opacity: 0.2;
-            }
-
-            50% {
-                transform: translateY(-120px) translateX(40px) scale(1.5);
-                opacity: 0.6;
-            }
-
-            100% {
-                transform: translateY(0) translateX(0) scale(1);
-                opacity: 0.2;
-            }
+            0% { transform: translateY(0) translateX(0) scale(1); opacity: 0.2; }
+            50% { transform: translateY(-120px) translateX(40px) scale(1.5); opacity: 0.6; }
+            100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.2; }
         }
 
         .bubbles-container {
@@ -184,23 +152,10 @@
         }
 
         @keyframes riseBubble {
-            0% {
-                transform: translateY(0) translateX(0) scale(0.8);
-                opacity: 0;
-            }
-
-            20% {
-                opacity: 0.5;
-            }
-
-            80% {
-                opacity: 0.5;
-            }
-
-            100% {
-                transform: translateY(-120vh) translateX(50px) scale(1.2);
-                opacity: 0;
-            }
+            0% { transform: translateY(0) translateX(0) scale(0.8); opacity: 0; }
+            20% { opacity: 0.5; }
+            80% { opacity: 0.5; }
+            100% { transform: translateY(-120vh) translateX(50px) scale(1.2); opacity: 0; }
         }
 
         .glow-spot {
@@ -215,28 +170,16 @@
             transition: transform 0.2s ease-out;
         }
 
-        .spot1 {
-            top: -20vh;
-            right: -10vw;
-        }
-
+        .spot1 { top: -20vh; right: -10vw; }
         .spot2 {
-            bottom: -30vh;
-            left: -10vw;
-            animation-delay: -5s;
-            width: 80vw;
-            height: 80vw;
+            bottom: -30vh; left: -10vw; animation-delay: -5s;
+            width: 80vw; height: 80vw;
             background: radial-gradient(circle at center, rgba(59, 130, 246, 0.04), transparent 70%);
         }
 
         @keyframes spotMove {
-            0% {
-                transform: translate(0, 0) scale(1);
-            }
-
-            100% {
-                transform: translate(5%, 5%) scale(1.1);
-            }
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(5%, 5%) scale(1.1); }
         }
 
         /* --- NAVIGATION --- */
@@ -259,6 +202,12 @@
             z-index: 1000;
             transition: all 0.3s ease;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translate(-50%, -20px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
         }
 
         .nav-logo {
@@ -274,14 +223,9 @@
             -webkit-user-select: none;
         }
 
-        .nav-logo span {
-            color: var(--accent-color);
-        }
+        .nav-logo span { color: var(--accent-color); }
 
-        .nav-links {
-            display: flex;
-            gap: 32px;
-        }
+        .nav-links { display: flex; gap: 32px; }
 
         .nav-links a {
             text-decoration: none;
@@ -303,13 +247,8 @@
             transition: width 0.3s;
         }
 
-        .nav-links a:hover {
-            color: var(--text-main);
-        }
-
-        .nav-links a:hover::after {
-            width: 100%;
-        }
+        .nav-links a:hover { color: var(--text-main); }
+        .nav-links a:hover::after { width: 100%; }
 
         /* --- MAIN LAYOUT --- */
         main {
@@ -336,15 +275,8 @@
         }
 
         @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .step-header h2 {
@@ -381,15 +313,8 @@
         }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(5px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* --- GRID --- */
@@ -436,9 +361,7 @@
             pointer-events: none;
         }
 
-        .service-card:hover::before {
-            left: 100%;
-        }
+        .service-card:hover::before { left: 100%; }
 
         .service-card:hover {
             border-color: rgba(139, 92, 246, 0.3);
@@ -523,17 +446,9 @@
         }
 
         @keyframes borderPulse {
-            0% {
-                opacity: 0.2;
-            }
-
-            50% {
-                opacity: 0.6;
-            }
-
-            100% {
-                opacity: 0.2;
-            }
+            0% { opacity: 0.2; }
+            50% { opacity: 0.6; }
+            100% { opacity: 0.2; }
         }
 
         /* --- CUSTOM INPUT --- */
@@ -545,15 +460,8 @@
         }
 
         @keyframes expandFade {
-            from {
-                opacity: 0;
-                transform: translateY(-10px) scale(0.98);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
+            from { opacity: 0; transform: translateY(-10px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         .code-editor {
@@ -668,15 +576,8 @@
         }
 
         @keyframes stepReveal {
-            from {
-                opacity: 0;
-                transform: translateY(15px) scale(0.98);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
+            from { opacity: 0; transform: translateY(15px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         /* --- SUMMARY --- */
@@ -714,6 +615,9 @@
             font-weight: 600;
             font-family: var(--font-code);
             font-size: 0.95rem;
+            text-align: right;
+            max-width: 60%;
+            word-break: break-all;
         }
 
         .summary-value.custom {
@@ -764,9 +668,7 @@
         }
 
         @keyframes rotateSpinner {
-            100% {
-                transform: rotate(360deg);
-            }
+            100% { transform: rotate(360deg); }
         }
 
         /* --- TOAST NOTIFICATIONS --- */
@@ -882,102 +784,36 @@
             animation: toastTimer 5s linear forwards;
         }
 
-        .toast.success .toast-progress {
-            background: #10b981;
-        }
-
-        .toast.error .toast-progress {
-            background: #ef4444;
-        }
-
-        .toast.info .toast-progress {
-            background: #3b82f6;
-        }
+        .toast.success .toast-progress { background: #10b981; }
+        .toast.error .toast-progress { background: #ef4444; }
+        .toast.info .toast-progress { background: #3b82f6; }
 
         @keyframes toastTimer {
-            from {
-                transform: scaleX(1);
-            }
-
-            to {
-                transform: scaleX(0);
-            }
+            from { transform: scaleX(1); }
+            to { transform: scaleX(0); }
         }
 
         @keyframes toastIn {
-            from {
-                transform: translateX(100%) skewX(-10deg);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateX(0) skewX(0);
-                opacity: 1;
-            }
+            from { transform: translateX(100%) skewX(-10deg); opacity: 0; }
+            to { transform: translateX(0) skewX(0); opacity: 1; }
         }
 
         @keyframes toastOut {
-            to {
-                transform: translateX(50px) scale(0.9);
-                opacity: 0;
-            }
+            to { transform: translateX(50px) scale(0.9); opacity: 0; }
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .step-header h2 {
-                font-size: 2rem;
-            }
-
-            .selection-grid {
-                grid-template-columns: 1fr;
-                justify-content: center;
-            }
-
-            .service-card {
-                height: 160px;
-                flex-direction: row;
-                padding: 16px;
-                justify-content: flex-start;
-                gap: 16px;
-            }
-
-            .service-icon-box {
-                margin-bottom: 0;
-                width: 50px;
-                height: 50px;
-            }
-
-            nav {
-                width: 95%;
-                padding: 0 20px;
-            }
-
-            .nav-links a {
-                display: none;
-            }
-
-            .toast-container {
-                right: 20px;
-                left: 20px;
-                bottom: 20px;
-            }
-
-            .toast {
-                width: 100%;
-                min-width: auto;
-                max-width: none;
-            }
-
-            .actions {
-                flex-direction: column-reverse;
-                width: 100%;
-            }
-
-            .btn {
-                width: 100%;
-                justify-content: center;
-            }
+            .step-header h2 { font-size: 2rem; }
+            .selection-grid { grid-template-columns: 1fr; justify-content: center; }
+            .service-card { height: 160px; flex-direction: row; padding: 16px; justify-content: flex-start; gap: 16px; }
+            .service-icon-box { margin-bottom: 0; width: 50px; height: 50px; }
+            nav { width: 95%; padding: 0 20px; }
+            .nav-links a { display: none; }
+            .toast-container { right: 20px; left: 20px; bottom: 20px; }
+            .toast { width: 100%; min-width: auto; max-width: none; }
+            .actions { flex-direction: column-reverse; width: 100%; }
+            .btn { width: 100%; justify-content: center; }
         }
     </style>
 </head>
@@ -990,36 +826,27 @@
     <div class="glow-spot spot1" id="spot1"></div>
     <div class="glow-spot spot2" id="spot2"></div>
     <div class="bubbles-container" id="bubbles-container">
-        <div class="bubble"
-            style="left: 10%; width: 150px; height: 150px; animation-duration: 35s; animation-delay: 0s;"></div>
-        <div class="bubble"
-            style="left: 30%; width: 80px; height: 80px; animation-duration: 45s; animation-delay: -5s;"></div>
-        <div class="bubble"
-            style="left: 60%; width: 200px; height: 200px; animation-duration: 55s; animation-delay: -10s;"></div>
-        <div class="bubble"
-            style="left: 85%; width: 120px; height: 120px; animation-duration: 25s; animation-delay: -2s;"></div>
-        <div class="bubble"
-            style="left: 45%; width: 60px; height: 60px; animation-duration: 30s; animation-delay: -15s;"></div>
+        <div class="bubble" style="left: 10%; width: 150px; height: 150px; animation-duration: 35s; animation-delay: 0s;"></div>
+        <div class="bubble" style="left: 30%; width: 80px; height: 80px; animation-duration: 45s; animation-delay: -5s;"></div>
+        <div class="bubble" style="left: 60%; width: 200px; height: 200px; animation-duration: 55s; animation-delay: -10s;"></div>
+        <div class="bubble" style="left: 85%; width: 120px; height: 120px; animation-duration: 25s; animation-delay: -2s;"></div>
+        <div class="bubble" style="left: 45%; width: 60px; height: 60px; animation-duration: 30s; animation-delay: -15s;"></div>
     </div>
     <div class="particles" id="particles">
         <div class="particle" style="top: 20%; left: 15%; animation-duration: 25s;"></div>
-        <div class="particle"
-            style="top: 70%; left: 80%; width: 6px; height: 6px; animation-duration: 30s; animation-delay: -2s;"></div>
-        <div class="particle"
-            style="top: 40%; left: 40%; width: 3px; height: 3px; animation-duration: 22s; animation-delay: -5s;"></div>
+        <div class="particle" style="top: 70%; left: 80%; width: 6px; height: 6px; animation-duration: 30s; animation-delay: -2s;"></div>
+        <div class="particle" style="top: 40%; left: 40%; width: 3px; height: 3px; animation-duration: 22s; animation-delay: -5s;"></div>
         <div class="particle" style="top: 10%; left: 90%; animation-duration: 28s;"></div>
         <div class="particle" style="top: 80%; left: 10%; animation-duration: 32s; animation-delay: -12s;"></div>
-        <div class="particle"
-            style="top: 30%; left: 5%; width: 2px; height: 2px; animation-duration: 12s; animation-delay: -4s;"></div>
-        <div class="particle"
-            style="top: 60%; left: 50%; width: 5px; height: 5px; animation-duration: 20s; animation-delay: -12s;"></div>
-        <div class="particle"
-            style="top: 15%; left: 70%; width: 3px; height: 3px; animation-duration: 15s; animation-delay: -6s;"></div>
+        <div class="particle" style="top: 30%; left: 5%; width: 2px; height: 2px; animation-duration: 12s; animation-delay: -4s;"></div>
+        <div class="particle" style="top: 60%; left: 50%; width: 5px; height: 5px; animation-duration: 20s; animation-delay: -12s;"></div>
+        <div class="particle" style="top: 15%; left: 70%; width: 3px; height: 3px; animation-duration: 15s; animation-delay: -6s;"></div>
     </div>
 
     <!-- Navigation -->
     <nav>
         <a href="/" class="nav-logo">
+            <!-- Logo from build.html reference -->
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="var(--accent-color)" />
                 <path d="M2 17L12 22L22 17" stroke="white" />
@@ -1036,16 +863,16 @@
     <main>
         <div class="wizard-container">
 
-            <!-- STEP 1: INSTANCE NAME -->
+            <!-- STEP 1: APP NAME -->
             <div id="step-1" class="wizard-step active">
                 <div class="step-header">
-                    <h2>Name Your Stack</h2>
-                    <p>Give your instance a unique name to identify it</p>
+                    <h2>Name Your Application</h2>
+                    <p>Give your deployment a unique name</p>
                 </div>
 
                 <div class="custom-input-area" style="display: block; margin-bottom: 30px; max-width: 550px; margin-left: auto; margin-right: auto;">
-                    <p style="margin-bottom: 12px; color: var(--accent-color); font-size: 0.9rem; font-weight: 500;">Instance Name:</p>
-                    <input type="text" id="instance-name" class="code-editor" placeholder="e.g., my-stack-dev" style="min-height: 50px; height: 50px;">
+                    <p style="margin-bottom: 12px; color: var(--accent-color); font-size: 0.9rem; font-weight: 500;">Application Name:</p>
+                    <input type="text" id="app-name" class="code-editor" placeholder="e.g., my-cool-app" style="min-height: 50px; height: 50px;">
                 </div>
 
                 <div class="actions">
@@ -1054,177 +881,146 @@
                 </div>
             </div>
 
-            <!-- STEP 2: PROXY CONFIGURATION -->
+            <!-- STEP 2: GIT REPO -->
             <div id="step-2" class="wizard-step">
                 <div class="step-header">
-                    <h2>Select Proxy Configuration (Step 2)</h2>
-                    <p>Choose a reverse proxy or load balancer for your node</p>
-                    <div class="info-box" id="info-step-2"></div>
+                    <h2>Connect Repository</h2>
+                    <p>Provide the URL to your Git repository</p>
                 </div>
 
-                <div class="selection-grid">
-                    <div class="service-card" id="proxy-nginx" onclick="selectOption('proxy', 'nginx', 'proxy-nginx')">
-                        <div class="service-icon-box"><img src="../static/images/nginx.png" alt="Nginx"></div>
-                        <div class="service-name">Nginx</div>
-                    </div>
-
-                    <div class="service-card" id="proxy-traefik"
-                        onclick="selectOption('proxy', 'traefik', 'proxy-traefik')">
-                        <div class="service-icon-box"><img src="../static/images/traefik.png" alt="Traefik"></div>
-                        <div class="service-name">Traefik</div>
-                    </div>
-
-                    <div class="service-card" id="proxy-caddy" onclick="selectOption('proxy', 'caddy', 'proxy-caddy')">
-                        <div class="service-icon-box"><img src="../static/images/caddy.png" alt="Caddy"></div>
-                        <div class="service-name">Caddy</div>
-                    </div>
-
-                    <div class="service-card" id="proxy-custom" onclick="toggleCustomInput('proxy', 'proxy-custom')">
-                        <div class="service-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" width="32" height="32">
-                                <polyline points="4 17 10 11 4 5"></polyline>
-                                <line x1="12" y1="19" x2="20" y2="19"></line>
-                            </svg></div>
-                        <div class="service-name">Custom Command</div>
-                    </div>
-                </div>
-
-                <div id="proxy-custom-input" class="custom-input-area">
-                    <p style="margin-bottom: 12px; color: var(--accent-color); font-size: 0.9rem; font-weight: 500;">
-                        Enter Proxy Image Name:</p>
-                    <textarea id="proxy-command" class="code-editor"
-                        placeholder="e.g., my-custom-proxy:latest"></textarea>
+                <div class="custom-input-area" style="display: block; margin-bottom: 30px; max-width: 550px; margin-left: auto; margin-right: auto;">
+                    <p style="margin-bottom: 12px; color: var(--accent-color); font-size: 0.9rem; font-weight: 500;">Git Repository URL:</p>
+                    <input type="text" id="git-repo" class="code-editor" placeholder="https://github.com/username/repo.git" style="min-height: 50px; height: 50px;">
                 </div>
 
                 <div class="actions">
                     <button class="btn btn-secondary" onclick="prevStep(2)">Back</button>
-                    <button class="btn btn-skip" onclick="skipStep(2)">Skip this step <svg viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round">
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                            <polyline points="12 5 19 12 12 19"></polyline>
-                        </svg></button>
                     <button class="btn btn-primary" onclick="nextStep(2)">Continue</button>
                 </div>
             </div>
 
-            <!-- STEP 3: DATABASE CONFIGURATION -->
+            <!-- STEP 3: LANGUAGE -->
             <div id="step-3" class="wizard-step">
                 <div class="step-header">
-                    <h2>Select Database Configuration (Step 3)</h2>
-                    <p>Pick a primary data store</p>
-                    <div class="info-box" id="info-step-3"></div>
+                    <h2>Select Language</h2>
+                    <p>Choose the primary runtime for your application</p>
                 </div>
 
                 <div class="selection-grid">
-                    <div class="service-card" id="db-postgres" onclick="selectOption('db', 'postgres', 'db-postgres')">
-                        <div class="service-icon-box"><img src="../static/images/postgresql.png" alt="Postgres"></div>
-                        <div class="service-name">PostgreSQL</div>
+                    <div class="service-card" onclick="selectLanguage(this, 'nodejs')">
+                        <div class="service-icon-box">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M12 8v8M8 12h8"></path>
+                            </svg>
+                        </div>
+                        <div class="service-name">Node.js</div>
                     </div>
 
-                    <div class="service-card" id="db-mongo" onclick="selectOption('db', 'mongo', 'db-mongo')">
-                        <div class="service-icon-box"><img src="../static/images/mongodb.png" alt="MongoDB"></div>
-                        <div class="service-name">MongoDB</div>
+                    <div class="service-card" onclick="selectLanguage(this, 'python3')">
+                        <div class="service-icon-box">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M8 12h8M12 8v8"></path>
+                            </svg>
+                        </div>
+                        <div class="service-name">Python</div>
                     </div>
 
-                    <div class="service-card" id="db-mysql" onclick="selectOption('db', 'mysql', 'db-mysql')">
-                        <div class="service-icon-box"><img src="../static/images/mysql.png" alt="MySQL"></div>
-                        <div class="service-name">MySQL</div>
+                    <!-- BUG FIX: Changed 'golang' to 'go' -->
+                    <div class="service-card" onclick="selectLanguage(this, 'golang-go')">
+                        <div class="service-icon-box">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M8 12h8M12 8v8"></path>
+                            </svg>
+                        </div>
+                        <div class="service-name">Go</div>
                     </div>
 
-                    <div class="service-card" id="db-custom" onclick="toggleCustomInput('db', 'db-custom')">
-                        <div class="service-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" width="32" height="32">
-                                <polyline points="4 17 10 11 4 5"></polyline>
-                                <line x1="12" y1="19" x2="20" y2="19"></line>
-                            </svg></div>
-                        <div class="service-name">Custom Command</div>
+                    <div class="service-card" onclick="selectLanguage(this, 'rust')">
+                        <div class="service-icon-box">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M8 12h8M12 8v8"></path>
+                            </svg>
+                        </div>
+                        <div class="service-name">Rust</div>
                     </div>
-                </div>
-
-                <div id="db-custom-input" class="custom-input-area">
-                    <p style="margin-bottom: 12px; color: var(--accent-color); font-size: 0.9rem; font-weight: 500;">
-                        Enter Database Image Name:</p>
-                    <textarea id="db-command" class="code-editor" placeholder="e.g., redis:alpine"></textarea>
                 </div>
 
                 <div class="actions">
                     <button class="btn btn-secondary" onclick="prevStep(3)">Back</button>
-                    <button class="btn btn-skip" onclick="skipStep(3)">Skip this step <svg viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round">
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                            <polyline points="12 5 19 12 12 19"></polyline>
-                        </svg></button>
                     <button class="btn btn-primary" onclick="nextStep(3)">Continue</button>
                 </div>
             </div>
 
-            <!-- STEP 4: SERVICES CONFIGURATION -->
+            <!-- STEP 4: SERVICES -->
             <div id="step-4" class="wizard-step">
                 <div class="step-header">
-                    <h2>Select Additional Services (Step 4)</h2>
-                    <p>Add caching or auxiliary services</p>
-                    <div class="info-box" id="info-step-4"></div>
+                    <h2>Select Services</h2>
+                    <p>Pick the services you need (Database, Cache, etc.)</p>
                 </div>
 
                 <div class="selection-grid">
-                    <div class="service-card" id="svc-redis" onclick="selectOption('service', 'redis', 'svc-redis')">
+                    <!-- BUG FIX: Changed 'postgresql' to 'postgres' -->
+                    <div class="service-card" onclick="toggleService(this, 'postgres')">
+                        <div class="service-icon-box"><img src="../static/images/postgresql.png" alt="Postgres"></div>
+                        <div class="service-name">PostgreSQL</div>
+                    </div>
+
+                    <div class="service-card" onclick="toggleService(this, 'redis')">
                         <div class="service-icon-box"><img src="../static/images/redis.png" alt="Redis"></div>
                         <div class="service-name">Redis</div>
                     </div>
 
-                    <div class="service-card" id="svc-custom" onclick="toggleCustomInput('service', 'svc-custom')">
-                        <div class="service-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" width="32" height="32">
-                                <polyline points="4 17 10 11 4 5"></polyline>
-                                <line x1="12" y1="19" x2="20" y2="19"></line>
-                            </svg></div>
-                        <div class="service-name">Custom Command</div>
+                    <div class="service-card" onclick="toggleService(this, 'mongodb')">
+                        <div class="service-icon-box"><img src="../static/images/mongodb.png" alt="MongoDB"></div>
+                        <div class="service-name">MongoDB</div>
                     </div>
-                </div>
 
-                <div id="service-custom-input" class="custom-input-area">
-                    <p style="margin-bottom: 12px; color: var(--accent-color); font-size: 0.9rem; font-weight: 500;">
-                        Enter Service Name / Command:</p>
-                    <textarea id="service-command" class="code-editor" placeholder="e.g., memcached:latest"></textarea>
+                    <div class="service-card" onclick="toggleService(this, 'mysql')">
+                        <div class="service-icon-box"><img src="../static/images/mysql.png" alt="MySQL"></div>
+                        <div class="service-name">MySQL</div>
+                    </div>
                 </div>
 
                 <div class="actions">
                     <button class="btn btn-secondary" onclick="prevStep(4)">Back</button>
-                    <button class="btn btn-skip" onclick="skipStep(4)">Skip this step <svg viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round">
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                            <polyline points="12 5 19 12 12 19"></polyline>
-                        </svg></button>
+                    <button class="btn btn-skip" onclick="skipServices()">Skip this step <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></button>
                     <button class="btn btn-primary" onclick="nextStep(4)">Review & Deploy</button>
                 </div>
             </div>
 
-            <!-- STEP 5: SUMMARY & DEPLOY -->
+            <!-- STEP 5: SUMMARY -->
             <div id="step-5" class="wizard-step">
                 <div class="step-header">
                     <h2>Ready to Deploy</h2>
-                    <p>Review your stack configuration</p>
+                    <p>Review your configuration</p>
                 </div>
 
                 <div class="summary-list">
                     <div class="summary-item">
-                        <span class="summary-label">Instance Name</span>
-                        <span class="summary-value" id="summary-name">None</span>
+                        <span class="summary-label">App Name</span>
+                        <span class="summary-value" id="summary-appname">None</span>
                     </div>
-                    <div class="summary-item"><span class="summary-label">Proxy</span><span class="summary-value"
-                            id="summary-proxy">Skipped</span></div>
-                    <div class="summary-item"><span class="summary-label">Database</span><span class="summary-value"
-                            id="summary-db">Skipped</span></div>
-                    <div class="summary-item"><span class="summary-label">Service</span><span class="summary-value"
-                            id="summary-service">Skipped</span></div>
+                    <div class="summary-item">
+                        <span class="summary-label">Repository</span>
+                        <span class="summary-value custom" id="summary-repo">None</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Language</span>
+                        <span class="summary-value" id="summary-language">None</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Services</span>
+                        <span class="summary-value" id="summary-services">None</span>
+                    </div>
                 </div>
 
                 <div class="actions">
                     <button class="btn btn-secondary" onclick="prevStep(5)">Back</button>
-                    <button class="btn btn-primary" onclick="deployBuild()">Deploy Stack</button>
+                    <button class="btn btn-primary" onclick="deployProject()">Deploy Project</button>
                 </div>
             </div>
 
@@ -1234,8 +1030,8 @@
     <!-- Loading Overlay -->
     <div class="overlay" id="loading-overlay">
         <div class="spinner"></div>
-        <h3 style="font-weight: 600; margin-top: 24px;">Building Stack...</h3>
-        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 8px;">Sending configuration to server...</p>
+        <h3 style="font-weight: 600; margin-top: 24px;">Deploying Project...</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 8px;">Building container from source...</p>
     </div>
 
     <!-- Toast Container -->
@@ -1243,7 +1039,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // --- PARALLAX BACKGROUND EFFECT ---
+            // Parallax logic
             const ambientGlow = document.getElementById('ambient-glow');
             const spot1 = document.getElementById('spot1');
             const spot2 = document.getElementById('spot2');
@@ -1263,122 +1059,12 @@
             }
         });
 
-        // Service Content Descriptions
-        const serviceDescriptions = {
-            'proxy-nginx': "Nginx is a high-performance HTTP server and reverse proxy, known for stability, rich feature set, and low memory consumption.",
-            'proxy-traefik': "Traefik is a modern HTTP reverse proxy and load balancer that makes deploying microservices easy.",
-            'proxy-caddy': "Caddy is a powerful, enterprise-ready, open source web server with automatic HTTPS written in Go.",
-            'proxy-custom': "Enter the Docker image name for your custom proxy server.",
-            'db-postgres': "PostgreSQL is a powerful, open source object-relational database system with over 30 years of active development.",
-            'db-mongo': "MongoDB is a document-oriented NoSQL database used for high volume data storage.",
-            'db-mysql': "MySQL is the world's most popular open source database. Proven performance, reliability, and ease-of-use.",
-            'db-custom': "Enter the Docker image name for your custom database server.",
-            'svc-redis': "Redis is an in-memory data structure store, used as a database, cache, and message broker.",
-            'svc-custom': "Enter the Docker image name for your custom service."
-        };
-
-        // State Management
-        const selections = {
-            proxy: { type: null, value: null, isCustom: false, skipped: false },
-            db: { type: null, value: null, isCustom: false, skipped: false },
-            service: { type: null, value: null, isCustom: false, skipped: false }
-        };
+        // State
+        let selectedLanguage = null;
+        let selectedServices = [];
         let currentStep = 1;
 
-
-
-        /* --- SELECTION LOGIC --- */
-        function selectOption(category, value, elementId) {
-            const prefix = category === 'proxy' ? 'proxy' : (category === 'db' ? 'db' : 'svc');
-            const cards = document.querySelectorAll(`[id^="${prefix}-"]`);
-            cards.forEach(card => card.classList.remove('selected'));
-
-            const activeCard = document.getElementById(elementId);
-            if (activeCard) activeCard.classList.add('selected');
-
-            selections[category].type = value;
-            selections[category].isCustom = false;
-            selections[category].skipped = false;
-
-            const customArea = document.getElementById(`${category}-custom-input`);
-            if (customArea) customArea.style.display = 'none';
-
-            updateDescriptionBox(category, elementId);
-        }
-
-        function toggleCustomInput(category, elementId) {
-            const prefix = category === 'proxy' ? 'proxy' : (category === 'db' ? 'db' : 'svc');
-            const cards = document.querySelectorAll(`[id^="${prefix}-"]`);
-            const isCurrentlySelected = selections[category].isCustom;
-
-            cards.forEach(card => card.classList.remove('selected'));
-
-            if (!isCurrentlySelected) {
-                document.getElementById(elementId).classList.add('selected');
-                const customArea = document.getElementById(`${category}-custom-input`);
-                if (customArea) {
-                    customArea.style.display = 'block';
-                    setTimeout(() => {
-                        const textarea = document.getElementById(`${category}-command`);
-                        if (textarea) textarea.focus();
-                    }, 100);
-                }
-                selections[category].isCustom = true;
-                selections[category].type = 'custom';
-                selections[category].value = '';
-                selections[category].skipped = false;
-                updateDescriptionBox(category, elementId);
-            } else {
-                selections[category].isCustom = false;
-                selections[category].type = null;
-                selections[category].skipped = false;
-                const customArea = document.getElementById(`${category}-custom-input`);
-                if (customArea) customArea.style.display = 'none';
-                hideDescriptionBox(category);
-            }
-        }
-
-        /* --- DESCRIPTION BOX LOGIC --- */
-        function updateDescriptionBox(category, elementId) {
-            let stepNum = 2; // Offset by 1 for naming step
-            if (category === 'db') stepNum = 3;
-            if (category === 'service') stepNum = 4;
-            const infoBox = document.getElementById(`info-step-${stepNum}`);
-            if (infoBox) {
-                infoBox.innerText = serviceDescriptions[elementId] || "";
-                infoBox.style.display = 'block';
-            }
-        }
-        function hideDescriptionBox(category) {
-            let stepNum = 2;
-            if (category === 'db') stepNum = 3;
-            if (category === 'service') stepNum = 4;
-            const infoBox = document.getElementById(`info-step-${stepNum}`);
-            if (infoBox) infoBox.style.display = 'none';
-        }
-
-        /* --- SKIP LOGIC --- */
-        function skipStep(stepNumParam) {
-            const category = stepNumParam === 2 ? 'proxy' : (stepNumParam === 3 ? 'db' : 'service');
-            const prefix = category === 'proxy' ? 'proxy' : (category === 'db' ? 'db' : 'svc');
-            const cards = document.querySelectorAll(`[id^="${prefix}-"]`);
-            cards.forEach(card => card.classList.remove('selected'));
-
-            const customArea = document.getElementById(`${category}-custom-input`);
-            if (customArea) customArea.style.display = 'none';
-            hideDescriptionBox(category);
-
-            selections[category] = { type: null, value: null, isCustom: false, skipped: true };
-            showToast("Step Skipped", "You skipped this configuration step.", "info");
-            
-            if (stepNumParam === 4) {
-                updateSummary();
-            }
-            
-            goToStep(stepNumParam + 1);
-        }
-
-        /* --- NAVIGATION LOGIC --- */
+        // Navigation Logic
         function goToStep(stepNumber) {
             document.querySelectorAll('.wizard-step').forEach(el => el.classList.remove('active'));
             const target = document.getElementById(`step-${stepNumber}`);
@@ -1388,174 +1074,131 @@
         }
 
         function nextStep(stepNumParam) {
-            // STEP 1 VALIDATION (Naming)
             if (stepNumParam === 1) {
-                let nameInput = document.getElementById('instance-name');
-                let name = nameInput.value.trim();
-                
+                let name = document.getElementById('app-name').value.trim();
                 if (!name) {
-                    showToast("Name Required", "Please enter a valid name for your stack", "error");
+                    showToast("Name Required", "Please enter an application name", "error");
                     return;
                 }
-
-                // --- DOCKER NAME SANITIZATION (BUG FIX) ---
-                // Docker names must match: [a-zA-Z0-9][a-zA-Z0-9_.-]*
-                // We replace spaces with hyphens and remove any other invalid characters.
-                let sanitizedName = name.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9_.-]/g, '');
-                
-                // Check if sanitization changed the name significantly (e.g. removed bad chars)
-                if (sanitizedName !== name) {
-                    showToast("Invalid Characters", "Instance names can only contain letters, numbers, dots, hyphens, and underscores. Spaces were converted to hyphens.", "info");
-                    // Update the input to show the sanitized version so user confirms
-                    nameInput.value = sanitizedName;
-                    // Allow proceeding if the result is still valid
-                    name = sanitizedName;
-                }
-
-                if (!name) {
-                     showToast("Invalid Name", "The resulting name is empty. Please use alphanumeric characters.", "error");
-                     return;
-                }
-
                 goToStep(2);
                 return;
             }
 
-            const category = stepNumParam === 2 ? 'proxy' : (stepNumParam === 3 ? 'db' : 'service');
-            const sel = selections[category];
-
-            if (!sel.skipped && !sel.type) {
-                showToast(`Selection Required`, `Please select a ${category === 'proxy' ? 'Proxy' : (category === 'db' ? 'Database' : 'Service')} or Skip`, "error");
+            if (stepNumParam === 2) {
+                let repo = document.getElementById('git-repo').value.trim();
+                if (!repo) {
+                    showToast("Repo Required", "Please enter a Git repository URL", "error");
+                    return;
+                }
+                // Basic URL validation (optional but good UX)
+                if (!repo.startsWith('http') && !repo.startsWith('git@')) {
+                    showToast("Invalid URL", "Please enter a valid Git URL (http/https/ssh)", "error");
+                    return;
+                }
+                goToStep(3);
                 return;
             }
 
-            if (sel.isCustom) {
-                const val = document.getElementById(`${category}-command`).value.trim();
-                if (!val) {
-                    showToast("Input Required", "Please enter a service name or command", "error");
+            if (stepNumParam === 3) {
+                if (!selectedLanguage) {
+                    showToast("Selection Required", "Please select a language", "error");
                     return;
                 }
-                sel.value = val;
-            } else if (!sel.skipped) {
-                // Default image naming logic if not custom
-                // BUG FIX: Ensure lowercase for Docker images standard
-<<<<<<< HEAD
-                if (category === 'proxy') sel.value = sel.type.toLowerCase() + ":latest";
-                if (category === 'db') sel.value = sel.type.toLowerCase() + ":latest";
-                if (category === 'service') sel.value = sel.type.toLowerCase() + ":alpine";
-=======
-                if (category === 'proxy') sel.value = sel.type.toLowerCase();
-                if (category === 'db') sel.value = sel.type.toLowerCase();
-                if (category === 'service') sel.value = sel.type.toLowerCase();
->>>>>>> 11e7b225d458ce8898d9460c7d1fcd9349f37aae
+                goToStep(4);
+                return;
             }
-            
-            // Update Summary if moving to summary (Step 5)
+
             if (stepNumParam === 4) {
-                // CHECK: Ensure at least one service is selected
-                const hasSelection = !selections.proxy.skipped || !selections.db.skipped || !selections.service.skipped;
-                if (!hasSelection) {
-                    showToast("Empty Stack", "You must select at least one service (Proxy, Database, or Additional) to proceed.", "error");
-                    return;
-                }
                 updateSummary();
+                goToStep(5);
+                return;
             }
-
-            goToStep(stepNumParam + 1);
         }
 
-        function prevStep(stepNumParam) { goToStep(stepNumParam - 1); }
+        function prevStep(stepNumParam) {
+            goToStep(stepNumParam - 1);
+        }
 
-        // Add instance name update to summary
+        // Selection Logic
+        function selectLanguage(card, lang) {
+            document.querySelectorAll('#step-3 .service-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            selectedLanguage = lang;
+        }
+
+        function toggleService(card, service) {
+            card.classList.toggle('selected');
+            if (selectedServices.includes(service)) {
+                selectedServices = selectedServices.filter(s => s !== service);
+            } else {
+                selectedServices.push(service);
+            }
+        }
+
+        function skipServices() {
+            selectedServices = [];
+            document.querySelectorAll('#step-4 .service-card').forEach(c => c.classList.remove('selected'));
+            showToast("Skipped", "No additional services selected", "info");
+            updateSummary();
+            goToStep(5);
+        }
+
         function updateSummary() {
-            const instanceNameInput = document.getElementById('instance-name');
-            const summaryName = document.getElementById('summary-name');
-            if (instanceNameInput && summaryName) {
-                // Re-run sanitize to be safe in summary
-                const name = instanceNameInput.value.trim().replace(/\s+/g, '-').replace(/[^a-zA-Z0-9_.-]/g, '');
-                summaryName.innerText = name || "Untitled-Instance";
+            document.getElementById('summary-appname').innerText = document.getElementById('app-name').value.trim() || "N/A";
+            document.getElementById('summary-repo').innerText = document.getElementById('git-repo').value.trim() || "N/A";
+            
+            // Handle Language Display (capitalize first letter)
+            document.getElementById('summary-language').innerText = selectedLanguage ? selectedLanguage.charAt(0).toUpperCase() + selectedLanguage.slice(1) : "N/A";
+            
+            const servicesEl = document.getElementById('summary-services');
+            if (selectedServices.length > 0) {
+                servicesEl.innerText = selectedServices.join(', ');
+                servicesEl.classList.remove('skipped');
+            } else {
+                servicesEl.innerText = "Skipped";
+                servicesEl.classList.add('skipped');
             }
-            const updateUI = (cat, elementId) => {
-                const el = document.getElementById(elementId);
-                const sel = selections[cat];
-                el.classList.remove('custom', 'skipped');
-                if (sel.skipped) { el.innerText = "Skipped"; el.classList.add('skipped'); }
-                else if (sel.isCustom) { el.innerText = sel.value; el.classList.add('custom'); }
-                else if (sel.value) { el.innerText = sel.value; }
-                else { el.innerText = "None"; }
-            };
-            updateUI('proxy', 'summary-proxy');
-            updateUI('db', 'summary-db');
-            updateUI('service', 'summary-service');
-
         }
 
-        /* --- DEPLOY LOGIC (UPDATED TO SEND LIST) --- */
-        async function deployBuild() {
+        // Deploy Logic
+        async function deployProject() {
             const overlay = document.getElementById('loading-overlay');
             overlay.style.display = 'flex';
 
-            // 1. Collect all selected services into a single list
-            let servicesPayload = [];
-
-            // Helper to add to payload if not skipped
-            const addIfValid = (sel) => {
-                if (!sel.skipped && sel.value) {
-                    servicesPayload.push(sel.value);
-                }
-            };
-
-            addIfValid(selections.proxy);
-            addIfValid(selections.db);
-            addIfValid(selections.service);
-
-            if (servicesPayload.length === 0) {
-                showToast("Empty Stack", "Please select at least one service to deploy.", "error");
-                overlay.style.display = 'none';
-                return;
-            }
-
-            // 2. Prepare data for backend
-            // The backend expects a JSON object with a "services" list
-            let instanceNameInput = document.getElementById('instance-name');
-            let instanceName = instanceNameInput.value.trim();
-            
-            // Final sanity check for Docker Name (No spaces, specific chars only)
-            instanceName = instanceName.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9_.-]/g, '');
-            
-            if (!instanceName) {
-                showToast("Name Required", "Please provide a valid name for your instance.", "error");
-                overlay.style.display = 'none';
-                return;
-            }
-
             const payload = {
-                instancename: instanceName,
-                services: servicesPayload
+                appname: document.getElementById('app-name').value.trim(),
+                gitrepo: document.getElementById('git-repo').value.trim(),
+                languages: selectedLanguage ? [selectedLanguage] : [],
+                services: selectedServices
             };
 
             try {
-                // 3. Send to backend
-                const response = await fetch('/buildinstance', {
+                const response = await fetch('/deployinstance', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
 
+                const responseText = await response.text();
+                let message = responseText;
+
+                // Try to parse JSON error if exists, otherwise use text
+                try {
+                    const jsonErr = JSON.parse(responseText);
+                    if(jsonErr.error) message = jsonErr.error;
+                } catch(e) {
+                    // Not JSON, use raw text
+                }
+
                 if (response.ok) {
-                    showToast("Success", "Stack deployed successfully!", "success");
-                    setTimeout(() => {
-                        window.location.href = '/'; 
-                    }, 2000);
+                    showToast("Success", "Project deployed successfully!", "success");
+                    setTimeout(() => { window.location.href = '/'; }, 2000);
                 } else {
-                    const errData = await response.json();
-                    showToast("Deployment Failed", errData.error || "Server returned an error", "error");
+                    showToast("Deployment Failed", message, "error");
                 }
             } catch (error) {
-                console.error("Deployment Error:", error);
-                showToast("Error", "Could not connect to the server.", "error");
+                console.error("Error:", error);
+                showToast("Error", "Could not connect to server", "error");
             } finally {
                 overlay.style.display = 'none';
             }
@@ -1594,5 +1237,4 @@
         }
     </script>
 </body>
-
 </html>

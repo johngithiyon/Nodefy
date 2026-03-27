@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nodefy - Command Center</title>
+    
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- 1. CORE VARIABLES (Nodefy Theme) --- */
+        :root {
+            --bg-gradient-start: #050505;
+            --bg-gradient-end: #1a0b2e;
+            --accent-color: #8b5cf6;      
+            --accent-hover: #7c3aed;
+            --accent-glow: rgba(139, 92, 246, 0.4);
+            
+            --text-main: #FFFFFF;
+            --text-muted: #A1A1AA;
+            --text-dark: #52525B;
+            
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(255, 255, 255, 0.2);
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-blur: blur(16px);
+            
+            --font-ui: 'Inter', sans-serif;
+            --font-code: 'JetBrains Mono', monospace;
+
+            /* Layout specific variables mapped to theme */
+            --bg-sidebar: rgba(10, 10, 15, 0.6);
+            --bg-terminal: rgba(0, 0, 0, 0.6);
+            --terminal-accent: var(--accent-color);
+            --terminal-error: #ff4d4d;
+            --terminal-info: #60a5fa;
+            --shadow-glow: 0 0 30px rgba(139, 92, 246, 0.15);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font-ui);
+            background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+            background-attachment: fixed;
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- 2. BACKGROUND ANIMATIONS (From Nodefy Home) --- */
+        .ambient-glow {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: 
+                radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.15), transparent 35%),
+                radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.12), transparent 35%);
+            z-index: -2; pointer-events: none;
+            animation: pulseGlow 12s ease-in-out infinite alternate;
+        }
+        @keyframes pulseGlow {
+            0% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.02); }
+            100% { opacity: 0.5; transform: scale(1); }
+        }
+
+        .mesh-bg {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-image: 
+                linear-gradient(rgba(139, 92, 246, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(139, 92, 246, 0.02) 1px, transparent 1px);
+            background-size: 60px 60px;
+            z-index: -2; pointer-events: none;
+            animation: meshMove 20s linear infinite alternate;
+        }
+        @keyframes meshMove {
+            0% { transform: translate(0, 0) rotate(0deg); opacity: 0.3; }
+            100% { transform: translate(-10px, -10px) rotate(0.5deg); opacity: 0.7; }
+        }
+
+        .bubbles-container {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -2; pointer-events: none; overflow: hidden;
+        }
+        .bubble {
+            position: absolute; bottom: -100px;
+            background: radial-gradient(circle at 30% 30%, rgba(139, 92, 246, 0.08), transparent 80%);
+            border-radius: 50%;
+            border: 1px solid rgba(139, 92, 246, 0.05);
+            animation: riseBubble 25s infinite ease-in; filter: blur(2px);
+        }
+        @keyframes riseBubble {
+            0% { transform: translateY(0) scale(0.8); opacity: 0; }
+            50% { opacity: 0.5; }
+            100% { transform: translateY(-120vh) scale(1.2); opacity: 0; }
+        }
+
+        /* --- 3. SCROLLBAR --- */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border-subtle); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-color); }
+
+        /* --- 4. SIDEBAR --- */
+        aside {
+            width: 300px;
+            background: var(--bg-sidebar);
+            backdrop-filter: var(--glass-blur);
+            border-right: 1px solid var(--border-subtle);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            z-index: 10;
+        }
+
+        .logo-area {
+            padding: 30px;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            fill: none;
+            stroke: var(--accent-color);
+            stroke-width: 2;
+            filter: drop-shadow(0 0 10px rgba(139, 92, 246, 0.5));
+        }
+
+        .logo-text {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: white;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-sub {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            display: block;
+            margin-top: 4px;
+        }
+
+        nav {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 0;
+        }
+
+        /* Dropdown */
+        .dropdown { border-bottom: 1px solid rgba(255,255,255,0.03); }
+        
+        .dropdown-header {
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .dropdown-header:hover { color: var(--text-main); background: rgba(255,255,255,0.02); }
+
+        .dropdown-header.active-group {
+            color: var(--accent-color);
+            background: linear-gradient(90deg, rgba(139, 92, 246, 0.1), transparent);
+            border-left: 3px solid var(--accent-color);
+            padding-left: 21px;
+        }
+
+        .dropdown-arrow { transition: transform 0.3s ease; width: 14px; height: 14px; stroke: currentColor; }
+        .dropdown.open .dropdown-arrow { transform: rotate(90deg); }
+
+        .dropdown-content {
+            max-height: 0;
+            overflow: hidden;
+            background-color: rgba(0, 0, 0, 0.2);
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .dropdown.open .dropdown-content { max-height: 1000px; }
+
+        .submenu-item {
+            padding: 12px 24px 12px 36px;
+            display: flex;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            font-family: var(--font-code);
+        }
+        
+        .submenu-item::before {
+            content: '>'; position: absolute; left: 20px;
+            opacity: 0; color: var(--accent-color);
+            transition: all 0.2s; transform: translateX(-5px);
+        }
+
+        .submenu-item:hover { color: #fff; background: rgba(255,255,255,0.02); }
+        .submenu-item:hover::before { opacity: 1; transform: translateX(0); }
+        
+        .submenu-item.active {
+            color: var(--accent-color);
+            background: rgba(139, 92, 246, 0.05);
+            font-weight: 500;
+        }
+
+        /* --- 5. MAIN CONTENT --- */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            /* Allow background to show through slightly */
+        }
+
+        header {
+            padding: 20px 40px;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(5, 5, 10, 0.6);
+            backdrop-filter: blur(10px);
+            z-index: 5;
+        }
+
+        h1 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: var(--font-code);
+        }
+        
+        .status-badge {
+            font-family: var(--font-code);
+            font-size: 0.75rem;
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--accent-color);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-dot {
+            width: 6px; height: 6px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent-color);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        /* --- 6. TERMINAL --- */
+        .content-container {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .terminal-window {
+            width: 100%;
+            max-width: 900px;
+            background: var(--bg-terminal);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5), var(--shadow-glow);
+            border: 1px solid var(--border-subtle);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            font-family: var(--font-code);
+            position: relative;
+            transition: border-color 0.3s;
+        }
+        
+        .terminal-window:hover {
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+
+        .terminal-header {
+            background: rgba(20, 20, 25, 0.8);
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .controls { display: flex; gap: 8px; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; }
+        .dot.red { background-color: #ff5f56; }
+        .dot.yellow { background-color: #ffbd2e; }
+        .dot.green { background-color: #27c93f; }
+
+        .terminal-title {
+            margin-left: auto;
+            font-size: 0.8rem;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .terminal-body {
+            padding: 30px;
+            color: #e2e8f0;
+            flex: 1;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            min-height: 450px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .output-line {
+            margin-bottom: 6px;
+            opacity: 0;
+            animation: slideIn 0.3s forwards;
+            color: var(--text-muted);
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .prompt-line {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .prompt {
+            color: var(--accent-color);
+            font-weight: bold;
+            margin-right: 12px;
+            text-shadow: 0 0 8px rgba(139, 92, 246, 0.4);
+        }
+
+        .command-input { color: #fff; white-space: pre-wrap; flex: 1; }
+
+        .cursor {
+            display: inline-block;
+            width: 10px; height: 1.2em;
+            background-color: var(--accent-color);
+            vertical-align: middle;
+            animation: blink 1s step-end infinite;
+            margin-left: 2px;
+            box-shadow: 0 0 5px var(--accent-color);
+        }
+
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        .copy-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font-ui);
+            margin-left: auto;
+        }
+        .copy-btn:hover { 
+            border-color: var(--accent-color); 
+            color: var(--accent-color); 
+            background: rgba(139, 92, 246, 0.1); 
+        }
+
+        /* Teaching Panel */
+        .teaching-panel {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px dashed var(--border-subtle);
+            display: none; 
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .teaching-panel h3 {
+            color: var(--accent-color);
+            margin-bottom: 12px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-ui);
+            font-weight: 600;
+        }
+
+        .teach-desc {
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            font-family: var(--font-ui);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .param-tag {
+            display: inline-block;
+            background: rgba(139, 92, 246, 0.1);
+            color: #d8b4fe;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            font-family: var(--font-code);
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            body { flex-direction: column; overflow-y: auto; }
+            aside { width: 100%; height: auto; max-height: 250px; border-right: none; border-bottom: 1px solid var(--border-subtle); }
+            .content-container { padding: 20px; }
+            .terminal-body { min-height: 300px; padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Animations -->
+    <div class="ambient-glow"></div>
+    <div class="mesh-bg"></div>
+    <div class="bubbles-container">
+        <div class="bubble" style="left: 10%; width: 150px; height: 150px; animation-duration: 22s;"></div>
+        <div class="bubble" style="left: 30%; width: 80px; height: 80px; animation-duration: 28s; animation-delay: -5s;"></div>
+        <div class="bubble" style="left: 70%; width: 120px; height: 120px; animation-duration: 35s; animation-delay: -10s;"></div>
+    </div>
+
+    <aside>
+        <div class="logo-area">
+            <!-- Nodefy Logo -->
+            <svg class="logo-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke-linejoin="round"/>
+                <path d="M2 17L12 22L22 17" stroke-linejoin="round"/>
+                <path d="M2 12L12 17L22 12" stroke-linejoin="round"/>
+            </svg>
+            <div>
+                <div class="logo-text">Nodefy</div>
+                <span class="logo-sub">Command Center</span>
+            </div>
+        </div>
+        
+        <nav id="sidebar-nav"></nav>
+    </aside>
+
+    <main>
+        <header>
+            <h1 id="page-title">Command Center</h1>
+            <div class="status-badge">
+                <div class="status-dot"></div>
+                SESSION_ACTIVE
+            </div>
+        </header>
+
+        <div class="content-container">
+            <div class="terminal-window">
+                <div class="terminal-header">
+                    <div class="controls">
+                        <div class="dot red"></div>
+                        <div class="dot yellow"></div>
+                        <div class="dot green"></div>
+                    </div>
+                    <div class="terminal-title">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                        user@nodefy: ~/
+                    </div>
+                </div>
+                
+                <div class="terminal-body" id="terminal-body">
+                    <div class="output-line" style="color: var(--accent-color)">System initialized. Welcome to Nodefy Terminal v2.1</div>
+                    <div class="output-line" style="color: #555">Select a command category from the sidebar to begin.</div>
+                    <br>
+                    
+                    <div class="prompt-line">
+                        <span class="prompt">guest@nodefy:~$</span>
+                        <span id="command-display" class="command-input"></span><span class="cursor"></span>
+                        <button class="copy-btn" onclick="copyCommand()">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                            Copy
+                        </button>
+                    </div>
+                    
+                    <div id="terminal-output"></div>
+
+                    <div id="teaching-panel" class="teaching-panel">
+                        <h3>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+                            <span id="teach-title">Explanation</span>
+                        </h3>
+                        <p id="teach-desc" class="teach-desc"></p>
+                        <div style="margin-top:10px">
+                            <span style="color: #555; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">Key Parameters:</span>
+                            <div id="teach-params" style="margin-top:8px"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // --- Expanded Data Structure ---
+        const commandsData = {
+            'network': {
+                label: 'Networking',
+                icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"></path><path d="M1.42 9a16 16 0 0 1 21.16 0"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg>',
+                items: {
+                    'ping': {
+                        label: 'Test Connectivity',
+                        command: 'ping -c 4 google.com',
+                        desc: 'Sends ICMP echo requests to check reachability of a host and measures round-trip time.',
+                        params: ['ping', '-c (count)', 'hostname'],
+                        output: [
+                            'PING google.com (142.250.190.46): 56 data bytes',
+                            '64 bytes from 142.250.190.46: icmp_seq=0 ttl=117 time=14.2 ms',
+                            '64 bytes from 142.250.190.46: icmp_seq=1 ttl=117 time=15.1 ms',
+                            '--- google.com ping statistics ---',
+                            '4 packets transmitted, 4 packets received, 0.0% packet loss'
+                        ]
+                    },
+                    'ip-addr': {
+                        label: 'Show IP Interfaces',
+                        command: 'ip addr show',
+                        desc: 'Displays or manages network interfaces, IP addresses, and routing.',
+                        params: ['ip', 'addr', 'show'],
+                        output: [
+                            '1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN',
+                            '    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00',
+                            '    inet 127.0.0.1/8 scope host lo',
+                            '2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP>',
+                            '    inet 192.168.1.55/24 brd 192.168.1.255 scope global eth0'
+                        ]
+                    },
+                    'netstat': {
+                        label: 'Active Connections',
+                        command: 'netstat -tuln',
+                        desc: 'Displays network connections, routing tables, and interface statistics. Flags used: -t (tcp), -u (udp), -l (listening), -n (numeric).',
+                        params: ['netstat', '-tuln'],
+                        output: [
+                            'Active Internet connections (only servers)',
+                            'Proto Recv-Q Send-Q Local Address     Foreign Address   State',
+                            'tcp   0      0    0.0.0.0:22        0.0.0.0:*         LISTEN',
+                            'tcp   0      0    127.0.0.1:3306    0.0.0.0:*         LISTEN',
+                            'udp   0      0    0.0.0.0:68        0.0.0.0:*'
+                        ]
+                    }
+                }
+            },
+            'system': {
+                label: 'System Information',
+                icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>',
+                items: {
+                    'uname': {
+                        label: 'System Info',
+                        command: 'uname -a',
+                        desc: 'Prints system information including kernel name, version, and machine hardware name.',
+                        params: ['uname', '-a (all)'],
+                        output: [
+                            'Linux nodefy-server 5.15.0-91-generic #101-Ubuntu SMP Tue Nov 14 13:30:08 UTC 2023 x86_64 GNU/Linux'
+                        ]
+                    },
+                    'uptime': {
+                        label: 'System Uptime',
+                        command: 'uptime -p',
+                        desc: 'Shows how long the system has been running.',
+                        params: ['uptime', '-p (pretty)'],
+                        output: [
+                            'up 2 weeks, 4 days, 15 hours, 23 minutes'
+                        ]
+                    },
+                    'hostname': {
+                        label: 'Set Hostname',
+                        command: 'hostnamectl set-hostname node-server-01',
+                        desc: 'Sets the system hostname permanently.',
+                        params: ['hostnamectl', 'set-hostname'],
+                        output: [
+                            'Hostname has been updated.',
+                            'New hostname: node-server-01'
+                        ]
+                    }
+                }
+            },
+            'process': {
+                label: 'Process Management',
+                icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>',
+                items: {
+                    'ps': {
+                        label: 'List Processes',
+                        command: 'ps aux | grep nginx',
+                        desc: 'Snapshot of current processes. Pipes to grep to filter for "nginx".',
+                        params: ['ps', 'aux', '| (pipe)', 'grep'],
+                        output: [
+                            'USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND',
+                            'root      1234  0.0  1.2 123456 12345 ?        Ss   Oct10   0:00 nginx: master process',
+                            'www-data  1235  0.0  0.5 123456  6789 ?        S    Oct10   0:15 nginx: worker process'
+                        ]
+                    },
+                    'kill': {
+                        label: 'Force Kill Process',
+                        command: 'kill -9 1234',
+                        desc: 'Sends a signal to a process. -9 is SIGKILL (force immediate termination).',
+                        params: ['kill', '-9 (SIGKILL)', 'PID'],
+                        output: [
+                            'Sending SIGKILL to process 1234...',
+                            '[1]+  Killed                  nginx'
+                        ]
+                    },
+                    'htop': {
+                        label: 'Interactive Monitor',
+                        command: 'htop',
+                        desc: 'Interactive process viewer (requires installation). Shows CPU, Memory, and tasks.',
+                        params: ['htop'],
+                        output: [
+                            'CPU [######                ] 25.0%',
+                            'Mem [##########            ] 4.0G/16.0G',
+                            'Task: 120, 5 thr, 120 kthr',
+                            'Running: 1  Load average: 0.15 0.20 0.10',
+                            '[Press F10 to exit]'
+                        ]
+                    }
+                }
+            },
+            'disk': {
+                label: 'Disk & Files',
+                icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>',
+                items: {
+                    'df': {
+                        label: 'Disk Free Space',
+                        command: 'df -h',
+                        desc: 'Reports file system disk space usage. -h prints sizes in human readable format (e.g., 1K, 234M, 2G).',
+                        params: ['df', '-h (human)'],
+                        output: [
+                            'Filesystem      Size  Used Avail Use% Mounted on',
+                            '/dev/sda1        50G   15G   33G  32% /',
+                            'tmpfs           7.8G     0  7.8G   0% /dev/shm',
+                            '/dev/sdb1       100G   80G   15G  80% /mnt/data'
+                        ]
+                    },
+                    'du': {
+                        label: 'Directory Usage',
+                        command: 'du -sh /var/log',
+                        desc: 'Estimates file space usage. -s summarizes total, -h is human-readable.',
+                        params: ['du', '-sh'],
+                        output: [
+                            '124M    /var/log'
+                        ]
+                    },
+                    'mount': {
+                        label: 'Mount Drive',
+                        command: 'mount /dev/sdb1 /mnt/data',
+                        desc: 'Attaches the filesystem found on device to the directory structure.',
+                        params: ['mount', 'device', 'directory'],
+                        output: [
+                            'Mounting /dev/sdb1 to /mnt/data...',
+                            '[ OK ] Device mounted successfully.'
+                        ]
+                    }
+                }
+            },
+            'files': {
+                label: 'File Operations',
+                icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>',
+                items: {
+                    'chmod': {
+                        label: 'Modify Permissions',
+                        command: 'chmod +x script.sh',
+                        desc: 'Changes file access permissions. +x makes the file executable.',
+                        params: ['chmod', '+x (executable)', 'filename'],
+                        output: [
+                            'Permissions updated.',
+                            '-rwxr-xr-x 1 user user 0 Nov 15 script.sh'
+                        ]
+                    },
+                    'chown': {
+                        label: 'Change Owner',
+                        command: 'chown www-data:www-data index.html',
+                        desc: 'Changes the user and/or group ownership of a file.',
+                        params: ['chown', 'user:group'],
+                        output: [
+                            'Ownership changed to www-data:www-data for index.html'
+                        ]
+                    },
+                    'tar': {
+                        label: 'Extract Archive',
+                        command: 'tar -xzvf backup.tar.gz',
+                        desc: 'Extracts files from a tarball archive. Flags: -x (extract), -z (gzip), -v (verbose), -f (file).',
+                        params: ['tar', '-xzvf'],
+                        output: [
+                            'backup/',
+                            'backup/config.ini',
+                            'backup/database.sql',
+                            'backup/styles.css',
+                            'Extraction complete.'
+                        ]
+                    }
+                }
+            }
+        };
+
+        // --- State ---
+        let currentCommandText = "";
+        let typingTimeout = null;
+
+        // --- DOM Elements ---
+        const navContainer = document.getElementById('sidebar-nav');
+        const pageTitle = document.getElementById('page-title');
+        const commandDisplay = document.getElementById('command-display');
+        const terminalOutput = document.getElementById('terminal-output');
+        const teachPanel = document.getElementById('teaching-panel');
+        const teachTitle = document.getElementById('teach-title');
+        const teachDesc = document.getElementById('teach-desc');
+        const teachParams = document.getElementById('teach-params');
+
+        // --- Init ---
+        window.onload = () => {
+            renderSidebar();
+        };
+
+        // --- Render Sidebar ---
+        function renderSidebar() {
+            navContainer.innerHTML = '';
+
+            for (const key in commandsData) {
+                const group = commandsData[key];
+                
+                const dropdown = document.createElement('div');
+                dropdown.className = 'dropdown';
+                dropdown.id = `dropdown-${key}`;
+
+                const header = document.createElement('div');
+                header.className = 'dropdown-header';
+                header.innerHTML = `
+                    <span style="display:flex; align-items:center; gap:10px;">
+                        ${group.icon}
+                        ${group.label}
+                    </span>
+                    <svg class="dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                `;
+                header.onclick = () => toggleDropdown(key);
+
+                const content = document.createElement('div');
+                content.className = 'dropdown-content';
+
+                for (const subKey in group.items) {
+                    const item = group.items[subKey];
+                    const subItem = document.createElement('div');
+                    subItem.className = 'submenu-item';
+                    subItem.textContent = item.label;
+                    subItem.dataset.id = subKey;
+                    subItem.dataset.parent = key;
+                    subItem.onclick = (e) => {
+                        e.stopPropagation();
+                        selectCommand(subKey, key);
+                    };
+                    content.appendChild(subItem);
+                }
+
+                dropdown.appendChild(header);
+                dropdown.appendChild(content);
+                navContainer.appendChild(dropdown);
+            }
+        }
+
+        function toggleDropdown(key) {
+            const dropdown = document.getElementById(`dropdown-${key}`);
+            const wasOpen = dropdown.classList.contains('open');
+            
+            // Close all
+            document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('open'));
+            document.querySelectorAll('.dropdown-header').forEach(h => h.classList.remove('active-group'));
+
+            if (!wasOpen) {
+                dropdown.classList.add('open');
+                dropdown.querySelector('.dropdown-header').classList.add('active-group');
+            }
+        }
+
+        // --- Terminal Logic ---
+        function selectCommand(id, parentKey) {
+            // UI Updates
+            document.querySelectorAll('.submenu-item').forEach(el => el.classList.remove('active'));
+            const activeLink = document.querySelector(`.submenu-item[data-id="${id}"]`);
+            if (activeLink) activeLink.classList.add('active');
+
+            const data = commandsData[parentKey].items[id];
+            pageTitle.textContent = data.label;
+            currentCommandText = data.command;
+
+            // Reset
+            clearTimeout(typingTimeout);
+            commandDisplay.textContent = '';
+            terminalOutput.innerHTML = '';
+            teachPanel.style.display = 'none';
+
+            // Typing Effect
+            let i = 0;
+            function type() {
+                if (i < data.command.length) {
+                    commandDisplay.textContent += data.command.charAt(i);
+                    i++;
+                    typingTimeout = setTimeout(type, 40); 
+                } else {
+                    setTimeout(() => {
+                        showTerminalOutput(data.output);
+                        showTeaching(data);
+                    }, 400);
+                }
+            }
+            type();
+        }
+
+        function showTerminalOutput(lines) {
+            lines.forEach((line, index) => {
+                const div = document.createElement('div');
+                div.className = 'output-line';
+                div.textContent = line;
+                div.style.animationDelay = `${index * 0.05}s`; // Stagger effect
+                
+                // Color Logic adapted for Nodefy Theme
+                if(line.includes('Killed') || line.includes('error')) div.style.color = 'var(--terminal-error)';
+                else if(line.includes('OK') || line.includes('complete') || line.includes('SUCCESS')) div.style.color = 'var(--accent-color)';
+                else if(line.includes('Proto') || line.includes('PID') || line.includes('Filesystem')) div.style.color = 'var(--terminal-info)';
+                
+                terminalOutput.appendChild(div);
+                
+                // Scroll logic
+                if (index === lines.length - 1) {
+                    const prompt = document.createElement('div');
+                    prompt.className = 'output-line';
+                    prompt.style.color = 'var(--accent-color)';
+                    prompt.style.marginTop = '10px';
+                    prompt.textContent = 'guest@nodefy:~$ ';
+                    terminalOutput.appendChild(prompt);
+                    terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                }
+            });
+        }
+
+        function showTeaching(data) {
+            teachPanel.style.display = 'block';
+            teachTitle.textContent = data.label + " Explained";
+            teachDesc.textContent = data.desc;
+
+            teachParams.innerHTML = '';
+            if (data.params) {
+                data.params.forEach(param => {
+                    const tag = document.createElement('span');
+                    tag.className = 'param-tag';
+                    tag.textContent = param;
+                    teachParams.appendChild(tag);
+                });
+            }
+        }
+
+        function copyCommand() {
+            if (!currentCommandText) return;
+            navigator.clipboard.writeText(currentCommandText).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = 'Copied!';
+                btn.style.color = 'var(--accent-color)';
+                btn.style.borderColor = 'var(--accent-color)';
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.style.color = '';
+                    btn.style.borderColor = '';
+                }, 1500);
+            });
+        }
+    </script>
+</body>
+</html>
