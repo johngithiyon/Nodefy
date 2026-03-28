@@ -3,11 +3,12 @@ package services
 import (
 	"log"
 
+	"github.com/johngithiyon/Nodefy/internal/models"
 	"github.com/johngithiyon/Nodefy/internal/repository/docker"
 	"github.com/johngithiyon/Nodefy/internal/repository/storage/redis"
 )
 
-func Stopcontainerservices(sessionid string) error{
+func Stopcontainerservices(sessionid string,Stopcontainer *models.Stopcontainer) error{
 
 	username,getusernamerr := redis.Getusername(sessionid)
 
@@ -16,7 +17,7 @@ func Stopcontainerservices(sessionid string) error{
 		  return getusernamerr
 	}
 
-	  dockerstoperr :=   docker.Stopcontainer(username)
+	  dockerstoperr :=   docker.Stopcontainer(*Stopcontainer)
 
 	  if dockerstoperr != nil {
 		    return dockerstoperr
