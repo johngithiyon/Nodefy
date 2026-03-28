@@ -39,7 +39,7 @@ func GetInstances(username string) ([]models.Instances,error) {
 		return nil,errors.ErrBadrequest
 	}
 
-	getinstances := "select id,instance_name from instances where user_id=$1"
+	getinstances := "select id,instance_name,status from instances where user_id=$1"
 
 	rows,getinstanceserr := Database.Db.Query(getinstances,userid)
 
@@ -48,7 +48,7 @@ func GetInstances(username string) ([]models.Instances,error) {
 	}
 
 	for rows.Next() {
-         rows.Scan(&instance.Instanceid,&instance.Instancename)
+         rows.Scan(&instance.Instanceid,&instance.Instancename,&instance.Status)
 
 		 instances = append(instances,instance)
 
