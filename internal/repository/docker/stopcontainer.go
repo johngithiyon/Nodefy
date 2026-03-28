@@ -3,11 +3,13 @@ package docker
 import (
 	"log"
 	"os/exec"
+
+	"github.com/johngithiyon/Nodefy/internal/models"
 )
 
-func Stopcontainer(username string ) error {
+func Stopcontainer(Stopcontainer models.Stopcontainer) error {
 
-	cmd :=  exec.Command("docker","stop",username)
+	cmd :=  exec.Command("docker","stop",Stopcontainer.Instancename)
 
 	output,outputerr := cmd.CombinedOutput()
 
