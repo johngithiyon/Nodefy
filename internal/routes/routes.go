@@ -29,6 +29,7 @@ func Routes() {
 	  http.HandleFunc("/signup",handlers.Signuphandler)
 	  http.HandleFunc("/otp",handlers.Otphandler)
 	  http.HandleFunc("/login",handlers.Loginhandler)
+	  http.HandleFunc("/startinstance",handlers.Startcontainerhandler)
 	  http.HandleFunc("/stopinstance",handlers.StopcontainerHandler)
 	  http.HandleFunc("/killinstance",handlers.Killcontainerhandler)
 	  http.HandleFunc("/getbuildinstance",handlers.GetBuildInstancesHandler)
