@@ -52,6 +52,7 @@
             width: 100vw;
         }
 
+        /* ── Background Animations (exact from build.html) ── */
         .ambient-glow {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
@@ -157,6 +158,7 @@
             100% { transform: translate(5%, 5%) scale(1.1); }
         }
 
+        /* ── Sidebar ── */
         .sidebar {
             width: 240px;
             background: rgba(15, 15, 20, 0.5);
@@ -229,6 +231,7 @@
         .nav-btn:hover svg { opacity: 1; }
         .nav-btn.primary svg { opacity: 1; }
 
+        /* ── Main ── */
         .main-content {
             flex: 1;
             display: flex;
@@ -277,18 +280,19 @@
 
         .btn svg { flex-shrink: 0; }
 
-        .btn-deploy { background: rgba(16, 185, 129, 0.12); color: #10b981; border-color: rgba(16, 185, 129, 0.25); }
+        .btn-deploy { background: rgba(16, 185, 129, 0.12); color: var(--green); border-color: rgba(16, 185, 129, 0.25); }
         .btn-deploy:hover { background: rgba(16, 185, 129, 0.22); box-shadow: 0 0 16px rgba(16, 185, 129, 0.15); transform: translateY(-1px); }
 
-        .btn-stop { background: rgba(245, 158, 11, 0.12); color: #f59e0b; border-color: rgba(245, 158, 11, 0.25); }
+        .btn-stop { background: rgba(245, 158, 11, 0.12); color: var(--yellow); border-color: rgba(245, 158, 11, 0.25); }
         .btn-stop:hover { background: rgba(245, 158, 11, 0.22); box-shadow: 0 0 16px rgba(245, 158, 11, 0.15); transform: translateY(-1px); }
 
-        .btn-kill { background: rgba(239, 68, 68, 0.12); color: #ef4444; border-color: rgba(239, 68, 68, 0.25); }
+        .btn-kill { background: rgba(239, 68, 68, 0.12); color: var(--red); border-color: rgba(239, 68, 68, 0.25); }
         .btn-kill:hover { background: rgba(239, 68, 68, 0.22); box-shadow: 0 0 16px rgba(239, 68, 68, 0.15); transform: translateY(-1px); }
 
         .btn-workspace { background: rgba(139, 92, 246, 0.12); color: var(--accent-color); border-color: rgba(139, 92, 246, 0.25); }
         .btn-workspace:hover { background: rgba(139, 92, 246, 0.22); box-shadow: 0 0 16px rgba(139, 92, 246, 0.15); transform: translateY(-1px); }
 
+        /* ── Content ── */
         .content-scroll { flex: 1; padding: 36px; overflow-y: auto; }
 
         .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
@@ -297,6 +301,7 @@
 
         .instance-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
 
+        /* ── Card ── */
         .instance-card {
             background: rgba(20, 20, 25, 0.6);
             border: 1px solid var(--border-subtle);
@@ -443,6 +448,7 @@
         .spinner::after { content: ''; position: absolute; top: 4px; left: 4px; right: 4px; bottom: 4px; background: #050505; border-radius: 50%; }
         @keyframes rotateSpinner { 100% { transform: rotate(360deg); } }
 
+        /* ── Modal ── */
         .modal-overlay {
             position: fixed; inset: 0;
             background: rgba(5, 5, 10, 0.85);
@@ -497,6 +503,7 @@
         .btn-secondary { background: rgba(255, 255, 255, 0.05); color: white; border-color: var(--border-subtle); }
         .btn-secondary:hover { background: rgba(255, 255, 255, 0.08); border-color: var(--border-hover); transform: translateY(-1px); }
 
+        /* ── Toasts (exact from build.html) ── */
         .toast-container {
             position: fixed;
             bottom: 40px;
@@ -593,6 +600,7 @@
 
 <body>
 
+    <!-- Backgrounds (exact from build.html) -->
     <div class="ambient-glow" id="ambient-glow"></div>
     <div class="mesh-bg"></div>
     <div class="glow-spot spot1" id="spot1"></div>
@@ -615,6 +623,7 @@
         <div class="particle" style="top: 15%; left: 70%; width: 3px; height: 3px; animation-duration: 15s; animation-delay: -6s;"></div>
     </div>
 
+    <!-- Sidebar -->
     <aside class="sidebar">
         <a href="/" class="sidebar-logo">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -636,13 +645,14 @@
         </button>
     </aside>
 
+    <!-- Main -->
     <main class="main-content">
         <header class="top-bar">
             <div class="page-title">Cloud Command Center</div>
             <div class="actions-group">
-                <button class="btn btn-deploy" onclick="handleAction('deploy')">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path></svg>
-                    Deploy
+                <button class="btn btn-deploy" onclick="handleAction('start')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                    Start
                 </button>
                 <button class="btn btn-stop" onclick="handleAction('stop')">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="1"></rect></svg>
@@ -699,7 +709,7 @@
         </div>
     </div>
 
-    <!-- Action Modal (Deploy / Stop / Kill) -->
+    <!-- Action Modal -->
     <div class="modal-overlay" id="actionModal">
         <div class="modal-content">
             <h3 class="modal-title" id="actionTitle">Execute Command</h3>
@@ -718,7 +728,7 @@
             </div>
             <div class="modal-actions">
                 <button class="btn btn-secondary" onclick="closeModals()">Cancel</button>
-                <button class="btn btn-primary" id="actionSubmitBtn" onclick="submitAction()">Execute</button>
+                <button class="btn btn-primary" onclick="submitAction()">Execute</button>
             </div>
         </div>
     </div>
@@ -726,7 +736,7 @@
     <div class="toast-container" id="toast-container"></div>
 
     <script>
-        /* ── Parallax ── */
+        /* ── Parallax (exact from build.html) ── */
         document.addEventListener('DOMContentLoaded', () => {
             const ambientGlow = document.getElementById('ambient-glow');
             const spot1 = document.getElementById('spot1');
@@ -787,7 +797,7 @@
             return true;
         }
 
-        /* ── Fetch Instances ── */
+        /* ── Fetch ── */
         async function fetchInstances() {
             const grid = document.getElementById('instanceGrid');
 
@@ -821,7 +831,7 @@
             }
         }
 
-        /* ── Render Instances ── */
+        /* ── Render ── */
         function renderInstances() {
             const grid = document.getElementById('instanceGrid');
             grid.innerHTML = '';
@@ -877,23 +887,13 @@
 
         function handleAction(actionType) {
             document.getElementById('currentAction').value = actionType;
-            const labels = { deploy: '🚀 Deploy Instance', stop: '⏹ Stop Instance', kill: '⛔ Kill Instance' };
+            const labels = { start: '▶ Start Instance', stop: '⏹ Stop Instance', kill: '⛔ Kill Instance' };
             document.getElementById('actionTitle').innerText = labels[actionType] || actionType.toUpperCase();
-
-            /* Show/hide image field based on action — deploy needs image, stop/kill don't */
-            const imageGroup = document.getElementById('actionImageName').closest('.form-group');
-
-            if (actionType === 'deploy') {
-                imageGroup.style.display = '';
-            } else {
-                imageGroup.style.display = 'none';
-            }
-
             document.getElementById('actionModal').classList.add('open');
             setTimeout(() => document.getElementById('actionInstName').focus(), 100);
         }
 
-        /* ── Submit: Add Instance (sidebar button → /buildinstance) ── */
+        /* ── Add Instance → POST /addinstancesbuild ── */
         async function submitAddInstance() {
             const nameInput = document.getElementById('addInstName');
             const imageInput = document.getElementById('addImageName');
@@ -908,11 +908,11 @@
             closeModals();
 
             try {
-                const response = await fetch('/buildinstance', {
+                const response = await fetch('/addinstancesbuild', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     credentials: 'include',
-                    body: JSON.stringify({ instancename: name, services: [image] })
+                    body: JSON.stringify({ instancename: name, imagename: image })
                 });
                 if (!response.ok) {
                     const errData = await response.json().catch(() => ({}));
@@ -926,7 +926,6 @@
             }
         }
 
-        /* ── Submit: Action (Deploy → /addinstancesbuild, Stop → /stopinstance, Kill → /killinstance) ── */
         async function submitAction() {
             const type = document.getElementById('currentAction').value;
             const nameInput = document.getElementById('actionInstName');
@@ -934,90 +933,34 @@
             const name = nameInput.value.trim();
             const image = imageInput.value.trim();
 
-            /* Validate instance name for all actions */
             if (!name) { nameInput.classList.add('error'); document.getElementById('actionNameErr').textContent = 'Instance name is required.'; nameInput.focus(); return; }
             if (!validateInstName(nameInput, 'actionNameErr')) { nameInput.focus(); return; }
-
-            /* Validate image only for deploy */
-            if (type === 'deploy') {
-                if (!image) { imageInput.classList.add('error'); document.getElementById('actionImgErr').textContent = 'Docker image name is required.'; imageInput.focus(); return; }
-                if (!validateImageName(imageInput, 'actionImgErr')) { imageInput.focus(); return; }
-            }
+            if (!image) { imageInput.classList.add('error'); document.getElementById('actionImgErr').textContent = 'Docker image name is required.'; imageInput.focus(); return; }
+            if (!validateImageName(imageInput, 'actionImgErr')) { imageInput.focus(); return; }
 
             closeModals();
 
-            if (type === 'deploy') {
-                /* ── POST to /addinstancesbuild with {instancename, imagename} matching Go struct ── */
-                try {
-                    const response = await fetch('/addinstancesbuild', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        credentials: 'include',
-                        body: JSON.stringify({ instancename: name, imagename: image })
-                    });
-
-                    if (!response.ok) {
-                        const errData = await response.json().catch(() => ({}));
-                        throw new Error(errData.error || errData.message || 'Server Error');
-                    }
-
-                    const resultData = await response.json().catch(() => ({}));
-                    await fetchInstances();
-                    showToast('Deployed', resultData.message || `Instance "${name}" deployed successfully.`, 'success');
-                } catch (error) {
-                    console.error('Deploy Error:', error);
-                    showToast('Deploy Failed', error.message, 'error');
-                }
-
+            if (type === 'kill') {
+                const idx = instances.findIndex(i => i.name === name);
+                if (idx > -1) instances.splice(idx, 1);
+                renderInstances();
+                showToast('Terminated', `"${name}" has been killed.`, 'error');
             } else if (type === 'stop') {
-                /* ── POST to /stopinstance ── */
-                try {
-                    const response = await fetch('/stopinstance', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        credentials: 'include',
-                        body: JSON.stringify({ instancename: name })
-                    });
-
-                    if (!response.ok) {
-                        const errData = await response.json().catch(() => ({}));
-                        throw new Error(errData.error || errData.message || 'Server Error');
-                    }
-
-                    await fetchInstances();
-                    showToast('Stopped', `Instance "${name}" halted.`, 'info');
-                } catch (error) {
-                    console.error('Stop Error:', error);
-                    showToast('Stop Failed', error.message, 'error');
-                }
-
-            } else if (type === 'kill') {
-                /* ── POST to /killinstance ── */
-                try {
-                    const response = await fetch('/killinstance', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        credentials: 'include',
-                        body: JSON.stringify({ instancename: name })
-                    });
-
-                    if (!response.ok) {
-                        const errData = await response.json().catch(() => ({}));
-                        throw new Error(errData.error || errData.message || 'Server Error');
-                    }
-
-                    await fetchInstances();
-                    showToast('Terminated', `Instance "${name}" has been killed.`, 'error');
-                } catch (error) {
-                    console.error('Kill Error:', error);
-                    showToast('Kill Failed', error.message, 'error');
-                }
+                const inst = instances.find(i => i.name === name);
+                if (inst) inst.status = 'stopped';
+                renderInstances();
+                showToast('Stopped', `"${name}" halted.`, 'info');
+            } else if (type === 'start') {
+                const inst = instances.find(i => i.name === name);
+                if (inst) inst.status = 'building';
+                renderInstances();
+                showToast('Starting', `Starting "${name}"...`, 'success');
             }
         }
 
         function handleWorkspace() { showToast('Redirecting', 'Opening secure workspace...', 'info'); }
 
-        /* ── Toast System ── */
+        /* ── Toast System (exact from build.html) ── */
         function showToast(title, message, type = "success") {
             const container = document.getElementById('toast-container');
             if (container.children.length >= 3) { container.removeChild(container.firstChild); }
@@ -1049,7 +992,6 @@
             }, 5000);
         }
 
-        /* ── Modal close handlers ── */
         document.querySelectorAll('.modal-overlay').forEach(overlay => {
             overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModals(); });
         });
