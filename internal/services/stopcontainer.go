@@ -10,7 +10,7 @@ import (
 	"github.com/johngithiyon/Nodefy/internal/repository/storage/redis"
 )
 
-func Stopcontainerservices(sessionid string,Stopcontainer *models.Stopcontainer) error{
+func Stopcontainerservices(sessionid string,Stopcontainer *models.Containermanage) error{
 
 	username,getusernamerr := redis.Getusername(sessionid)
 
@@ -25,7 +25,7 @@ func Stopcontainerservices(sessionid string,Stopcontainer *models.Stopcontainer)
 		    return errors.ErrInternalserver
 	  }
 
-	  dberr :=  postgres.Stopcontainer(username,*Stopcontainer)
+	  dberr :=  postgres.Containerstatus(username,*Stopcontainer)
 
 	  if dberr != nil {
 		    return errors.ErrInternalserver
