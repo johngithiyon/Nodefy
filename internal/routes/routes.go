@@ -15,11 +15,12 @@ func Routes() {
 	  http.HandleFunc("/otpverificationpage",handlers.RenderOtpverifypage)
 	  http.HandleFunc("/",handlers.Renderhomepage)
 	  http.HandleFunc("/aboutpage",handlers.Renderaboutpage)
-	  http.HandleFunc("/buildinstancespage",handlers.RenderBuildpage)
+	  http.HandleFunc("/buildpage",handlers.RenderBuildpage)
 	  http.HandleFunc("/choosepage",handlers.RenderChoosepage)
 	  http.HandleFunc("/deploypage",handlers.RenderDeploypage)
 	  http.HandleFunc("/explorepage",handlers.RenderExplorepage)
 	  http.HandleFunc("/teachpage",handlers.RenderTeachpage)
+	  http.HandleFunc("/buildinfopage",handlers.RenderBuildinstancepage)
 
 	  // Api endpoints
 	 
