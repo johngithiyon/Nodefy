@@ -11,7 +11,7 @@ import (
 
 func StopcontainerHandler(w http.ResponseWriter, r *http.Request) {
 
-	         var Stopcontainer models.Stopcontainer
+	         var Stopcontainer models.Containermanage
 
 	         if r.Method != http.MethodGet {
 				 response.Response(w,405,"Invalid Metheod")
