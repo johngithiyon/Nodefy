@@ -45,3 +45,7 @@ func RenderExplorepage(w http.ResponseWriter, r *http.Request) {
 func RenderTeachpage(w http.ResponseWriter, r *http.Request) {
 	services.Render(w,"teach.html")
 }
+
+func RenderBuildinstancepage(w http.ResponseWriter, r *http.Request) {
+	services.Render(w,"buildinstance.html")
+}
