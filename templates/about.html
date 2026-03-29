@@ -131,17 +131,17 @@
         .nav-links a:hover::after { width: 100%; }
 
         .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
-        section { padding: 120px 0; position: relative; }
+        section { padding: 60px 0; position: relative; }
         
-        .section-header { text-align: center; margin-bottom: 80px; }
+        .section-header { text-align: center; margin-bottom: 36px; }
         .section-tag {
             color: var(--accent-color); font-family: var(--font-code);
             font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em;
-            margin-bottom: 16px; display: block; font-weight: 600;
+            margin-bottom: 10px; display: block; font-weight: 600;
         }
         h2 {
             font-size: 2.5rem; font-weight: 700; letter-spacing: -0.03em;
-            margin-bottom: 16px; color: white;
+            margin-bottom: 10px; color: white;
             background: linear-gradient(to right, #fff, #e5e5e5);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
@@ -157,17 +157,17 @@
         .reveal.active { opacity: 1; transform: translateY(0); }
 
         .hero {
-            min-height: 70vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            min-height: 50vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
             text-align: center; padding-top: 80px;
         }
         .hero h1 {
             font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 800; line-height: 1.1;
-            margin-bottom: 32px; letter-spacing: -0.04em;
+            margin-bottom: 20px; letter-spacing: -0.04em;
             background: linear-gradient(135deg, #fff 20%, var(--accent-color) 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
         .hero p {
-            max-width: 650px; margin: 0 auto 40px; font-size: 1.2rem; color: #d1d5db;
+            max-width: 650px; margin: 0 auto; font-size: 1.2rem; color: #d1d5db;
         }
 
         .grid-2 {
@@ -190,7 +190,6 @@
         .info-card h3 { font-size: 1.5rem; margin-bottom: 16px; color: white; font-weight: 600; }
         .info-card p { font-size: 1rem; color: var(--text-muted); line-height: 1.7; }
 
-        /* ── TEAM (reduced size, improved layout) ── */
         .team-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -223,9 +222,7 @@
             border-color: var(--accent-color);
             box-shadow: 0 0 24px rgba(139, 92, 246, 0.35);
         }
-        .team-name {
-            font-size: 1.15rem; font-weight: 700; color: white; margin-bottom: 2px;
-        }
+        .team-name { font-size: 1.15rem; font-weight: 700; color: white; margin-bottom: 2px; }
         .team-role {
             color: var(--accent-color); font-size: 0.72rem; text-transform: uppercase;
             letter-spacing: 0.8px; font-weight: 600; margin-bottom: 12px;
@@ -234,11 +231,7 @@
             font-size: 0.85rem; color: var(--text-muted); line-height: 1.55;
             margin-bottom: 16px;
         }
-        .team-social-links {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-        }
+        .team-social-links { display: flex; justify-content: center; gap: 10px; }
         .team-social-icon {
             width: 34px; height: 34px; border-radius: 50%;
             background: rgba(255,255,255,0.05);
@@ -257,14 +250,14 @@
         }
 
         .timeline {
-            position: relative; max-width: 900px; margin: 0 auto; padding: 40px 0;
+            position: relative; max-width: 900px; margin: 0 auto; padding: 20px 0;
         }
         .timeline::before {
             content: ''; position: absolute; left: 50%; top: 0; bottom: 0;
             width: 2px; background: var(--border-subtle); transform: translateX(-50%);
         }
         .timeline-item {
-            position: relative; width: 45%; padding: 0 40px; margin-bottom: 50px;
+            position: relative; width: 45%; padding: 0 40px; margin-bottom: 28px;
         }
         .timeline-item:nth-child(odd) { left: 0; text-align: right; }
         .timeline-item:nth-child(even) { left: 55%; text-align: left; }
@@ -300,13 +293,13 @@
             border-top: 1px solid var(--border-subtle);
             background: rgba(5, 5, 10, 0.8);
             backdrop-filter: blur(20px);
-            padding: 80px 0 40px;
+            padding: 50px 0 30px;
         }
         .footer-grid {
             display: grid;
             grid-template-columns: 2fr 1fr 1fr 1fr;
             gap: 40px;
-            margin-bottom: 60px;
+            margin-bottom: 40px;
         }
         .footer-brand h3 {
             color: white; font-size: 1.5rem; margin-bottom: 16px;
@@ -324,7 +317,7 @@
         .footer-col ul li a:hover { color: var(--accent-color); }
         .footer-bottom {
             border-top: 1px solid var(--border-subtle);
-            padding-top: 30px;
+            padding-top: 24px;
             display: flex; justify-content: space-between; align-items: center;
             flex-wrap: wrap; gap: 20px;
         }
@@ -338,18 +331,104 @@
         }
         .social-icon:hover { background: var(--accent-color); color: white; transform: translateY(-2px); }
 
-        @media (max-width: 900px) {
-            .footer-grid { grid-template-columns: 1fr; gap: 40px; }
-            .footer-bottom { flex-direction: column; text-align: center; }
+        /* ── RESPONSIVE ── */
+
+        @media (max-width: 1024px) {
+            h2 { font-size: 2rem; }
+            .info-card { padding: 36px; }
+            .info-card h3 { font-size: 1.3rem; }
+            .timeline-item { width: 46%; padding: 0 28px; }
+            .timeline-content { padding: 20px; }
+            .timeline-content h3 { font-size: 1.1rem; }
+            .footer-grid { gap: 30px; }
         }
+
         @media (max-width: 768px) {
-            .hero h1 { font-size: 2.2rem; }
+            nav { padding: 0 20px; width: 95%; }
+            .nav-links { display: none; }
+
+            .container { padding: 0 20px; }
+            section { padding: 48px 0; }
+            .section-header { margin-bottom: 28px; }
+            h2 { font-size: 1.75rem; }
+            p.lead { font-size: 1rem; }
+
+            .hero { min-height: 40vh; padding-top: 60px; }
+            .hero h1 { font-size: 2rem; margin-bottom: 16px; }
+            .hero p { font-size: 1rem; }
+
+            .grid-2 { grid-template-columns: 1fr; gap: 24px; }
+            .info-card { padding: 28px; }
+            .info-card:hover { transform: translateY(-4px); }
+            .info-card h3 { font-size: 1.2rem; }
+
+            .team-grid { grid-template-columns: 1fr; max-width: 360px; }
+            .team-card { padding: 24px 20px 20px; }
+
             .timeline::before { left: 20px; }
-            .timeline-item { width: 100%; padding-left: 50px; padding-right: 0; text-align: left !important; }
+            .timeline-item { width: 100%; padding-left: 48px; padding-right: 0; text-align: left !important; }
             .timeline-item:nth-child(even) { left: 0; }
             .timeline-dot { left: 12px !important; right: auto !important; }
-            .grid-2 { grid-template-columns: 1fr; }
-            .team-grid { grid-template-columns: 1fr; max-width: 400px; }
+            .timeline-item { margin-bottom: 20px; }
+            .timeline-content { padding: 16px; }
+            .timeline-content h3 { font-size: 1rem; }
+            .timeline-date { font-size: 0.7rem; }
+            .timeline-desc { font-size: 0.85rem; }
+
+            .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+            .footer-bottom { flex-direction: column; text-align: center; }
+        }
+
+        @media (max-width: 480px) {
+            nav { padding: 0 16px; height: 56px; top: 12px; }
+            .nav-logo { font-size: 1.1rem; gap: 8px; }
+            .nav-logo svg { width: 20px; height: 20px; }
+
+            .container { padding: 0 16px; }
+            section { padding: 36px 0; }
+            .section-header { margin-bottom: 24px; }
+            .section-tag { font-size: 0.75rem; margin-bottom: 8px; }
+            h2 { font-size: 1.5rem; margin-bottom: 8px; }
+            p.lead { font-size: 0.9rem; }
+
+            .hero { min-height: 35vh; padding-top: 50px; }
+            .hero h1 { font-size: 1.6rem; margin-bottom: 14px; }
+            .hero p { font-size: 0.9rem; line-height: 1.5; }
+
+            .grid-2 { gap: 16px; }
+            .info-card { padding: 20px; border-radius: 16px; }
+            .card-icon { font-size: 1.5rem; margin-bottom: 16px; }
+            .info-card h3 { font-size: 1.1rem; margin-bottom: 12px; }
+            .info-card p { font-size: 0.9rem; line-height: 1.6; }
+
+            .team-grid { max-width: 100%; gap: 16px; }
+            .team-card { padding: 20px 16px 16px; border-radius: 14px; }
+            .avatar { width: 72px; height: 72px; margin-bottom: 14px; }
+            .team-name { font-size: 1rem; }
+            .team-role { font-size: 0.65rem; letter-spacing: 0.6px; margin-bottom: 10px; }
+            .team-bio { font-size: 0.8rem; line-height: 1.5; margin-bottom: 14px; }
+            .team-social-icon { width: 30px; height: 30px; }
+            .team-social-icon svg { width: 14px; height: 14px; }
+
+            .timeline { padding: 10px 0; }
+            .timeline-item { padding-left: 40px; margin-bottom: 16px; }
+            .timeline-dot { left: 8px !important; width: 14px; height: 14px; }
+            .timeline-content { padding: 14px; border-radius: 12px; }
+            .timeline-content h3 { font-size: 0.95rem; margin-bottom: 6px; }
+            .timeline-date { font-size: 0.65rem; margin-bottom: 8px; }
+            .timeline-desc { font-size: 0.8rem; line-height: 1.5; }
+
+            footer { padding: 36px 0 24px; }
+            .footer-grid { gap: 24px; margin-bottom: 28px; }
+            .footer-brand h3 { font-size: 1.2rem; margin-bottom: 12px; }
+            .footer-brand p { font-size: 0.85rem; }
+            .footer-col h4 { font-size: 0.85rem; margin-bottom: 16px; }
+            .footer-col ul li { margin-bottom: 8px; }
+            .footer-col ul li a { font-size: 0.8rem; }
+            .social-links { gap: 12px; }
+            .social-icon { width: 32px; height: 32px; }
+            .social-icon svg { width: 16px; height: 16px; }
+            .copyright { font-size: 0.78rem; }
         }
     </style>
 </head>
