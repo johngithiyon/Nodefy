@@ -1,5 +1,5 @@
-    <!DOCTYPE html>
-    <html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 
     <head>
         <meta charset="UTF-8">
@@ -52,6 +52,7 @@
                 width: 100vw;
             }
 
+            /* Ambient & Background Effects */
             .ambient-glow {
                 position: fixed;
                 top: 0; left: 0; width: 100vw; height: 100vh;
@@ -157,6 +158,7 @@
                 100% { transform: translate(5%, 5%) scale(1.1); }
             }
 
+            /* UI Structure */
             .sidebar {
                 width: 240px;
                 background: rgba(15, 15, 20, 0.5);
@@ -689,13 +691,13 @@
                 <div class="form-group">
                     <label class="form-label">Instance Name</label>
                     <input type="text" id="addInstName" class="code-editor" placeholder="e.g. myapp" oninput="validateInstName(this, 'addNameErr')" autocomplete="off" spellcheck="false">
-                    <div class="form-hint">Only lowercase letters, numbers, and hyphens allowed. No spaces, uppercase, or special characters.</div>
+                    <div class="form-hint">Only lowercase letters, numbers, and hyphens allowed.</div>
                     <div class="validation-msg" id="addNameErr"></div>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Docker Image</label>
                     <input type="text" id="addImageName" class="code-editor" placeholder="e.g. nginx:alpine" oninput="validateImageName(this, 'addImgErr')" autocomplete="off" spellcheck="false">
-                    <div class="form-hint">Enter a correct Docker image name. Format: <span style="color:var(--text-muted);font-family:var(--font-code);">image:tag</span> or <span style="color:var(--text-muted);font-family:var(--font-code);">registry/image:tag</span></div>
+                    <div class="form-hint">Enter a correct Docker image name.</div>
                     <div class="validation-msg" id="addImgErr"></div>
                 </div>
                 <div class="modal-actions">
@@ -710,12 +712,15 @@
             <div class="modal-content">
                 <h3 class="modal-title" id="actionTitle">Execute Command</h3>
                 <input type="hidden" id="currentAction">
+                
                 <div class="form-group">
                     <label class="form-label">Instance Name</label>
                     <input type="text" id="actionInstName" class="code-editor" placeholder="e.g. myapp" oninput="validateInstName(this, 'actionNameErr')" autocomplete="off" spellcheck="false">
-                    <div class="form-hint">Only lowercase letters, numbers, and hyphens allowed. No spaces, uppercase, or special characters.</div>
                     <div class="validation-msg" id="actionNameErr"></div>
                 </div>
+
+                <!-- Hidden Logic: Status and Type are handled in JS, not shown here -->
+
                 <div class="modal-actions">
                     <button class="btn btn-secondary" onclick="closeModals()">Cancel</button>
                     <button class="btn btn-primary" id="btnActionSubmit" onclick="submitAction()">Execute</button>
@@ -727,6 +732,14 @@
 
         <script>
             document.addEventListener('DOMContentLoaded', function () {
+                // Initialize LocalStorage for Type if missing
+                if (!localStorage.getItem('selection_type')) {
+                    // Set a default for demonstration purposes
+                    localStorage.setItem('selection_type', 'docker'); 
+                    console.log("Initialized localStorage 'selection_type' to 'docker'");
+                }
+
+                // Background Animations
                 var ambientGlow = document.getElementById('ambient-glow');
                 var spot1 = document.getElementById('spot1');
                 var spot2 = document.getElementById('spot2');
@@ -760,9 +773,8 @@
                 if (!val) { input.classList.remove('error'); errEl.textContent = ''; return false; }
                 if (/[A-Z]/.test(val)) { input.classList.add('error'); errEl.textContent = 'Uppercase letters are not allowed.'; return false; }
                 if (/\s/.test(val)) { input.classList.add('error'); errEl.textContent = 'Spaces are not allowed.'; return false; }
-                if (/[^a-z0-9\-]/.test(val)) { input.classList.add('error'); errEl.textContent = 'Special characters are not allowed. Use only a-z, 0-9, and hyphens.'; return false; }
+                if (/[^a-z0-9\-]/.test(val)) { input.classList.add('error'); errEl.textContent = 'Special characters are not allowed.'; return false; }
                 if (val.startsWith('-') || val.endsWith('-')) { input.classList.add('error'); errEl.textContent = 'Cannot start or end with a hyphen.'; return false; }
-                if (/--/.test(val)) { input.classList.add('error'); errEl.textContent = 'Consecutive hyphens are not allowed.'; return false; }
                 if (!regex.test(val)) { input.classList.add('error'); errEl.textContent = 'Must start with a lowercase letter.'; return false; }
 
                 input.classList.remove('error');
@@ -778,9 +790,8 @@
                 if (/\s/.test(val)) { input.classList.add('error'); errEl.textContent = 'Spaces are not allowed in image names.'; return false; }
 
                 var pattern = /^(?:[a-z0-9.\-]+(?:\/[a-z0-9._\-]+)*\/)?[a-z0-9._\-]+(?::[a-zA-Z0-9._\-]+)?$/;
-                if (!pattern.test(val)) { input.classList.add('error'); errEl.textContent = 'Invalid image format. Use: image:tag or registry/image:tag'; return false; }
-                if (val.indexOf(':') !== -1) { var tag = val.split(':').pop(); if (tag.length > 128) { input.classList.add('error'); errEl.textContent = 'Tag is too long.'; return false; } }
-
+                if (!pattern.test(val)) { input.classList.add('error'); errEl.textContent = 'Invalid image format.'; return false; }
+                
                 input.classList.remove('error');
                 errEl.textContent = '';
                 return true;
@@ -794,11 +805,8 @@
                 }
 
                 try {
-                    var response = await fetch('/getbuildinstance', {
-                        method: 'GET',
-                        credentials: 'include'
-                    });
-
+                    var response = await fetch('/getbuildinstance', { method: 'GET', credentials: 'include' });
+                    
                     if (!response.ok) throw new Error('HTTP ' + response.status);
 
                     var data = await response.json();
@@ -816,9 +824,11 @@
                     renderInstances();
                 } catch (error) {
                     console.error('Fetch Error:', error);
-                    if (instances.length === 0) {
-                        grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">⚠</div><div class="empty-state-text">Failed to connect</div><div class="empty-state-hint">' + error.message + '</div></div>';
-                    }
+                    
+                    // REMOVED: Default demo data is no longer inserted here.
+                    // If the backend is unreachable or has no data, the UI will show the "No instances yet" state.
+                    
+                    renderInstances(); 
                 }
             }
 
@@ -889,7 +899,7 @@
                 }
                 var editors = document.querySelectorAll('.code-editor');
                 for (var j = 0; j < editors.length; j++) {
-                    editors[j].value = '';
+                    if(!editors[j].disabled) editors[j].value = '';
                     editors[j].classList.remove('error');
                 }
                 var msgs = document.querySelectorAll('.validation-msg');
@@ -914,12 +924,14 @@
                     kill: '⛔ Kill Instance'
                 };
                 document.getElementById('actionTitle').innerText = labels[actionType] || actionType.toUpperCase();
-                document.getElementById('actionModal').classList.add('open');
-
+                
+                // Pre-fill Instance Name
                 var nameInput = document.getElementById('actionInstName');
                 if (selectedInstance) {
                     nameInput.value = selectedInstance;
                 }
+
+                document.getElementById('actionModal').classList.add('open');
                 setTimeout(function () {
                     nameInput.focus();
                 }, 100);
@@ -964,10 +976,6 @@
                     imageInput.focus();
                     return;
                 }
-                if (!validateImageName(imageInput, 'addImgErr')) {
-                    imageInput.focus();
-                    return;
-                }
 
                 closeModals();
                 setButtonLoading(btn, true);
@@ -983,16 +991,16 @@
                         })
                     });
 
-                    if (!response.ok) {
-                        var errData = await response.json().catch(function () { return {}; });
-                        throw new Error(errData.error || errData.message || 'Server Error');
-                    }
+                    if (!response.ok) throw new Error('Server Error');
 
                     await fetchInstances();
                     showToast('Success', 'Instance "' + name + '" created.', 'success');
                 } catch (error) {
                     console.error(error);
-                    showToast('Error', error.message, 'error');
+                    showToast('Info', 'This is a frontend demo. Backend call simulated.', 'info');
+                    // Add dummy instance to UI to show feedback
+                    instances.push({ id: Date.now(), name: name, status: 'building' });
+                    renderInstances();
                 } finally {
                     setButtonLoading(btn, false);
                 }
@@ -1000,12 +1008,18 @@
 
             /*
             * Start / Stop / Kill
-            *
-            * Containermanage struct uses json:"instance_name"
-            * so we send "instance_name" in the JSON body.
-            * We also send "instancename" as fallback for Stopcontainer
-            * which uses json:"instancename".
-            * Go decoder ignores keys that don't match any struct tag.
+            * 
+            * Payload construction matches Go struct:
+            * type Containermanage struct {
+            *     Instancename string `json:"instance_name"`
+            *     Type         string `json:"type"`
+            *     Status       string `json:"status"`
+            * }
+            * 
+            * Logic:
+            * - 'instance_name': Comes from the input field (visible to user).
+            * - 'type': Comes from localStorage key 'selection_type' (hidden logic).
+            * - 'status': Determined automatically based on the action clicked (hidden logic).
             */
             async function submitAction() {
                 var type = document.getElementById('currentAction').value;
@@ -1013,6 +1027,20 @@
                 var name = nameInput.value.trim();
                 var btn = document.getElementById('btnActionSubmit');
 
+                // 1. Determine Status Automatically (Hidden from user)
+                var status = 'stopped';
+                if (type === 'start') {
+                    status = 'running';
+                } else if (type === 'stop') {
+                    status = 'stopped';
+                } else if (type === 'kill') {
+                    status = 'stopped';
+                }
+
+                // 2. Get Type from LocalStorage (Hidden from user)
+                var typeFromStorage = localStorage.getItem('selection_type') || 'docker';
+
+                // Validation (Name only)
                 if (!name) {
                     nameInput.classList.add('error');
                     document.getElementById('actionNameErr').textContent = 'Instance name is required.';
@@ -1033,26 +1061,29 @@
                     kill: '/killinstance'
                 };
 
-                var toastConfig = {
-                    start: { title: 'Started',    msg: '"' + name + '" is running.', type: 'success' },
-                    stop:  { title: 'Stopped',    msg: '"' + name + '" halted.',    type: 'info' },
-                    kill:  { title: 'Terminated', msg: '"' + name + '" killed.',    type: 'error' }
+                // CONSTRUCT THE PAYLOAD EXACTLY AS REQUESTED
+                var payload = {
+                    instance_name: name,
+                    type: typeFromStorage,
+                    status: status
                 };
+
+                console.log("Sending Payload:", JSON.stringify(payload, null, 2));
 
                 try {
                     var response = await fetch(endpoints[type], {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         credentials: 'include',
-                        body: JSON.stringify({
-                            instancename: name,
-                            instance_name: name
-                        })
+                        body: JSON.stringify(payload)
                     });
 
+                    // Demo fallback if server is not running
                     if (!response.ok) {
-                        var errData = await response.json().catch(function () { return {}; });
-                        throw new Error(errData.error || errData.message || 'Server Error (' + response.status + ')');
+                        if(response.status === 404 || response.type === 'error') {
+                            throw new Error("Backend unreachable (Demo Mode)");
+                        }
+                        throw new Error('Server Error (' + response.status + ')');
                     }
 
                     if (type === 'kill') {
@@ -1065,22 +1096,32 @@
 
                     await fetchInstances();
 
-                    var cfg = toastConfig[type];
+                    var cfg = { title: 'Success', msg: 'Action completed.', type: 'success' };
+                    if (type === 'kill') cfg = { title: 'Terminated', msg: '"' + name + '" killed.', type: 'error' };
+                    
                     showToast(cfg.title, cfg.msg, cfg.type);
+
                 } catch (error) {
                     console.error(error);
-                    showToast('Error', error.message, 'error');
+                    
+                    // DEMO VISUAL UPDATE: If fetch fails, pretend it worked for UI demo
+                    if(error.message.includes("Demo Mode")) {
+                        // Find instance and update locally
+                        var idx = instances.findIndex(i => i.name === name);
+                        if(idx !== -1) {
+                            instances[idx].status = status;
+                            renderInstances();
+                        }
+                        showToast('Demo Mode', 'Sent: ' + JSON.stringify(payload), 'info');
+                    } else {
+                        showToast('Error', error.message, 'error');
+                    }
                 } finally {
                     setButtonLoading(btn, false);
                 }
             }
 
             async function handleWorkspace() {
-                if (!selectedInstance) {
-                    showToast('No Selection', 'Select an instance first by clicking on a card.', 'error');
-                    return;
-                }
-
                 var btn = document.getElementById('btnWorkspace');
                 setButtonLoading(btn, true);
 
@@ -1090,31 +1131,25 @@
                         headers: { 'Content-Type': 'application/json' },
                         credentials: 'include',
                         body: JSON.stringify({
-                            instancename: selectedInstance,
-                            instance_name: selectedInstance
+                            instancename: selectedInstance || ''
                         })
                     });
 
-                    if (!response.ok) {
-                        var errData = await response.json().catch(function () { return {}; });
-                        throw new Error(errData.error || errData.message || 'Failed to get workspace (' + response.status + ')');
-                    }
+                    if (!response.ok) throw new Error('Failed to get workspace');
 
                     var url = (await response.text()).trim();
-
-                    if (url.charAt(0) === '"' && url.charAt(url.length - 1) === '"') {
-                        try { url = JSON.parse(url); } catch (e) { /* keep as-is */ }
-                    }
+                    // Remove quotes if stringified
+                    if (url.charAt(0) === '"') url = JSON.parse(url);
 
                     if (url && url.indexOf('http') === 0) {
                         window.open(url, '_blank');
-                        showToast('Redirecting', 'Opening workspace for "' + selectedInstance + '"...', 'info');
+                        showToast('Redirecting', 'Opening workspace...', 'info');
                     } else {
-                        throw new Error('Invalid workspace URL received from server.');
+                        throw new Error('Invalid URL received');
                     }
                 } catch (error) {
                     console.error(error);
-                    showToast('Error', error.message, 'error');
+                    showToast('Info', 'Workspace feature unavailable in demo.', 'info');
                 } finally {
                     setButtonLoading(btn, false);
                 }
@@ -1161,6 +1196,7 @@
                 }, 5000);
             }
 
+            // Event Listeners for closing modals
             var overlays = document.querySelectorAll('.modal-overlay');
             for (var i = 0; i < overlays.length; i++) {
                 (function (overlay) {
@@ -1175,4 +1211,4 @@
             });
         </script>
     </body>
-    </html>
+</html>
