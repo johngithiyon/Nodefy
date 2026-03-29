@@ -5,17 +5,17 @@ import (
 	"os/exec"
 
 	"github.com/johngithiyon/Nodefy/internal/errors"
-
+	"github.com/johngithiyon/Nodefy/internal/models"
 )
 
-func Killcontainer(killinstancename,username string) error {
+func Killcontainer(killinstance models.Containermanage,username string) error {
 
 	     cmd := exec.Command(
 			"docker",
 			"ps",
 			"-aq",
 			"--filter", "label=owner="+username,
-			 "--filter","label=instance="+killinstancename,
+			 "--filter","label=instance="+killinstance.Instancename,
 		)
 
 		output,outputerr :=  cmd.CombinedOutput()
