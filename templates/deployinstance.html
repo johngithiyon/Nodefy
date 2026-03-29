@@ -942,12 +942,22 @@
         /*
          * Deploy Add Instance
          *
-         * Your Deployaddinstances struct uses:
+         * Deployaddinstances struct:
          *   Appname   string `json:"appname"`
          *   Imagename string `json:"imagename"`
          *
-         * So we send { "appname": "...", "imagename": "..." }
-         * to endpoint /addinstancesdeploy
+         * POST /addinstancesdeploy
+         * Body: { "appname": "myapp", "imagename": "nginx:alpine" }
+         *
+         * Flow:
+         *   → handler reads session-id cookie
+         *   → utils.Jstost decodes JSON into Deployaddinstances
+         *   → services.DeployAddinstanceservices(sessionid, &deploy)
+         *       → redis.Getusername(sessionid)
+         *       → docker.DeployAddinstances(username, deploy)
+         *           → docker run --name myapp -d nginx:alpine
+         *       → postgres.SaveDeployAddinstances(username, deploy)
+         *   Response: 200 "Added Instances Successfully"
          */
         async function submitAddInstance() {
             var nameInput = document.getElementById('addAppName');
@@ -1007,11 +1017,98 @@
         }
 
         /*
-         * Start / Stop / Kill
+         * ═══════════════════════════════════════════════════════════
+         * Start / Stop / Kill — container control endpoints
+         * ═══════════════════════════════════════════════════════════
          *
-         * Sends both "instancename" and "instance_name" so it works
-         * regardless of which struct tag your handlers expect.
-         * Go's json decoder ignores keys that don't match any tag.
+         * All three handlers share the Containermanage struct:
+         *
+         *   type Containermanage struct {
+         *       Instancename string `json:"instance_name"`
+         *       Type         string `json:"type"`
+         *       Status       string `json:"status"`
+         *   }
+         *
+         * We send BOTH keys in the JSON body:
+         *   "instance_name" — matches json:"instance_name" on Containermanage
+         *   "instancename"  — matches json:"instancename" on Stopcontainer
+         *
+         * Go's json.Decoder silently ignores keys that don't match any
+         * struct field tag, so sending both is always safe.
+         *
+         * ──────────────────────────────────────────────────────────
+         *
+         * START — POST /startinstance
+         *
+         *   Body:     { "instance_name": "myapp", "instancename": "myapp" }
+         *   Handler:  Startcontainerhandler
+         *     checks: r.Method != http.MethodPost → 405
+         *     reads:  session-id cookie → utils.Jstost into Containermanage
+         *     calls:  services.Startcontainerserives(sessionid, &startcontainer)
+         *       → redis.Getusername(sessionid) → username
+         *       → docker.Startcontainer(username, startcontainer)
+         *           → docker ps -aq --filter label=owner=<user>
+         *                        --filter label=instance=myapp
+         *           → docker start <container_id>
+         *       → postgres.Containerstatus(username, startcontainer)
+         *           → updates DB status
+         *   Response: 200 "Start Container Sucessfully"
+         *
+         * ──────────────────────────────────────────────────────────
+         *
+         * STOP — POST /stopinstance
+         *
+         *   Body:     { "instance_name": "myapp", "instancename": "myapp" }
+         *   Handler:  StopcontainerHandler
+         *     ⚠ BUG:  checks r.Method != http.MethodGet
+         *             This should be http.MethodPost.
+         *             A POST request will get 405 "Invalid Metheod".
+         *             FIX: change to r.Method != http.MethodPost
+         *
+         *     reads:  session-id cookie → utils.Jstost into Containermanage
+         *             (handler declares var Stopcontainer models.Containermanage)
+         *     calls:  services.Stopcontainerservices(sessionid, &Stopcontainer)
+         *       → redis.Getusername(sessionid) → username
+         *       → docker.Stopcontainer(username, Stopcontainer)
+         *           → docker ps -aq --filter label=owner=<user>
+         *                        --filter label=instance=myapp
+         *           → docker stop <container_id>
+         *       → postgres.Containerstatus(username, Stopcontainer)
+         *           → updates DB status
+         *   Response: 200 "Stop Instances Successfully"
+         *
+         *   NOTE: There is also a separate models.Stopcontainer struct:
+         *     type Stopcontainer struct {
+         *         Instancename string `json:"instancename"`
+         *         Type         string `json:"type"`
+         *     }
+         *   This is used by postgres.Stopcontainer(), NOT by the handler
+         *   itself. The handler decodes into Containermanage, but the
+         *   postgres layer receives Containermanage too (via the service).
+         *   The "instancename" key is sent as a safety net in case this
+         *   gets refactored to use models.Stopcontainer directly.
+         *
+         * ──────────────────────────────────────────────────────────
+         *
+         * KILL — POST /killinstance
+         *
+         *   Body:     { "instance_name": "myapp", "instancename": "myapp" }
+         *   Handler:  Killcontainerhandler
+         *     checks: r.Method != http.MethodPost → 405
+         *     reads:  session-id cookie → utils.Jstost into Containermanage
+         *     calls:  services.Killcontainerservices(&killinstance, sessionid)
+         *       → redis.Getusername(sessionid) → username
+         *       → docker.Killcontainer(killinstance, username)
+         *           → docker ps -aq --filter label=owner=<user>
+         *                        --filter label=instance=myapp
+         *           → docker rm -f <container_id>
+         *       → postgres.Containerkill(username, killinstance)
+         *           → deletes DB record
+         *           → if not found: ErrInstancenotfound → 400
+         *   Response: 200 "Kill Instance Successfully"
+         *             400 "Instance not found"
+         *
+         * ──────────────────────────────────────────────────────────
          */
         async function submitAction() {
             var type = document.getElementById('currentAction').value;
@@ -1051,8 +1148,8 @@
                     headers: { 'Content-Type': 'application/json' },
                     credentials: 'include',
                     body: JSON.stringify({
-                        instancename: name,
-                        instance_name: name
+                        instance_name: name,
+                        instancename: name
                     })
                 });
 
@@ -1073,6 +1170,15 @@
             }
         }
 
+        /*
+         * Workspace — shared endpoint
+         *
+         * GET /workspace (session-id cookie sent via credentials: 'include')
+         * → WorkspaceHanlder reads session, resolves username
+         * → Returns workspace URL as plain text
+         * → Frontend unwraps if JSON-quoted, validates http prefix
+         * → Opens in new tab
+         */
         async function handleWorkspace() {
             var btn = document.getElementById('btnWorkspace');
             setButtonLoading(btn, true);
@@ -1090,6 +1196,7 @@
 
                 var url = (await response.text()).trim();
 
+                /* Guard against JSON-wrapped string: "https://..." */
                 if (url.charAt(0) === '"' && url.charAt(url.length - 1) === '"') {
                     try { url = JSON.parse(url); } catch (e) { /* keep as-is */ }
                 }
