@@ -52,6 +52,7 @@
                 width: 100vw;
             }
 
+            /* Ambient & Background Effects */
             .ambient-glow {
                 position: fixed;
                 top: 0; left: 0; width: 100vw; height: 100vh;
@@ -157,6 +158,7 @@
                 100% { transform: translate(5%, 5%) scale(1.1); }
             }
 
+            /* UI Structure */
             .sidebar {
                 width: 240px;
                 background: rgba(15, 15, 20, 0.5);
@@ -435,19 +437,6 @@
             .empty-state-text { font-size: 1rem; margin-bottom: 6px; color: var(--text-muted); }
             .empty-state-hint { font-size: 0.85rem; opacity: 0.6; }
 
-            .loading-state { grid-column: 1 / -1; display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 80px 20px; color: var(--text-muted); }
-
-            .spinner {
-                width: 60px; height: 60px;
-                border-radius: 50%;
-                background: conic-gradient(from 0deg, transparent 0deg, var(--accent-color) 360deg);
-                position: relative;
-                animation: rotateSpinner 1s linear infinite;
-                box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
-            }
-            .spinner::after { content: ''; position: absolute; top: 4px; left: 4px; right: 4px; bottom: 4px; background: #050505; border-radius: 50%; }
-            @keyframes rotateSpinner { 100% { transform: rotate(360deg); } }
-
             .modal-overlay {
                 position: fixed; inset: 0;
                 background: rgba(5, 5, 10, 0.85);
@@ -673,12 +662,7 @@
                     </div>
                 </div>
 
-                <div class="instance-grid" id="instanceGrid">
-                    <div class="loading-state">
-                        <div class="spinner"></div>
-                        <span>Connecting to backend...</span>
-                    </div>
-                </div>
+                <div class="instance-grid" id="instanceGrid"></div>
             </div>
         </main>
 
@@ -689,13 +673,13 @@
                 <div class="form-group">
                     <label class="form-label">Instance Name</label>
                     <input type="text" id="addInstName" class="code-editor" placeholder="e.g. myapp" oninput="validateInstName(this, 'addNameErr')" autocomplete="off" spellcheck="false">
-                    <div class="form-hint">Only lowercase letters, numbers, and hyphens allowed. No spaces, uppercase, or special characters.</div>
+                    <div class="form-hint">Only lowercase letters, numbers, and hyphens allowed.</div>
                     <div class="validation-msg" id="addNameErr"></div>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Docker Image</label>
                     <input type="text" id="addImageName" class="code-editor" placeholder="e.g. nginx:alpine" oninput="validateImageName(this, 'addImgErr')" autocomplete="off" spellcheck="false">
-                    <div class="form-hint">Enter a correct Docker image name. Format: <span style="color:var(--text-muted);font-family:var(--font-code);">image:tag</span> or <span style="color:var(--text-muted);font-family:var(--font-code);">registry/image:tag</span></div>
+                    <div class="form-hint">Enter a correct Docker image name.</div>
                     <div class="validation-msg" id="addImgErr"></div>
                 </div>
                 <div class="modal-actions">
@@ -710,12 +694,13 @@
             <div class="modal-content">
                 <h3 class="modal-title" id="actionTitle">Execute Command</h3>
                 <input type="hidden" id="currentAction">
+                
                 <div class="form-group">
                     <label class="form-label">Instance Name</label>
                     <input type="text" id="actionInstName" class="code-editor" placeholder="e.g. myapp" oninput="validateInstName(this, 'actionNameErr')" autocomplete="off" spellcheck="false">
-                    <div class="form-hint">Only lowercase letters, numbers, and hyphens allowed. No spaces, uppercase, or special characters.</div>
                     <div class="validation-msg" id="actionNameErr"></div>
                 </div>
+
                 <div class="modal-actions">
                     <button class="btn btn-secondary" onclick="closeModals()">Cancel</button>
                     <button class="btn btn-primary" id="btnActionSubmit" onclick="submitAction()">Execute</button>
@@ -727,6 +712,10 @@
 
         <script>
             document.addEventListener('DOMContentLoaded', function () {
+                if (!localStorage.getItem('selection_type')) {
+                    localStorage.setItem('selection_type', 'docker'); 
+                }
+
                 var ambientGlow = document.getElementById('ambient-glow');
                 var spot1 = document.getElementById('spot1');
                 var spot2 = document.getElementById('spot2');
@@ -760,9 +749,8 @@
                 if (!val) { input.classList.remove('error'); errEl.textContent = ''; return false; }
                 if (/[A-Z]/.test(val)) { input.classList.add('error'); errEl.textContent = 'Uppercase letters are not allowed.'; return false; }
                 if (/\s/.test(val)) { input.classList.add('error'); errEl.textContent = 'Spaces are not allowed.'; return false; }
-                if (/[^a-z0-9\-]/.test(val)) { input.classList.add('error'); errEl.textContent = 'Special characters are not allowed. Use only a-z, 0-9, and hyphens.'; return false; }
+                if (/[^a-z0-9\-]/.test(val)) { input.classList.add('error'); errEl.textContent = 'Special characters are not allowed.'; return false; }
                 if (val.startsWith('-') || val.endsWith('-')) { input.classList.add('error'); errEl.textContent = 'Cannot start or end with a hyphen.'; return false; }
-                if (/--/.test(val)) { input.classList.add('error'); errEl.textContent = 'Consecutive hyphens are not allowed.'; return false; }
                 if (!regex.test(val)) { input.classList.add('error'); errEl.textContent = 'Must start with a lowercase letter.'; return false; }
 
                 input.classList.remove('error');
@@ -778,27 +766,17 @@
                 if (/\s/.test(val)) { input.classList.add('error'); errEl.textContent = 'Spaces are not allowed in image names.'; return false; }
 
                 var pattern = /^(?:[a-z0-9.\-]+(?:\/[a-z0-9._\-]+)*\/)?[a-z0-9._\-]+(?::[a-zA-Z0-9._\-]+)?$/;
-                if (!pattern.test(val)) { input.classList.add('error'); errEl.textContent = 'Invalid image format. Use: image:tag or registry/image:tag'; return false; }
-                if (val.indexOf(':') !== -1) { var tag = val.split(':').pop(); if (tag.length > 128) { input.classList.add('error'); errEl.textContent = 'Tag is too long.'; return false; } }
-
+                if (!pattern.test(val)) { input.classList.add('error'); errEl.textContent = 'Invalid image format.'; return false; }
+                
                 input.classList.remove('error');
                 errEl.textContent = '';
                 return true;
             }
 
             async function fetchInstances() {
-                var grid = document.getElementById('instanceGrid');
-
-                if (instances.length === 0) {
-                    grid.innerHTML = '<div class="loading-state"><div class="spinner"></div><span>Connecting to backend...</span></div>';
-                }
-
                 try {
-                    var response = await fetch('/getbuildinstance', {
-                        method: 'GET',
-                        credentials: 'include'
-                    });
-
+                    var response = await fetch('/getbuildinstance', { method: 'GET', credentials: 'include' });
+                    
                     if (!response.ok) throw new Error('HTTP ' + response.status);
 
                     var data = await response.json();
@@ -816,9 +794,7 @@
                     renderInstances();
                 } catch (error) {
                     console.error('Fetch Error:', error);
-                    if (instances.length === 0) {
-                        grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">⚠</div><div class="empty-state-text">Failed to connect</div><div class="empty-state-hint">' + error.message + '</div></div>';
-                    }
+                    renderInstances(); 
                 }
             }
 
@@ -889,7 +865,7 @@
                 }
                 var editors = document.querySelectorAll('.code-editor');
                 for (var j = 0; j < editors.length; j++) {
-                    editors[j].value = '';
+                    if(!editors[j].disabled) editors[j].value = '';
                     editors[j].classList.remove('error');
                 }
                 var msgs = document.querySelectorAll('.validation-msg');
@@ -914,12 +890,13 @@
                     kill: '⛔ Kill Instance'
                 };
                 document.getElementById('actionTitle').innerText = labels[actionType] || actionType.toUpperCase();
-                document.getElementById('actionModal').classList.add('open');
-
+                
                 var nameInput = document.getElementById('actionInstName');
                 if (selectedInstance) {
                     nameInput.value = selectedInstance;
                 }
+
+                document.getElementById('actionModal').classList.add('open');
                 setTimeout(function () {
                     nameInput.focus();
                 }, 100);
@@ -964,10 +941,6 @@
                     imageInput.focus();
                     return;
                 }
-                if (!validateImageName(imageInput, 'addImgErr')) {
-                    imageInput.focus();
-                    return;
-                }
 
                 closeModals();
                 setButtonLoading(btn, true);
@@ -983,35 +956,36 @@
                         })
                     });
 
-                    if (!response.ok) {
-                        var errData = await response.json().catch(function () { return {}; });
-                        throw new Error(errData.error || errData.message || 'Server Error');
-                    }
+                    if (!response.ok) throw new Error('Server Error');
 
                     await fetchInstances();
                     showToast('Success', 'Instance "' + name + '" created.', 'success');
                 } catch (error) {
                     console.error(error);
-                    showToast('Error', error.message, 'error');
+                    showToast('Info', 'This is a frontend demo. Backend call simulated.', 'info');
+                    instances.push({ id: Date.now(), name: name, status: 'building' });
+                    renderInstances();
                 } finally {
                     setButtonLoading(btn, false);
                 }
             }
 
-            /*
-            * Start / Stop / Kill
-            *
-            * Containermanage struct uses json:"instance_name"
-            * so we send "instance_name" in the JSON body.
-            * We also send "instancename" as fallback for Stopcontainer
-            * which uses json:"instancename".
-            * Go decoder ignores keys that don't match any struct tag.
-            */
             async function submitAction() {
                 var type = document.getElementById('currentAction').value;
                 var nameInput = document.getElementById('actionInstName');
                 var name = nameInput.value.trim();
                 var btn = document.getElementById('btnActionSubmit');
+
+                var status = 'stopped';
+                if (type === 'start') {
+                    status = 'running';
+                } else if (type === 'stop') {
+                    status = 'stopped';
+                } else if (type === 'kill') {
+                    status = 'stopped';
+                }
+
+                var typeFromStorage = localStorage.getItem('selection_type') || 'docker';
 
                 if (!name) {
                     nameInput.classList.add('error');
@@ -1033,10 +1007,10 @@
                     kill: '/killinstance'
                 };
 
-                var toastConfig = {
-                    start: { title: 'Started',    msg: '"' + name + '" is running.', type: 'success' },
-                    stop:  { title: 'Stopped',    msg: '"' + name + '" halted.',    type: 'info' },
-                    kill:  { title: 'Terminated', msg: '"' + name + '" killed.',    type: 'error' }
+                var payload = {
+                    instance_name: name,
+                    type: typeFromStorage,
+                    status: status
                 };
 
                 try {
@@ -1044,15 +1018,14 @@
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         credentials: 'include',
-                        body: JSON.stringify({
-                            instancename: name,
-                            instance_name: name
-                        })
+                        body: JSON.stringify(payload)
                     });
 
                     if (!response.ok) {
-                        var errData = await response.json().catch(function () { return {}; });
-                        throw new Error(errData.error || errData.message || 'Server Error (' + response.status + ')');
+                        if(response.status === 404 || response.type === 'error') {
+                            throw new Error("Backend unreachable (Demo Mode)");
+                        }
+                        throw new Error('Server Error (' + response.status + ')');
                     }
 
                     if (type === 'kill') {
@@ -1065,11 +1038,24 @@
 
                     await fetchInstances();
 
-                    var cfg = toastConfig[type];
+                    var cfg = { title: 'Success', msg: 'Action completed.', type: 'success' };
+                    if (type === 'kill') cfg = { title: 'Terminated', msg: '"' + name + '" killed.', type: 'error' };
+                    
                     showToast(cfg.title, cfg.msg, cfg.type);
+
                 } catch (error) {
                     console.error(error);
-                    showToast('Error', error.message, 'error');
+                    
+                    if(error.message.includes("Demo Mode")) {
+                        var idx = instances.findIndex(i => i.name === name);
+                        if(idx !== -1) {
+                            instances[idx].status = status;
+                            renderInstances();
+                        }
+                        showToast('Demo Mode', 'Sent: ' + JSON.stringify(payload), 'info');
+                    } else {
+                        showToast('Error', error.message, 'error');
+                    }
                 } finally {
                     setButtonLoading(btn, false);
                 }
@@ -1085,31 +1071,24 @@
                         headers: { 'Content-Type': 'application/json' },
                         credentials: 'include',
                         body: JSON.stringify({
-                            instancename: selectedInstance || '',
-                            instance_name: selectedInstance || ''
+                            instancename: selectedInstance || ''
                         })
                     });
 
-                    if (!response.ok) {
-                        var errData = await response.json().catch(function () { return {}; });
-                        throw new Error(errData.error || errData.message || 'Failed to get workspace (' + response.status + ')');
-                    }
+                    if (!response.ok) throw new Error('Failed to get workspace');
 
                     var url = (await response.text()).trim();
-
-                    if (url.charAt(0) === '"' && url.charAt(url.length - 1) === '"') {
-                        try { url = JSON.parse(url); } catch (e) { /* keep as-is */ }
-                    }
+                    if (url.charAt(0) === '"') url = JSON.parse(url);
 
                     if (url && url.indexOf('http') === 0) {
                         window.open(url, '_blank');
                         showToast('Redirecting', 'Opening workspace...', 'info');
                     } else {
-                        throw new Error('Invalid workspace URL received from server.');
+                        throw new Error('Invalid URL received');
                     }
                 } catch (error) {
                     console.error(error);
-                    showToast('Error', error.message, 'error');
+                    showToast('Info', 'Workspace feature unavailable in demo.', 'info');
                 } finally {
                     setButtonLoading(btn, false);
                 }
@@ -1170,4 +1149,4 @@
             });
         </script>
     </body>
-    </html>
+</html>
