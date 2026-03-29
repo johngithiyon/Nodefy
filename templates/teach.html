@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nodefy - Command Center</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-gradient-start: #050505;
+            --bg-gradient-end: #1a0b2e;
+            --accent-color: #8b5cf6;      
+            --accent-hover: #7c3aed;
+            --accent-glow: rgba(139, 92, 246, 0.4);
+            --text-main: #FFFFFF;
+            --text-muted: #A1A1AA;
+            --text-dark: #52525B;
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(255, 255, 255, 0.2);
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-blur: blur(16px);
+            --font-ui: 'Inter', sans-serif;
+            --font-code: 'JetBrains Mono', monospace;
+            --bg-sidebar: rgba(10, 10, 15, 0.6);
+            --bg-terminal: rgba(0, 0, 0, 0.6);
+            --terminal-accent: var(--accent-color);
+            --terminal-error: #ff4d4d;
+            --terminal-info: #60a5fa;
+            --shadow-glow: 0 0 30px rgba(139, 92, 246, 0.15);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font-ui);
+            background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+            background-attachment: fixed;
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .ambient-glow {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: 
+                radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.15), transparent 35%),
+                radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.12), transparent 35%);
+            z-index: -2; pointer-events: none;
+            animation: pulseGlow 12s ease-in-out infinite alternate;
+        }
+        @keyframes pulseGlow {
+            0% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.02); }
+            100% { opacity: 0.5; transform: scale(1); }
+        }
+
+        .mesh-bg {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-image: 
+                linear-gradient(rgba(139, 92, 246, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(139, 92, 246, 0.02) 1px, transparent 1px);
+            background-size: 60px 60px;
+            z-index: -2; pointer-events: none;
+            animation: meshMove 20s linear infinite alternate;
+        }
+        @keyframes meshMove {
+            0% { transform: translate(0, 0) rotate(0deg); opacity: 0.3; }
+            100% { transform: translate(-10px, -10px) rotate(0.5deg); opacity: 0.7; }
+        }
+
+        .bubbles-container {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -2; pointer-events: none; overflow: hidden;
+        }
+        .bubble {
+            position: absolute; bottom: -100px;
+            background: radial-gradient(circle at 30% 30%, rgba(139, 92, 246, 0.08), transparent 80%);
+            border-radius: 50%;
+            border: 1px solid rgba(139, 92, 246, 0.05);
+            animation: riseBubble 25s infinite ease-in; filter: blur(2px);
+        }
+        @keyframes riseBubble {
+            0% { transform: translateY(0) scale(0.8); opacity: 0; }
+            50% { opacity: 0.5; }
+            100% { transform: translateY(-120vh) scale(1.2); opacity: 0; }
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border-subtle); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-color); }
+
+        aside {
+            width: 300px;
+            background: var(--bg-sidebar);
+            backdrop-filter: var(--glass-blur);
+            border-right: 1px solid var(--border-subtle);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            z-index: 10;
+        }
+
+        .logo-area {
+            padding: 30px;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            fill: none;
+            stroke: var(--accent-color);
+            stroke-width: 2;
+            filter: drop-shadow(0 0 10px rgba(139, 92, 246, 0.5));
+        }
+
+        .logo-text {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: white;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-sub {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            display: block;
+            margin-top: 4px;
+        }
+
+        nav {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 0;
+        }
+
+        .dropdown { border-bottom: 1px solid rgba(255,255,255,0.03); }
+        
+        .dropdown-header {
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .dropdown-header:hover { color: var(--text-main); background: rgba(255,255,255,0.02); }
+
+        .dropdown-header.active-group {
+            color: var(--accent-color);
+            background: linear-gradient(90deg, rgba(139, 92, 246, 0.1), transparent);
+            border-left: 3px solid var(--accent-color);
+            padding-left: 21px;
+        }
+
+        .dropdown-arrow { transition: transform 0.3s ease; width: 14px; height: 14px; stroke: currentColor; }
+        .dropdown.open .dropdown-arrow { transform: rotate(90deg); }
+
+        .dropdown-content {
+            max-height: 0;
+            overflow: hidden;
+            background-color: rgba(0, 0, 0, 0.2);
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .dropdown.open .dropdown-content { max-height: 3000px; }
+
+        .nested-dropdown {
+            border-bottom: 1px solid rgba(255,255,255,0.02);
+            background: rgba(255,255,255,0.01);
+        }
+        
+        .nested-dropdown .dropdown-header {
+            font-size: 0.75rem;
+            padding-left: 30px;
+            text-transform: none;
+            font-weight: 500;
+        }
+
+        .nested-dropdown .dropdown-header.active-group {
+            border-left: 3px solid var(--terminal-info);
+            padding-left: 27px;
+            color: var(--terminal-info);
+        }
+
+        .submenu-item {
+            padding: 10px 24px 10px 36px;
+            display: flex;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            font-family: var(--font-code);
+        }
+        
+        .submenu-item::before {
+            content: '>'; position: absolute; left: 20px;
+            opacity: 0; color: var(--accent-color);
+            transition: all 0.2s; transform: translateX(-5px);
+        }
+
+        .submenu-item:hover { color: #fff; background: rgba(255,255,255,0.02); }
+        .submenu-item:hover::before { opacity: 1; transform: translateX(0); }
+        
+        .submenu-item.active {
+            color: var(--accent-color);
+            background: rgba(139, 92, 246, 0.05);
+            font-weight: 500;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        header {
+            padding: 20px 40px;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(5, 5, 10, 0.6);
+            backdrop-filter: blur(10px);
+            z-index: 5;
+        }
+
+        h1 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: var(--font-code);
+        }
+        
+        .status-badge {
+            font-family: var(--font-code);
+            font-size: 0.75rem;
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--accent-color);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-dot {
+            width: 6px; height: 6px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent-color);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        .content-container {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .terminal-window {
+            width: 100%;
+            max-width: 900px;
+            background: var(--bg-terminal);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5), var(--shadow-glow);
+            border: 1px solid var(--border-subtle);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            font-family: var(--font-code);
+            position: relative;
+            transition: border-color 0.3s;
+        }
+        
+        .terminal-window:hover {
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+
+        .terminal-header {
+            background: rgba(20, 20, 25, 0.8);
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .controls { display: flex; gap: 8px; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; }
+        .dot.red { background-color: #ff5f56; }
+        .dot.yellow { background-color: #ffbd2e; }
+        .dot.green { background-color: #27c93f; }
+
+        .terminal-title {
+            margin-left: auto;
+            font-size: 0.8rem;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .terminal-body {
+            padding: 30px;
+            color: #e2e8f0;
+            flex: 1;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            min-height: 450px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .output-line {
+            margin-bottom: 6px;
+            opacity: 0;
+            animation: slideIn 0.3s forwards;
+            color: var(--text-muted);
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .prompt-line {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .prompt {
+            color: var(--accent-color);
+            font-weight: bold;
+            margin-right: 12px;
+            text-shadow: 0 0 8px rgba(139, 92, 246, 0.4);
+        }
+
+        .command-input { color: #fff; white-space: pre-wrap; flex: 1; }
+
+        .cursor {
+            display: inline-block;
+            width: 10px; height: 1.2em;
+            background-color: var(--accent-color);
+            vertical-align: middle;
+            animation: blink 1s step-end infinite;
+            margin-left: 2px;
+            box-shadow: 0 0 5px var(--accent-color);
+        }
+
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        .copy-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font-ui);
+            margin-left: auto;
+        }
+        .copy-btn:hover { 
+            border-color: var(--accent-color); 
+            color: var(--accent-color); 
+            background: rgba(139, 92, 246, 0.1); 
+        }
+
+        .teaching-panel {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px dashed var(--border-subtle);
+            display: none; 
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .teaching-panel h3 {
+            color: var(--accent-color);
+            margin-bottom: 12px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-ui);
+            font-weight: 600;
+        }
+
+        .teach-desc {
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            font-family: var(--font-ui);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            white-space: pre-line;
+        }
+
+        .param-tag {
+            display: inline-block;
+            background: rgba(139, 92, 246, 0.1);
+            color: #d8b4fe;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            font-family: var(--font-code);
+        }
+
+        @media (max-width: 900px) {
+            body { flex-direction: column; overflow-y: auto; }
+            aside { width: 100%; height: auto; max-height: 250px; border-right: none; border-bottom: 1px solid var(--border-subtle); }
+            .content-container { padding: 20px; }
+            .terminal-body { min-height: 300px; padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-glow"></div>
+    <div class="mesh-bg"></div>
+    <div class="bubbles-container">
+        <div class="bubble" style="left: 10%; width: 150px; height: 150px; animation-duration: 22s;"></div>
+        <div class="bubble" style="left: 30%; width: 80px; height: 80px; animation-duration: 28s; animation-delay: -5s;"></div>
+        <div class="bubble" style="left: 70%; width: 120px; height: 120px; animation-duration: 35s; animation-delay: -10s;"></div>
+    </div>
+
+    <aside>
+        <div class="logo-area">
+            <svg class="logo-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke-linejoin="round"/>
+                <path d="M2 17L12 22L22 17" stroke-linejoin="round"/>
+                <path d="M2 12L12 17L22 12" stroke-linejoin="round"/>
+            </svg>
+            <div>
+                <div class="logo-text">Nodefy</div>
+                <span class="logo-sub">Command Center</span>
+            </div>
+        </div>
+        <nav id="sidebar-nav"></nav>
+    </aside>
+
+    <main>
+        <header>
+            <h1 id="page-title">Command Center</h1>
+            <div class="status-badge">
+                <div class="status-dot"></div>
+                SESSION_ACTIVE
+            </div>
+        </header>
+
+        <div class="content-container">
+            <div class="terminal-window">
+                <div class="terminal-header">
+                    <div class="controls">
+                        <div class="dot red"></div>
+                        <div class="dot yellow"></div>
+                        <div class="dot green"></div>
+                    </div>
+                    <div class="terminal-title">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                        <span id="terminal-title-text">user@nodefy: ~/</span>
+                    </div>
+                </div>
+                
+                <div class="terminal-body" id="terminal-body">
+                    <div id="welcome-line-1" class="output-line" style="color: var(--accent-color)">System initialized. Welcome to Nodefy Terminal v2.1</div>
+                    <div id="welcome-line-2" class="output-line" style="color: #555">Select a command category from the sidebar to begin.</div>
+                    <br>
+                    
+                    <div class="prompt-line">
+                        <span id="terminal-prompt" class="prompt">guest@nodefy:~$</span>
+                        <span id="command-display" class="command-input"></span><span class="cursor"></span>
+                        <button class="copy-btn" onclick="copyCommand()">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                            Copy
+                        </button>
+                    </div>
+                    
+                    <div id="terminal-output"></div>
+
+                    <div id="teaching-panel" class="teaching-panel">
+                        <h3>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+                            <span id="teach-title">Explanation</span>
+                        </h3>
+                        <p id="teach-desc" class="teach-desc"></p>
+                        <div style="margin-top:10px">
+                            <span style="color: #555; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">Key Parameters:</span>
+                            <div id="teach-params" style="margin-top:8px"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function getOSInfo(osValue) {
+            var map = {
+                'ubuntu': { displayName: 'Ubuntu', prompt: 'user@ubuntu:~$' },
+                'alpine': { displayName: 'Alpine', prompt: 'user@alpine:~$' },
+                'fedora': { displayName: 'Fedora', prompt: 'user@fedora:~$' },
+                'quay.io/centos/centos:stream9': { displayName: 'CentOS', prompt: 'user@centos:~$' },
+                'kalilinux/kali-rolling': { displayName: 'Kali Linux', prompt: 'user@kali:~$' }
+            };
+            return map[osValue] || { displayName: 'Linux', prompt: 'user@linux:~$' };
+        }
+
+        var basicCommands = {
+            'ls': { label: '1. List Files (ls)', command: 'ls -la', desc: 'Lists all files and directories in the current location, including hidden files.\n\nFlags used:\n  -l : Long format (permissions, owner, size, date)\n  -a : Show hidden files', params: ['-l', '-a', '-h', '-R'], output: ['total 48', 'drwxr-xr-x  6 user user 4096 Nov 15 10:00 .', 'drwxr-xr-x  3 root root 4096 Nov 10 08:00 ..', '-rw-r--r--  1 user user  220 Nov 10 08:00 .bash_logout', '-rw-r--r--  1 user user 3771 Nov 10 08:00 .bashrc', 'drwxr-xr-x  2 user user 4096 Nov 15 10:00 Desktop', 'drwxr-xr-x  2 user user 4096 Nov 15 10:00 Documents', 'drwxr-xr-x  2 user user 4096 Nov 15 10:00 Downloads', '-rw-r--r--  1 user user  807 Nov 10 08:00 .profile'] },
+            'cd': { label: '2. Change Directory (cd)', command: 'cd /home/user/Documents', desc: 'Changes the current working directory to the specified path.\n\nUseful shortcuts:\n  cd ..    -> Go up one directory\n  cd ~     -> Go to home directory\n  cd -     -> Go to previous directory\n  cd /     -> Go to root directory', params: ['..', '~', '-', '/'], output: ['user@linux:~$ cd /home/user/Documents', 'user@linux:~/Documents$ pwd', '/home/user/Documents'] },
+            'pwd': { label: '3. Print Working Directory (pwd)', command: 'pwd', desc: 'Displays the full absolute path of the current working directory.\n\nHelpful when you lose track of where you are in the file system.', params: ['-L', '-P'], output: ['/home/user/Documents'] },
+            'mkdir': { label: '4. Create Directory (mkdir)', command: 'mkdir -p projects/web-app/src', desc: 'Creates a new directory. The -p flag creates parent directories if they don\'t exist.', params: ['-p', '-v', '-m'], output: ['user@linux:~$ mkdir -p projects/web-app/src', 'user@linux:~$ ls projects/', 'web-app'] },
+            'touch': { label: '5. Create File (touch)', command: 'touch notes.txt script.sh', desc: 'Creates empty files if they don\'t exist. If the file already exists, it updates the modification timestamp.', params: ['-a', '-m', '-t'], output: ['user@linux:~$ touch notes.txt script.sh', 'user@linux:~$ ls -l notes.txt script.sh', '-rw-r--r-- 1 user user 0 Nov 15 10:30 notes.txt', '-rw-r--r-- 1 user user 0 Nov 15 10:30 script.sh'] },
+            'cat': { label: '6. Read File (cat)', command: 'cat notes.txt', desc: 'Displays the entire content of a file in the terminal.\n\nUseful variations:\n  cat -n file       -> Show line numbers\n  head -n 10 file   -> Show first 10 lines\n  tail -n 10 file   -> Show last 10 lines', params: ['-n', '-b', '-s', 'head', 'tail'], output: ['Hello, this is my first note.', 'Learning Linux commands step by step.', 'Practice makes perfect!'] },
+            'cp': { label: '7. Copy Files (cp)', command: 'cp notes.txt backup/notes.txt', desc: 'Copies files or directories from one location to another.\n\nFor directories, use the -r flag:\n  cp -r projects/ projects-backup/', params: ['-r', '-i', '-v', '-u'], output: ['user@linux:~$ cp notes.txt backup/notes.txt', 'user@linux:~$ ls backup/', 'notes.txt'] },
+            'mv': { label: '8. Move / Rename (mv)', command: 'mv oldname.txt newname.txt', desc: 'Moves files to a new location OR renames them.\n\nExamples:\n  mv file.txt /new/location/  -> Move file\n  mv old.txt new.txt           -> Rename file', params: ['-i', '-v', '-n', '-f'], output: ['user@linux:~$ mv oldname.txt newname.txt', 'user@linux:~$ ls', 'newname.txt'] },
+            'rm': { label: '9. Remove Files (rm)', command: 'rm -rf temp_folder/', desc: 'Deletes files or directories permanently.\n\nWARNING: This action cannot be undone!\n\nFlags:\n  -r : Remove directories recursively\n  -f : Force removal without confirmation\n  -i : Ask for confirmation (safer)', params: ['-r', '-f', '-i', '-v'], output: ['user@linux:~$ rm -rf temp_folder/', 'user@linux:~$ ls', 'Documents  Downloads  notes.txt'] },
+            'echo': { label: '10. Print Text (echo)', command: 'echo "Hello World" > greeting.txt', desc: 'Prints text to the terminal or writes it to a file using redirection (>).\n\nUseful for:\n  Writing to files: echo "text" > file.txt\n  Appending: echo "text" >> file.txt\n  Checking variables: echo $PATH', params: ['>', '>>', '-n', '-e', '$VAR'], output: ['user@linux:~$ echo "Hello World" > greeting.txt', 'user@linux:~$ cat greeting.txt', 'Hello World'] },
+            'whoami': { label: '11. Current User (whoami)', command: 'whoami', desc: 'Displays the username of the currently logged-in user.\n\nRelated commands:\n  id    -> Shows user ID and group IDs\n  who   -> Shows all logged-in users', params: ['id', 'who', 'groups'], output: ['user'] },
+            'clear': { label: '12. Clear Terminal (clear)', command: 'clear', desc: 'Clears all text from the terminal screen, giving you a clean workspace.\n\nShortcut: Ctrl + L also clears the terminal.', params: ['Ctrl+L'], output: ['[Terminal Cleared]'] }
+        };
+
+        var mediumCommands = {
+            'grep': { label: '1. Search Text (grep)', command: 'grep -rn "error" /var/log/', desc: 'Searches for a text pattern inside files.\n\nFlags:\n  -r : Search recursively\n  -n : Show line numbers\n  -i : Case-insensitive\n  -c : Count matching lines', params: ['-r', '-n', '-i', '-c', '-v'], output: ['/var/log/app.log:45:[ERROR] Connection timeout', '/var/log/app.log:112:[ERROR] Database not responding', '/var/log/syslog:890:kernel: error in module xfs'] },
+            'find': { label: '2. Find Files (find)', command: 'find /home -name "*.txt" -type f', desc: 'Searches for files based on criteria like name, size, type, and date.\n\nCommon filters:\n  -name "pattern"  -> Match filename\n  -type f/d        -> File or Directory\n  -size +100M      -> Larger than 100MB\n  -mtime -7        -> Modified in last 7 days', params: ['-name', '-type', '-size', '-mtime', '-exec'], output: ['/home/user/notes.txt', '/home/user/Documents/report.txt', '/home/user/Downloads/readme.txt', '/home/user/projects/todo.txt'] },
+            'chmod': { label: '3. Change Permissions (chmod)', command: 'chmod 755 script.sh', desc: 'Changes file permissions for owner, group, and others.\n\nPermission numbers:\n  7 = rwx (read + write + execute)\n  6 = rw- (read + write)\n  5 = r-x (read + execute)\n  4 = r-- (read only)\n  0 = --- (no permission)\n\n755 = owner(rwx) group(r-x) others(r-x)', params: ['755', '644', 'u+x', 'a+r', '-R'], output: ['user@linux:~$ chmod 755 script.sh', 'user@linux:~$ ls -l script.sh', '-rwxr-xr-x 1 user user 256 Nov 15 10:30 script.sh'] },
+            'chown': { label: '4. Change Ownership (chown)', command: 'chown user:group file.txt', desc: 'Changes the owner and/or group of a file.\n\nRequires root/sudo privileges.', params: ['-R', 'user:group', ':group'], output: ['user@linux:~$ sudo chown user:user file.txt', 'user@linux:~$ ls -l file.txt', '-rw-r--r-- 1 user user 1024 Nov 15 10:30 file.txt'] },
+            'tar': { label: '5. Archive Files (tar)', command: 'tar -czvf backup.tar.gz /home/user/projects/', desc: 'Creates or extracts compressed archives (.tar.gz).\n\nOperations:\n  -c : Create  |  -x : Extract\n  -z : Gzip   |  -v : Verbose\n  -f : File', params: ['-c', '-x', '-z', '-v', '-f', '-C'], output: ['/home/user/projects/', '/home/user/projects/web-app/', '/home/user/projects/web-app/index.html', '/home/user/projects/web-app/style.css'] },
+            'wget': { label: '6. Download Files (wget)', command: 'wget https://example.com/file.zip', desc: 'Downloads files from the internet.\n\nFlags:\n  -O name.zip   -> Custom filename\n  -q            -> Quiet mode\n  -c            -> Resume download', params: ['-O', '-q', '-c', '--limit-rate', '-P'], output: ['--2023-11-15 10:30:00--  https://example.com/file.zip', 'Resolving example.com... 93.184.216.34', 'Connecting to example.com... connected.', 'HTTP request sent... 200 OK', 'Length: 5242880 (5.0M) [application/zip]', 'Saving to: \'file.zip\'', 'file.zip  100%[==================>]   5.0M  2.5MB/s    in 2.0s'] },
+            'ps': { label: '7. List Processes (ps)', command: 'ps aux', desc: 'Displays running processes.\n\nFlags:\n  a : All users  |  u : User format\n  x : No terminal\n\nFind process: ps aux | grep nginx', params: ['aux', 'ef', '| grep'], output: ['USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND', 'root         1  0.0  0.1 169936 13280 ?        Ss   10:00   0:02 /sbin/init', 'root       245  0.0  0.1  35872  8864 ?        Ss   10:00   0:00 /usr/sbin/sshd', 'user       512  0.0  0.1  21468  5120 pts/0    Ss   10:05   0:00 -bash', 'user       678  0.0  0.0  37368  3420 pts/0    R+   10:30   0:00 ps aux'] },
+            'df': { label: '8. Disk Free Space (df)', command: 'df -h', desc: 'Shows disk space usage for all filesystems.\n\n-h flag makes sizes human-readable.', params: ['-h', '-T', '-i'], output: ['Filesystem      Size  Used Avail Use% Mounted on', '/dev/sda1        50G   15G   33G  32% /', 'tmpfs           3.9G     0  3.9G   0% /dev/shm', '/dev/sda2       200G   80G  110G  43% /home'] },
+            'du': { label: '9. Disk Usage (du)', command: 'du -sh /home/user/*', desc: 'Shows disk space used by files and directories.\n\nFlags:\n  -s : Total per argument\n  -h : Human-readable sizes', params: ['-s', '-h', '-a'], output: ['15M     /home/user/Documents', '2.3G    /home/user/Downloads', '456K    /home/user/Pictures', '890M    /home/user/projects'] },
+            'pipe': { label: '10. Pipe & Redirect (| > >>)', command: 'cat access.log | grep "404" | wc -l', desc: 'Pipes send output of one command as input to another.\n\nExamples:\n  cmd1 | cmd2   -> Pipe output\n  cmd > file   -> Overwrite file\n  cmd >> file  -> Append to file\n  cmd 2> err    -> Redirect errors', params: ['|', '>', '>>', '<', '2>', '&>'], output: ['42'] }
+        };
+
+        var packageManagers = {
+            'ubuntu': {
+                'update': { label: '1. Update Package List', command: 'sudo apt update', desc: 'Downloads the latest package information from Ubuntu repositories.', params: ['sudo', 'apt update'], output: ['Hit:1 http://archive.ubuntu.com/ubuntu jammy InRelease', 'Hit:2 http://archive.ubuntu.com/ubuntu jammy-updates InRelease', 'Reading package lists... Done', 'All packages are up to date.'] },
+                'install': { label: '2. Install Package', command: 'sudo apt install nginx -y', desc: 'Installs a package from Ubuntu repositories.', params: ['sudo', 'apt install', '-y'], output: ['Reading package lists... Done', 'The following NEW packages will be installed:', '  nginx nginx-common nginx-core', '0 upgraded, 3 newly installed, 0 to remove.', 'Setting up nginx (1.24.0-1ubuntu1) ...', 'nginx.service is enabled and running.'] },
+                'remove': { label: '3. Remove Package', command: 'sudo apt remove nginx --purge -y', desc: 'Removes a package. --purge also deletes configuration files.', params: ['remove', '--purge', 'autoremove'], output: ['Reading package lists... Done', 'The following packages will be REMOVED:', '  nginx* nginx-common* nginx-core*', 'Removing nginx configuration files...', '0 upgraded, 0 newly installed, 3 to remove.'] },
+                'search': { label: '4. Search Package', command: 'apt search python3', desc: 'Searches repositories for matching packages.', params: ['search'], output: ['Sorting... Done', 'Full Text Search... Done', 'python3/jammy-updates 3.10.12-1ubuntu1 amd64', '  Interactive high-level object-oriented language'] },
+                'upgrade': { label: '5. Upgrade All Packages', command: 'sudo apt upgrade -y', desc: 'Upgrades all installed packages to latest versions.', params: ['upgrade', '-y'], output: ['Reading package lists... Done', 'The following packages will be upgraded:', '  curl libcurl4 openssl', '3 upgraded, 0 newly installed, 0 to remove.', 'Complete!'] }
+            },
+            'alpine': {
+                'update': { label: '1. Update Package Index', command: 'sudo apk update', desc: 'Fetches the latest package index from Alpine repositories.', params: ['sudo', 'apk update'], output: ['fetch https://dl-cdn.alpinelinux.org/alpine/v3.19/main/x86_64/APKINDEX.tar.gz', 'OK: 19123 distinct packages available'] },
+                'install': { label: '2. Add Package', command: 'sudo apk add nginx', desc: 'Installs a package. Alpine uses "add" instead of "install".', params: ['sudo', 'apk add'], output: ['(1/3) Installing pcre2-10.42', '(2/3) Installing nginx-1.25.3-r0', '(3/3) Installing nginx-common-1.25.3-r0', 'OK: 245 MiB in 62 packages'] },
+                'remove': { label: '3. Delete Package', command: 'sudo apk del nginx', desc: 'Removes a package. Alpine uses "del" instead of "remove".', params: ['del', '--purge'], output: ['(1/3) Purging nginx-common-1.25.3-r0', '(2/3) Purging nginx-1.25.3-r0', '(3/3) Purging pcre2-10.42', 'OK: 238 MiB in 59 packages'] },
+                'search': { label: '4. Search Package', command: 'apk search python3', desc: 'Searches Alpine repositories.', params: ['search'], output: ['python3-3.11.6-r0', 'python3-dev-3.11.6-r0', 'py3-pip-23.3.1-r0'] },
+                'upgrade': { label: '5. Upgrade Packages', command: 'sudo apk upgrade', desc: 'Upgrades all installed packages.', params: ['upgrade'], output: ['(1/2) Upgrading openssl-3.1.4-r0 -> 3.1.4-r1', '(2/2) Upgrading curl-8.4.0-r0 -> 8.4.0-r1', 'OK: 245 MiB in 62 packages'] }
+            },
+            'fedora': {
+                'update': { label: '1. Check for Updates', command: 'sudo dnf check-update', desc: 'Checks for available updates from Fedora repositories.', params: ['sudo', 'dnf check-update'], output: ['curl.x86_64                    8.4.0-2.fc39             updates', 'openssl.x86_64                 3.1.4-1.fc39            updates'] },
+                'install': { label: '2. Install Package', command: 'sudo dnf install nginx -y', desc: 'Installs a package from Fedora repositories.', params: ['sudo', 'dnf install', '-y'], output: ['Dependencies resolved.', 'Installing:', ' nginx             x86_64    1:1.25.3-1.fc39  updates                  36 k', 'Transaction Summary', 'Install  2 Packages', 'Complete!'] },
+                'remove': { label: '3. Remove Package', command: 'sudo dnf remove nginx -y', desc: 'Removes a package.', params: ['remove', 'autoremove'], output: ['Dependencies resolved.', 'Removing:', ' nginx             x86_64    1:1.25.3-1.fc39   @updates                  36 k', 'Transaction Summary', 'Remove  2 Packages', 'Complete!'] },
+                'search': { label: '4. Search Package', command: 'dnf search python3', desc: 'Searches Fedora repositories.', params: ['search'], output: ['python3.x86_64 : Interpreter of the Python programming language', 'python3-pip.noarch : Pip install tool for Python 3'] },
+                'upgrade': { label: '5. Upgrade All Packages', command: 'sudo dnf upgrade -y', desc: 'Upgrades all installed packages.', params: ['upgrade', '-y'], output: ['Dependencies resolved.', 'Upgrading:', ' curl              x86_64    8.4.0-3.fc39        updates    403 k', 'Transaction Summary', 'Upgrade  2 Packages', 'Complete!'] }
+            },
+            'quay.io/centos/centos:stream9': {
+                'update': { label: '1. Check for Updates', command: 'sudo dnf check-update', desc: 'Checks for available updates from CentOS Stream 9.', params: ['sudo', 'dnf check-update'], output: ['centos-stream-release.noarch   9.0-24.el9          baseos', 'curl.x86_64                     8.0.1-7.el9        baseos'] },
+                'install': { label: '2. Install Package', command: 'sudo dnf install httpd -y', desc: 'Installs a package. CentOS uses "httpd" as the default web server.', params: ['sudo', 'dnf install', '-y', 'httpd'], output: ['Dependencies resolved.', 'Installing:', ' httpd              x86_64    2.4.57-5.el9       baseos    1.4 M', 'Transaction Summary', 'Install  3 Packages', 'Complete!'] },
+                'remove': { label: '3. Remove Package', command: 'sudo dnf remove httpd -y', desc: 'Removes the specified package.', params: ['remove', 'autoremove'], output: ['Dependencies resolved.', 'Removing:', ' httpd              x86_64    2.4.57-5.el9       @baseos    1.4 M', 'Transaction Summary', 'Remove  1 Package', 'Complete!'] },
+                'search': { label: '4. Search Package', command: 'dnf search python3', desc: 'Searches CentOS Stream repositories.', params: ['search'], output: ['python3.x86_64 : Interpreter of Python 3', 'python3-pip.noarch : Pip package manager for Python 3'] },
+                'upgrade': { label: '5. Upgrade All Packages', command: 'sudo dnf upgrade -y', desc: 'Upgrades all installed packages.', params: ['upgrade', '-y'], output: ['Dependencies resolved.', 'Upgrading:', ' curl              x86_64    8.0.1-8.el9        baseos    403 k', 'Transaction Summary', 'Upgrade  2 Packages', 'Complete!'] }
+            },
+            'kalilinux/kali-rolling': {
+                'update': { label: '1. Update Package List', command: 'sudo apt update', desc: 'Kali is Debian-based, uses APT like Ubuntu.', params: ['sudo', 'apt update'], output: ['Hit:1 http://http.kali.org/kali kali-rolling InRelease', 'Reading package lists... Done', 'All packages are up to date.'] },
+                'install': { label: '2. Install Tool', command: 'sudo apt install nmap -y', desc: 'Kali comes pre-loaded with security tools. Install additional ones using apt.', params: ['sudo', 'apt install', '-y', 'nmap'], output: ['Reading package lists... Done', 'The following NEW packages will be installed:', '  nmap', '0 upgraded, 1 newly installed, 0 to remove.', 'Setting up nmap (7.94-1) ...', 'nmap is now installed.'] },
+                'remove': { label: '3. Remove Tool', command: 'sudo apt remove nmap --purge -y', desc: 'Removes a security tool and its configuration files.', params: ['remove', '--purge', 'autoremove'], output: ['Reading package lists... Done', 'The following packages will be REMOVED:', '  nmap*', 'Removing nmap configuration files...', '0 upgraded, 0 newly installed, 1 to remove.'] },
+                'search': { label: '4. Search Tool', command: 'apt search wireshark', desc: 'Searches Kali repositories for security tools.', params: ['search'], output: ['Sorting... Done', 'Full Text Search... Done', 'wireshark/jammy 4.2.0-1 amd64', '  Network traffic analyzer'] },
+                'upgrade': { label: '5. Upgrade All Packages', command: 'sudo apt full-upgrade -y', desc: 'Kali recommends "full-upgrade" for better dependency handling.', params: ['full-upgrade', '-y'], output: ['Reading package lists... Done', 'Calculating upgrade... Done', '0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.', 'Complete!'] }
+            }
+        };
+
+        var cloudflaredSection = {
+            label: 'Cloudflared Setup',
+            icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>',
+            items: {
+                'linux-user': {
+                    label: 'For Linux User',
+                    isFolder: true, 
+                    items: {
+                        'update': { label: '1. Update System', command: 'sudo apt-get update && sudo apt-get upgrade -y', desc: 'Updates the package list and upgrades all installed packages to their latest versions.', params: ['sudo', 'apt-get update', 'apt-get upgrade'], output: ['Hit:1 http://archive.ubuntu.com/ubuntu jammy InRelease', 'Hit:2 http://archive.ubuntu.com/ubuntu jammy-updates InRelease', 'Reading package lists... Done', 'Calculating upgrade... Done', '0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.'] },
+                        'install': { label: '2. Install Cloudflared', command: 'sudo apt install cloudflared', desc: 'Installs the Cloudflare Tunnel daemon (cloudflared) required for SSH tunneling.', params: ['sudo', 'apt install', 'cloudflared'], output: ['Reading package lists... Done', 'Building dependency tree... Done', 'The following NEW packages will be installed:', '  cloudflared', '0 upgraded, 1 newly installed, 0 to remove.', 'Setting up cloudflared (2023.x.x) ...'] },
+                        'ssh': { label: '3. Connect using SSH', command: 'ssh username@serverurl -o ProxyCommand="cloudflared access ssh --hostname %h"', desc: 'Connects to the server via Cloudflare Access. Replace "username" with your actual login username.', params: ['ssh', 'username', 'ProxyCommand', 'cloudflared access ssh'], output: ['Authenticating with Cloudflare Access...', 'Browser window opened for authentication.', 'Success! You are validated.'] },
+                        'prompt-yes': { label: '4. Verify Fingerprint', command: 'yes', desc: 'When the terminal asks "The authenticity of host... can\'t be established", type "yes" to continue.', params: ['yes'], output: ['The authenticity of host \'serverurl\' can\'t be established.', 'ED25519 key fingerprint is SHA256:AbCdEfGhIjKlMnOpQrStUvWxYz.', 'Are you sure you want to continue connecting (yes/no/[fingerprint])? yes', 'Warning: Permanently added \'serverurl\' (ED25519) to the list of known hosts.'] },
+                        'prompt-pass': { label: '5. Enter Password', command: '[Enter Password]', desc: 'When prompted, enter your Signup password associated with your Cloudflare account or server user.', params: ['password'], output: ['username@serverurl\'s password: ', 'Welcome to Ubuntu 22.04 LTS (GNU/Linux 5.15.0-91-generic x86_64)', 'System load: 0.01, 0.03, 0.05', 'Usage of /:   15.2% of 50GB'] }
+                    }
+                },
+                'windows-user': {
+                    label: 'For Windows User',
+                    isFolder: true,
+                    items: {
+                        'win-step-1': { label: '1. Download', command: 'https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-amd64.exe', desc: 'Download the latest Windows executable from GitHub.\nFile will be located at: C:\\Users\\s8983\\Downloads', params: ['GitHub', 'Download', 'amd64'], output: ['Initiating download...', 'Source: github.com/cloudflare/cloudflared/releases', 'Destination: C:\\Users\\s8983\\Downloads\\cloudflared-windows-amd64.exe', 'Download Complete.'] },
+                        'win-step-2': { label: '2. Rename File', command: 'ren cloudflared-windows-amd64.exe cloudflared.exe', desc: 'Rename the downloaded file to make it easier to run.', params: ['ren', 'rename'], output: ['C:\\Users\\s8983\\Downloads>ren cloudflared-windows-amd64.exe cloudflared.exe', '1 file(s) renamed.'] },
+                        'win-step-3': { label: '3. Create Folder', command: 'mkdir C:\\Users\\s8983\\cloudflared', desc: 'Create a dedicated folder to hold the cloudflared executable.', params: ['mkdir'], output: ['C:\\Users\\s8983>mkdir C:\\Users\\s8983\\cloudflared', 'Directory created successfully.'] },
+                        'win-step-4': { label: '4. Move File', command: 'move C:\\Users\\s8983\\Downloads\\cloudflared.exe C:\\Users\\s8983\\cloudflared\\', desc: 'Move the renamed executable into the newly created folder.', params: ['move'], output: ['C:\\Users\\s8983>move C:\\Users\\s8983\\Downloads\\cloudflared.exe C:\\Users\\s8983\\cloudflared\\', '        1 file(s) moved.'] },
+                        'win-step-5': { label: '5. Verify', command: 'dir C:\\Users\\s8983\\cloudflared', desc: 'List the contents of the folder to ensure the file is there.', params: ['dir', 'list'], output: [' Volume in drive C has no label.', ' Directory of C:\\Users\\s8983\\cloudflared', '', '11/15/2023  10:00 AM    <DIR>          .', '11/15/2023  10:00 AM    <DIR>          ..', '11/15/2023  10:05 AM        25,000,000 cloudflared.exe', '               1 File(s)   25,000,000 bytes'] },
+                        'win-step-6': { label: '6. Run / Test', command: '"C:\\Users\\s8983\\cloudflared\\cloudflared.exe" --version', desc: 'Run the executable with the version flag to test if it works correctly.', params: ['--version', 'test'], output: ['cloudflared version 2026.x.x', 'Built with go1.21.5', 'Feature flags: None'] },
+                        'win-step-7': { label: '7. Add to PATH', command: '# Environment Variables: C:\\Users\\s8983\\cloudflared', desc: 'Add the folder to System Environment Variables.\n\n1. Search "Environment Variables" in Windows search.\n2. Click "Edit the system environment variables".\n3. Click "Environment Variables" button.\n4. Under "System variables", find "Path" and click "Edit".\n5. Click "New" and paste: C:\\Users\\s8983\\cloudflared\n6. Restart CMD and test: cloudflared --version', params: ['PATH', 'Environment Variables'], output: ['[System Configuration]', 'Adding C:\\Users\\s8983\\cloudflared to PATH...', 'Success. Restart command prompt to apply changes.', '', '> cloudflared --version', 'cloudflared version 2026.x.x', 'Works without full path!'] },
+                        'win-step-8': { label: '8. Verify PATH Setup', command: 'cloudflared --version', desc: 'After restarting CMD, verify that cloudflared is accessible globally without needing the full file path.\n\nIf this works, your PATH configuration was successful. If you get "not recognized", restart CMD as Administrator and try again.', params: ['--version', 'PATH verify'], output: ['C:\\Users\\s8983>cloudflared --version', 'cloudflared version 2026.x.x', 'Built with go1.21.5', 'PATH configuration verified successfully!'] },
+                        'win-step-9': { label: '9. Connect via SSH', command: 'ssh username@serverurl -o ProxyCommand="cloudflared access ssh --hostname %h"', desc: 'Connect to the server using SSH with cloudflared as the ProxyCommand.\n\nReplace "username" with your actual login username and "serverurl" with your server\'s Cloudflare tunnel URL.\n\nThis command routes your SSH connection through Cloudflare\'s secure tunnel, authenticating you via Cloudflare Access.', params: ['ssh', 'username', 'ProxyCommand', 'cloudflared access ssh', '--hostname'], output: ['Authenticating with Cloudflare Access...', 'Opening browser for authentication...', 'Cloudflare Access login page opened in default browser.', 'Please complete login in the browser window...', 'Authentication successful!', 'Connecting to server...'] },
+                        'win-step-10': { label: '10. Accept Fingerprint', command: 'yes', desc: 'When the terminal shows "The authenticity of host can\'t be established", type "yes" to accept and save the server\'s SSH fingerprint.\n\nThis is a one-time step. The fingerprint will be saved in your known_hosts file and won\'t be asked again for this server.', params: ['yes', 'fingerprint', 'ED25519'], output: ['The authenticity of host \'serverurl\' can\'t be established.', 'ED25519 key fingerprint is SHA256:AbCdEfGhIjKlMnOpQrStUvWxYz.', 'Are you sure you want to continue connecting (yes/no/[fingerprint])? yes', 'Warning: Permanently added \'serverurl\' (ED25519) to the list of known hosts.'] },
+                        'win-step-11': { label: '11. Enter Password', command: '[Enter Signup Password]', desc: 'When prompted with "username@serverurl\'s password:", enter your Signup password.\n\nThis is the password you created during signup on the Nodefy platform. Type it carefully — the terminal will not show any characters as you type (this is normal for security).\n\nAfter entering the correct password, you will be logged into the server and see the welcome screen.', params: ['signup password', 'password'], output: ['username@serverurl\'s password: ********', '', 'Welcome to Ubuntu 22.04 LTS (GNU/Linux 5.15.0-91-generic x86_64)', '', 'System load:  0.01, 0.03, 0.05', 'Usage of /:   15.2% of 50GB', 'Memory usage: 12%', 'CPU usage:    2%', '', 'Last login: Thu Nov 15 10:30:00 2023 from 10.0.0.1'] }
+                    }
+                }
+            }
+        };
+
+        var currentCommandText = "";
+        var typingTimeout = null;
+        var currentPromptText = "guest@nodefy:~$";
+
+        var navContainer = document.getElementById('sidebar-nav');
+        var pageTitle = document.getElementById('page-title');
+        var commandDisplay = document.getElementById('command-display');
+        var terminalOutput = document.getElementById('terminal-output');
+        var teachPanel = document.getElementById('teaching-panel');
+        var teachTitle = document.getElementById('teach-title');
+        var teachDesc = document.getElementById('teach-desc');
+        var teachParams = document.getElementById('teach-params');
+
+        window.onload = function() {
+            var selectedOS = null;
+            try { selectedOS = localStorage.getItem('selectedOS'); } catch(e) {}
+
+            var sidebarItems = [cloudflaredSection];
+
+            if (selectedOS) {
+                var osInfo = getOSInfo(selectedOS);
+                currentPromptText = osInfo.prompt;
+
+                document.getElementById('terminal-prompt').textContent = currentPromptText;
+                document.getElementById('terminal-title-text').textContent = ' ' + currentPromptText.replace(':~$', ': ~/');
+
+                var pkgItems = {};
+                if (packageManagers[selectedOS]) {
+                    pkgItems = packageManagers[selectedOS];
+                }
+
+                var osSection = {
+                    label: osInfo.displayName,
+                    icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>',
+                    items: {
+                        'basic': { label: 'Basic Commands', isFolder: true, items: basicCommands },
+                        'medium': { label: 'Medium Commands', isFolder: true, items: mediumCommands },
+                        'pkg': { label: 'Package Manager', isFolder: true, items: pkgItems }
+                    }
+                };
+
+                sidebarItems.push(osSection);
+
+                document.getElementById('welcome-line-1').textContent = 'System initialized. Welcome to Nodefy Terminal v2.1';
+                document.getElementById('welcome-line-1').style.color = 'var(--accent-color)';
+                document.getElementById('welcome-line-2').textContent = 'Selected OS: ' + osInfo.displayName + '  |  Select a command from the sidebar.';
+                document.getElementById('welcome-line-2').style.color = 'var(--text-muted)';
+            } else {
+                document.getElementById('welcome-line-2').textContent = 'No OS selected. Go back and select an OS for tailored commands.';
+                document.getElementById('welcome-line-2').style.color = 'var(--terminal-error)';
+            }
+
+            renderSidebar(sidebarItems);
+        };
+
+        function renderSidebar(itemsArray) {
+            navContainer.innerHTML = '';
+
+            for (var i = 0; i < itemsArray.length; i++) {
+                var group = itemsArray[i];
+
+                var dropdown = document.createElement('div');
+                dropdown.className = 'dropdown';
+                dropdown.id = 'dropdown-' + i;
+
+                var header = document.createElement('div');
+                header.className = 'dropdown-header';
+                header.innerHTML = '<span style="display:flex; align-items:center; gap:10px;">' + group.icon + ' ' + group.label + '</span><svg class="dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>';
+                
+                (function(dd, hh) {
+                    hh.onclick = function(e) {
+                        e.stopPropagation();
+                        toggleDropdown(dd, hh);
+                    };
+                })(dropdown, header);
+
+                var content = document.createElement('div');
+                content.className = 'dropdown-content';
+
+                var subKeys = Object.keys(group.items);
+                for (var s = 0; s < subKeys.length; s++) {
+                    var item = group.items[subKeys[s]];
+
+                    if (item.isFolder) {
+                        var subDropdown = document.createElement('div');
+                        subDropdown.className = 'dropdown nested-dropdown';
+                        subDropdown.id = 'dropdown-' + subKeys[s];
+
+                        var subHeader = document.createElement('div');
+                        subHeader.className = 'dropdown-header';
+                        subHeader.textContent = item.label;
+
+                        (function(sdd, shh) {
+                            shh.onclick = function(e) {
+                                e.stopPropagation();
+                                toggleDropdown(sdd, shh);
+                            };
+                        })(subDropdown, subHeader);
+
+                        var subContent = document.createElement('div');
+                        subContent.className = 'dropdown-content';
+
+                        var cmdKeys = Object.keys(item.items);
+                        for (var c = 0; c < cmdKeys.length; c++) {
+                            var cmdItem = item.items[cmdKeys[c]];
+                            var cmdDiv = document.createElement('div');
+                            cmdDiv.className = 'submenu-item';
+                            cmdDiv.textContent = cmdItem.label;
+
+                            (function(cd) {
+                                cmdDiv.onclick = function(e) {
+                                    e.stopPropagation();
+                                    selectCommand(cd);
+                                    var allItems = document.querySelectorAll('.submenu-item');
+                                    for (var j = 0; j < allItems.length; j++) {
+                                        allItems[j].classList.remove('active');
+                                    }
+                                    cmdDiv.classList.add('active');
+                                };
+                            })(cmdItem);
+
+                            subContent.appendChild(cmdDiv);
+                        }
+
+                        subDropdown.appendChild(subHeader);
+                        subDropdown.appendChild(subContent);
+                        content.appendChild(subDropdown);
+
+                    } else {
+                        var subItem = document.createElement('div');
+                        subItem.className = 'submenu-item';
+                        subItem.textContent = item.label;
+
+                        (function(si) {
+                            subItem.onclick = function(e) {
+                                e.stopPropagation();
+                                selectCommand(si);
+                                var allItems = document.querySelectorAll('.submenu-item');
+                                for (var j = 0; j < allItems.length; j++) {
+                                    allItems[j].classList.remove('active');
+                                }
+                                subItem.classList.add('active');
+                            };
+                        })(item);
+
+                        content.appendChild(subItem);
+                    }
+                }
+
+                dropdown.appendChild(header);
+                dropdown.appendChild(content);
+                navContainer.appendChild(dropdown);
+            }
+        }
+
+        function toggleDropdown(dropdownElement, headerElement) {
+            var parentContainer = dropdownElement.parentElement;
+            var siblings = parentContainer.querySelectorAll(':scope > .dropdown');
+
+            for (var i = 0; i < siblings.length; i++) {
+                var sibling = siblings[i];
+                if (sibling !== dropdownElement && sibling.classList.contains('open')) {
+                    sibling.classList.remove('open');
+                    var siblingHeader = sibling.querySelector('.dropdown-header');
+                    if (siblingHeader) {
+                        siblingHeader.classList.remove('active-group');
+                    }
+                }
+            }
+
+            var wasOpen = dropdownElement.classList.contains('open');
+            if (wasOpen) {
+                dropdownElement.classList.remove('open');
+                headerElement.classList.remove('active-group');
+            } else {
+                dropdownElement.classList.add('open');
+                headerElement.classList.add('active-group');
+            }
+        }
+
+        function selectCommand(data) {
+            pageTitle.textContent = data.label;
+            currentCommandText = data.command;
+
+            clearTimeout(typingTimeout);
+            commandDisplay.textContent = '';
+            terminalOutput.innerHTML = '';
+            teachPanel.style.display = 'none';
+
+            var idx = 0;
+            function type() {
+                if (idx < data.command.length) {
+                    commandDisplay.textContent += data.command.charAt(idx);
+                    idx++;
+                    typingTimeout = setTimeout(type, 40); 
+                } else {
+                    typingTimeout = setTimeout(function() {
+                        showTerminalOutput(data.output);
+                        showTeaching(data);
+                    }, 400);
+                }
+            }
+            type();
+        }
+
+        function showTerminalOutput(lines) {
+            for (var index = 0; index < lines.length; index++) {
+                (function(line, idx) {
+                    var div = document.createElement('div');
+                    div.className = 'output-line';
+                    div.textContent = line;
+                    div.style.animationDelay = (idx * 0.05) + 's';
+                    
+                    if(line.indexOf('Killed') !== -1 || line.indexOf('error') !== -1 || line.indexOf('ERROR') !== -1) {
+                        div.style.color = 'var(--terminal-error)';
+                    } else if(line.indexOf('OK') !== -1 || line.indexOf('complete') !== -1 || line.indexOf('Success') !== -1 || line.indexOf('Works without') !== -1 || line.indexOf('Complete!') !== -1 || line.indexOf('verified successfully') !== -1 || line.indexOf('Welcome to') !== -1 || line.indexOf('Authentication successful') !== -1) {
+                        div.style.color = 'var(--accent-color)';
+                    } else if(line.indexOf('Proto') !== -1 || line.indexOf('PID') !== -1 || line.indexOf('Filesystem') !== -1 || line.indexOf('USER') !== -1 || line.indexOf('Volume in drive') !== -1 || line.indexOf('Directory of') !== -1) {
+                        div.style.color = 'var(--terminal-info)';
+                    }
+                    
+                    terminalOutput.appendChild(div);
+                    
+                    if (idx === lines.length - 1) {
+                        var prompt = document.createElement('div');
+                        prompt.className = 'output-line';
+                        prompt.style.color = 'var(--accent-color)';
+                        prompt.style.marginTop = '10px';
+                        prompt.textContent = currentPromptText + ' ';
+                        terminalOutput.appendChild(prompt);
+                        terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                    }
+                })(lines[index], index);
+            }
+        }
+
+        function showTeaching(data) {
+            teachPanel.style.display = 'block';
+            teachTitle.textContent = data.label + " Explained";
+            teachDesc.textContent = data.desc;
+
+            teachParams.innerHTML = '';
+            if (data.params && data.params.length) {
+                for (var i = 0; i < data.params.length; i++) {
+                    var tag = document.createElement('span');
+                    tag.className = 'param-tag';
+                    tag.textContent = data.params[i];
+                    teachParams.appendChild(tag);
+                }
+            }
+        }
+
+        function copyCommand() {
+            if (!currentCommandText) return;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(currentCommandText).then(function() {
+                    updateCopyBtn();
+                }).catch(function() {
+                    fallbackCopy();
+                });
+            } else {
+                fallbackCopy();
+            }
+        }
+
+        function updateCopyBtn() {
+            var btn = document.querySelector('.copy-btn');
+            var originalHTML = btn.innerHTML;
+            btn.innerHTML = 'Copied!';
+            btn.style.color = 'var(--accent-color)';
+            btn.style.borderColor = 'var(--accent-color)';
+            setTimeout(function() {
+                btn.innerHTML = originalHTML;
+                btn.style.color = '';
+                btn.style.borderColor = '';
+            }, 1500);
+        }
+
+        function fallbackCopy() {
+            var ta = document.createElement('textarea');
+            ta.value = currentCommandText;
+            ta.style.position = 'fixed';
+            ta.style.left = '-9999px';
+            document.body.appendChild(ta);
+            ta.select();
+            try { document.execCommand('copy'); } catch(e) {}
+            document.body.removeChild(ta);
+            updateCopyBtn();
+        }
+    </script>
+</body>
+</html>
