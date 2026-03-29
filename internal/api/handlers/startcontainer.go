@@ -11,7 +11,7 @@ import (
 
 func Startcontainerhandler(w http.ResponseWriter, r *http.Request) {
 
-	     var startcontainer models.Startcontainer
+	     var startcontainer models.Containermanage
 
 		 if r.Method != http.MethodPost {
 			response.Response(w,405,"Invalid Metheod")
