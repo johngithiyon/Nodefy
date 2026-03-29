@@ -19,7 +19,7 @@ func Stopcontainerservices(sessionid string,Stopcontainer *models.Stopcontainer)
 		  return errors.ErrInternalserver
 	}
 
-	  dockerstoperr :=   docker.Stopcontainer(*Stopcontainer)
+	  dockerstoperr :=   docker.Stopcontainer(username,*Stopcontainer)
 
 	  if dockerstoperr != nil {
 		    return errors.ErrInternalserver
