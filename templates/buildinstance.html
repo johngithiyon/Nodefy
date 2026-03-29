@@ -157,6 +157,7 @@
             100% { transform: translate(5%, 5%) scale(1.1); }
         }
 
+        /* ── Sidebar ── */
         .sidebar {
             width: 240px;
             background: rgba(15, 15, 20, 0.5);
@@ -229,6 +230,7 @@
         .nav-btn:hover svg { opacity: 1; }
         .nav-btn.primary svg { opacity: 1; }
 
+        /* ── Main ── */
         .main-content {
             flex: 1;
             display: flex;
@@ -289,151 +291,333 @@
         .btn-workspace { background: rgba(139, 92, 246, 0.12); color: var(--accent-color); border-color: rgba(139, 92, 246, 0.25); }
         .btn-workspace:hover { background: rgba(139, 92, 246, 0.22); box-shadow: 0 0 16px rgba(139, 92, 246, 0.15); transform: translateY(-1px); }
 
+        /* ── Content ── */
         .content-scroll { flex: 1; padding: 36px; overflow-y: auto; }
 
-        .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
-        .section-title { color: white; font-weight: 600; font-size: 1.1rem; }
-        .section-subtitle { color: var(--text-muted); font-size: 0.82rem; margin-top: 2px; }
+        /* ── Stats Bar ── */
+        .stats-bar {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
 
-        .instance-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-
-        .instance-card {
-            background: rgba(20, 20, 25, 0.6);
+        .stat-chip {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 18px;
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border-subtle);
-            border-top: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 24px;
-            padding: 24px;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
-            overflow: hidden;
-            min-height: 180px;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+        }
+
+        .stat-chip:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--border-hover);
+        }
+
+        .stat-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .stat-dot.total { background: var(--accent-color); box-shadow: 0 0 8px rgba(139, 92, 246, 0.4); }
+        .stat-dot.running { background: #10b981; box-shadow: 0 0 8px rgba(16, 185, 129, 0.4); }
+        .stat-dot.stopped { background: #ef4444; box-shadow: 0 0 8px rgba(239, 68, 68, 0.4); }
+
+        .stat-num {
+            font-weight: 700;
+            color: white;
+            font-family: var(--font-code);
+            font-size: 0.9rem;
+            min-width: 16px;
+            text-align: center;
+        }
+
+        .stat-divider {
+            width: 1px;
+            height: 20px;
+            background: var(--border-subtle);
+            align-self: center;
+        }
+
+        /* ── Section ── */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            letter-spacing: -0.01em;
+        }
+
+        .section-subtitle {
+            color: var(--text-dark);
+            font-size: 0.78rem;
+            margin-top: 3px;
+        }
+
+        .instance-list {
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            gap: 6px;
         }
 
-        .instance-card::before {
+        /* ── Instance Row ── */
+        .instance-row {
+            display: grid;
+            grid-template-columns: 1fr auto auto auto;
+            align-items: center;
+            gap: 20px;
+            padding: 18px 22px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+            cursor: default;
+        }
+
+        .instance-row::before {
             content: '';
             position: absolute;
-            top: 0; left: -100%; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.04), transparent);
-            transition: 0.6s;
-            pointer-events: none;
-        }
-        .instance-card:hover::before { left: 100%; }
-
-        .instance-card::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 3px;
-            background: transparent;
-            transition: background 0.4s ease;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--border-subtle);
+            transition: all 0.35s ease;
+            border-radius: 0 3px 3px 0;
         }
 
-        .instance-card:hover {
-            border-color: rgba(139, 92, 246, 0.3);
-            background: rgba(30, 30, 40, 0.7);
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px -10px rgba(0, 0, 0, 0.6), 0 0 20px rgba(139, 92, 246, 0.15);
+        .instance-row:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: var(--border-hover);
+            transform: translateX(4px);
         }
 
-        .instance-card.running::after { background: linear-gradient(90deg, #10b981, transparent); }
-        .instance-card.running:hover { border-color: rgba(16, 185, 129, 0.3); box-shadow: 0 15px 40px -10px rgba(0, 0, 0, 0.6), 0 0 25px rgba(16, 185, 129, 0.12); }
+        .instance-row.running::before { background: #10b981; box-shadow: 0 0 12px rgba(16, 185, 129, 0.3); }
+        .instance-row.running:hover { border-color: rgba(16, 185, 129, 0.15); }
 
-        .instance-card.stopped::after { background: linear-gradient(90deg, #ef4444, transparent); }
-        .instance-card.stopped:hover { border-color: rgba(239, 68, 68, 0.3); box-shadow: 0 15px 40px -10px rgba(0, 0, 0, 0.6), 0 0 25px rgba(239, 68, 68, 0.12); }
+        .instance-row.stopped::before { background: #ef4444; box-shadow: 0 0 12px rgba(239, 68, 68, 0.2); }
+        .instance-row.stopped:hover { border-color: rgba(239, 68, 68, 0.15); }
 
-        .instance-card.building::after { background: linear-gradient(90deg, #f59e0b, transparent); }
-        .instance-card.building:hover { border-color: rgba(245, 158, 11, 0.3); box-shadow: 0 15px 40px -10px rgba(0, 0, 0, 0.6), 0 0 25px rgba(245, 158, 11, 0.12); }
+        .instance-row.building::before { background: #f59e0b; box-shadow: 0 0 12px rgba(245, 158, 11, 0.2); animation: barPulse 1.5s ease-in-out infinite; }
+        .instance-row.building:hover { border-color: rgba(245, 158, 11, 0.15); }
 
-        .card-top { display: flex; justify-content: space-between; align-items: flex-start; }
+        @keyframes barPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
 
-        .inst-icon {
-            width: 48px; height: 48px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 12px;
+        /* ── Name Area ── */
+        .inst-name-area {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            min-width: 0;
+        }
+
+        .inst-icon-sm {
+            width: 38px; height: 38px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.04);
             border: 1px solid var(--border-subtle);
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            flex-shrink: 0;
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .instance-card.running .inst-icon { color: #10b981; }
-        .instance-card.stopped .inst-icon { color: #ef4444; }
-        .instance-card.building .inst-icon { color: #f59e0b; }
+        .instance-row.running .inst-icon-sm { color: #10b981; background: rgba(16, 185, 129, 0.06); border-color: rgba(16, 185, 129, 0.12); }
+        .instance-row.stopped .inst-icon-sm { color: #ef4444; background: rgba(239, 68, 68, 0.06); border-color: rgba(239, 68, 68, 0.12); }
+        .instance-row.building .inst-icon-sm { color: #f59e0b; background: rgba(245, 158, 11, 0.06); border-color: rgba(245, 158, 11, 0.12); }
 
-        .instance-card:hover .inst-icon {
-            background: rgba(139, 92, 246, 0.1);
-            border-color: rgba(139, 92, 246, 0.3);
-        }
-        .instance-card:hover .inst-icon svg { transform: scale(1.15); }
-        .instance-card .inst-icon svg { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-
-        .inst-id {
-            font-family: var(--font-code);
-            font-size: 0.7rem;
-            color: var(--text-dark);
-            background: rgba(0, 0, 0, 0.3);
-            padding: 3px 8px;
-            border-radius: 6px;
+        .instance-row:hover .inst-icon-sm {
+            transform: scale(1.08);
         }
 
-        .card-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        .inst-text-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
 
-        .inst-name {
-            font-size: 1.15rem;
-            font-weight: 700;
+        .inst-name-text {
+            font-size: 0.95rem;
+            font-weight: 600;
             color: white;
-            margin-bottom: 12px;
             letter-spacing: -0.01em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .status-badge {
+        .inst-id-text {
+            font-family: var(--font-code);
+            font-size: 0.68rem;
+            color: var(--text-dark);
+            margin-top: 2px;
+        }
+
+        /* ── Status Pill ── */
+        .status-pill {
             display: inline-flex;
             align-items: center;
             gap: 7px;
-            font-size: 0.72rem;
-            font-weight: 600;
-            padding: 5px 12px;
+            padding: 6px 14px;
             border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.04em;
-            width: fit-content;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
         }
 
-        .status-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+        .status-pill-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
 
-        .status-running { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.2); }
-        .status-running .status-dot { background: #34d399; box-shadow: 0 0 8px #34d399; animation: pulseStatus 2s infinite; }
+        .status-pill.running {
+            background: rgba(16, 185, 129, 0.1);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.15);
+        }
+        .status-pill.running .status-pill-dot {
+            background: #34d399;
+            box-shadow: 0 0 8px #34d399;
+            animation: pulseStatus 2s infinite;
+        }
 
-        .status-stopped { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); }
-        .status-stopped .status-dot { background: #f87171; box-shadow: 0 0 6px rgba(239, 68, 68, 0.4); }
+        .status-pill.stopped {
+            background: rgba(239, 68, 68, 0.1);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.15);
+        }
+        .status-pill.stopped .status-pill-dot {
+            background: #f87171;
+            box-shadow: 0 0 6px rgba(239, 68, 68, 0.4);
+        }
 
-        .status-building { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.2); }
-        .status-building .status-dot { background: #fbbf24; box-shadow: 0 0 8px #fbbf24; animation: pulseStatus 1s infinite; }
+        .status-pill.building {
+            background: rgba(245, 158, 11, 0.1);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.15);
+        }
+        .status-pill.building .status-pill-dot {
+            background: #fbbf24;
+            box-shadow: 0 0 8px #fbbf24;
+            animation: pulseStatus 1s infinite;
+        }
 
         @keyframes pulseStatus { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
 
-        .card-meta {
-            display: flex; align-items: center; gap: 16px;
-            margin-top: 14px; font-size: 0.75rem;
-            color: var(--text-dark); font-family: var(--font-code);
+        /* ── Type Badge ── */
+        .type-badge {
+            font-family: var(--font-code);
+            font-size: 0.68rem;
+            font-weight: 500;
+            color: var(--text-dark);
+            padding: 4px 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            white-space: nowrap;
         }
 
-        .empty-state { grid-column: 1 / -1; text-align: center; padding: 80px 20px; color: var(--text-dark); }
-        .empty-state-icon { font-size: 3rem; margin-bottom: 16px; opacity: 0.4; }
-        .empty-state-text { font-size: 1rem; margin-bottom: 6px; color: var(--text-muted); }
-        .empty-state-hint { font-size: 0.85rem; opacity: 0.6; }
+        /* ── Row Actions ── */
+        .row-actions {
+            display: flex;
+            gap: 4px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
 
-        .loading-state { grid-column: 1 / -1; display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 80px 20px; color: var(--text-muted); }
+        .instance-row:hover .row-actions { opacity: 1; }
+
+        .row-action-btn {
+            width: 32px; height: 32px;
+            border-radius: 8px;
+            border: 1px solid transparent;
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-dark);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .row-action-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+            border-color: var(--border-hover);
+        }
+
+        .row-action-btn.start-btn:hover { color: #34d399; background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2); }
+        .row-action-btn.stop-btn:hover { color: #fbbf24; background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.2); }
+        .row-action-btn.kill-btn:hover { color: #f87171; background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2); }
+
+        /* ── Empty / Loading ── */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .empty-icon-wrap {
+            width: 72px; height: 72px;
+            border-radius: 20px;
+            background: rgba(139, 92, 246, 0.06);
+            border: 1px solid rgba(139, 92, 246, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+            opacity: 0.6;
+        }
+
+        .empty-state-text {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .empty-state-hint {
+            font-size: 0.85rem;
+            color: var(--text-dark);
+        }
+
+        .loading-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            padding: 80px 20px;
+            color: var(--text-muted);
+        }
 
         .spinner {
-            width: 60px; height: 60px;
+            width: 48px; height: 48px;
             border-radius: 50%;
             background: conic-gradient(from 0deg, transparent 0deg, var(--accent-color) 360deg);
             position: relative;
@@ -443,6 +627,20 @@
         .spinner::after { content: ''; position: absolute; top: 4px; left: 4px; right: 4px; bottom: 4px; background: #050505; border-radius: 50%; }
         @keyframes rotateSpinner { 100% { transform: rotate(360deg); } }
 
+        /* ── List Header ── */
+        .list-header {
+            display: grid;
+            grid-template-columns: 1fr auto auto auto;
+            gap: 20px;
+            padding: 0 22px 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        /* ── Modal ── */
         .modal-overlay {
             position: fixed; inset: 0;
             background: rgba(5, 5, 10, 0.85);
@@ -497,6 +695,7 @@
         .btn-secondary { background: rgba(255, 255, 255, 0.05); color: white; border-color: var(--border-subtle); }
         .btn-secondary:hover { background: rgba(255, 255, 255, 0.08); border-color: var(--border-hover); transform: translateY(-1px); }
 
+        /* ── Toasts ── */
         .toast-container {
             position: fixed;
             bottom: 40px;
@@ -584,7 +783,11 @@
             .actions-group { width: 100%; flex-wrap: wrap; }
             .btn { flex: 1; justify-content: center; font-size: 0.75rem; padding: 7px 10px; min-width: 100px; }
             .content-scroll { padding: 20px; }
-            .instance-grid { grid-template-columns: 1fr; }
+            .stats-bar { flex-wrap: wrap; gap: 8px; }
+            .instance-row { grid-template-columns: 1fr auto; gap: 12px; padding: 14px 16px; }
+            .type-badge { display: none; }
+            .row-actions { opacity: 1; }
+            .list-header { display: none; }
             .toast-container { right: 20px; left: 20px; bottom: 20px; }
             .toast { width: 100%; min-width: auto; max-width: none; }
         }
@@ -615,6 +818,7 @@
         <div class="particle" style="top: 15%; left: 70%; width: 3px; height: 3px; animation-duration: 15s; animation-delay: -6s;"></div>
     </div>
 
+    <!-- Sidebar -->
     <aside class="sidebar">
         <a href="/" class="sidebar-logo">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -636,6 +840,7 @@
         </button>
     </aside>
 
+    <!-- Main -->
     <main class="main-content">
         <header class="top-bar">
             <div class="page-title">Cloud Command Center</div>
@@ -660,14 +865,45 @@
         </header>
 
         <div class="content-scroll">
-            <div class="section-header">
-                <div>
-                    <div class="section-title">Services</div>
-                    <div class="section-subtitle">Running status or Stopped</div>
+            <!-- Stats Bar -->
+            <div class="stats-bar" id="statsBar">
+                <div class="stat-chip">
+                    <div class="stat-dot total"></div>
+                    <span>Total</span>
+                    <span class="stat-num" id="statTotal">0</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-chip">
+                    <div class="stat-dot running"></div>
+                    <span>Running</span>
+                    <span class="stat-num" id="statRunning">0</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-chip">
+                    <div class="stat-dot stopped"></div>
+                    <span>Stopped</span>
+                    <span class="stat-num" id="statStopped">0</span>
                 </div>
             </div>
 
-            <div class="instance-grid" id="instanceGrid">
+            <!-- Section Header -->
+            <div class="section-header">
+                <div>
+                    <div class="section-title">Instances</div>
+                    <div class="section-subtitle">Manage your cloud services</div>
+                </div>
+            </div>
+
+            <!-- Column Headers -->
+            <div class="list-header" id="listHeader" style="display:none;">
+                <span>Name</span>
+                <span>Status</span>
+                <span>Type</span>
+                <span></span>
+            </div>
+
+            <!-- Instance List -->
+            <div class="instance-list" id="instanceList">
                 <div class="loading-state">
                     <div class="spinner"></div>
                     <span>Connecting to backend...</span>
@@ -726,7 +962,6 @@
     <div class="toast-container" id="toast-container"></div>
 
     <script>
-        /* ── Parallax ── */
         document.addEventListener('DOMContentLoaded', () => {
             const ambientGlow = document.getElementById('ambient-glow');
             const spot1 = document.getElementById('spot1');
@@ -789,10 +1024,10 @@
 
         /* ── Fetch ── */
         async function fetchInstances() {
-            const grid = document.getElementById('instanceGrid');
+            const list = document.getElementById('instanceList');
 
             if (instances.length === 0) {
-                grid.innerHTML = `<div class="loading-state"><div class="spinner"></div><span>Connecting to backend...</span></div>`;
+                list.innerHTML = `<div class="loading-state"><div class="spinner"></div><span>Connecting to backend...</span></div>`;
             }
 
             try {
@@ -814,51 +1049,122 @@
             } catch (error) {
                 console.error('Fetch Error:', error);
                 if (instances.length === 0) {
-                    grid.innerHTML = `<div class="empty-state"><div class="empty-state-icon">⚠</div><div class="empty-state-text">Failed to connect</div><div class="empty-state-hint">${error.message}</div></div>`;
+                    list.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-icon-wrap">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                            </div>
+                            <div class="empty-state-text">Failed to connect</div>
+                            <div class="empty-state-hint">${error.message}</div>
+                        </div>`;
                 }
             }
         }
 
+        /* ── Update Stats ── */
+        function updateStats() {
+            const total = instances.length;
+            const running = instances.filter(i => i.status === 'running').length;
+            const stopped = instances.filter(i => i.status === 'stopped').length;
+
+            document.getElementById('statTotal').textContent = total;
+            document.getElementById('statRunning').textContent = running;
+            document.getElementById('statStopped').textContent = stopped;
+        }
+
         /* ── Render ── */
         function renderInstances() {
-            const grid = document.getElementById('instanceGrid');
-            grid.innerHTML = '';
+            const list = document.getElementById('instanceList');
+            const header = document.getElementById('listHeader');
+            list.innerHTML = '';
+
+            updateStats();
 
             if (instances.length === 0) {
-                grid.innerHTML = `<div class="empty-state"><div class="empty-state-icon">📦</div><div class="empty-state-text">No instances yet</div><div class="empty-state-hint">Click "Add Instance" to get started</div></div>`;
+                header.style.display = 'none';
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon-wrap">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
+                        </div>
+                        <div class="empty-state-text">No instances yet</div>
+                        <div class="empty-state-hint">Click "Add Instance" to provision your first service</div>
+                    </div>`;
                 return;
             }
 
-            instances.forEach(inst => {
-                let statusClass = 'status-building', cardClass = 'building';
-                if (inst.status === 'running') { statusClass = 'status-running'; cardClass = 'running'; }
-                else if (inst.status === 'stopped') { statusClass = 'status-stopped'; cardClass = 'stopped'; }
+            header.style.display = '';
 
-                const card = document.createElement('div');
-                card.className = `instance-card ${cardClass}`;
-                card.innerHTML = `
-                    <div class="card-top">
-                        <div class="inst-icon">
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            instances.forEach(inst => {
+                let rowClass = 'building';
+                if (inst.status === 'running') rowClass = 'running';
+                else if (inst.status === 'stopped') rowClass = 'stopped';
+
+                const row = document.createElement('div');
+                row.className = `instance-row ${rowClass}`;
+
+                /* Determine which quick actions to show */
+                let actionBtns = '';
+                if (inst.status === 'stopped') {
+                    actionBtns = `
+                        <button class="row-action-btn start-btn" title="Start" onclick="quickAction('${inst.name}','start')">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                        </button>`;
+                } else if (inst.status === 'running') {
+                    actionBtns = `
+                        <button class="row-action-btn stop-btn" title="Stop" onclick="quickAction('${inst.name}','stop')">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="1"></rect></svg>
+                        </button>`;
+                }
+                actionBtns += `
+                    <button class="row-action-btn kill-btn" title="Kill" onclick="quickAction('${inst.name}','kill')">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                    </button>`;
+
+                row.innerHTML = `
+                    <div class="inst-name-area">
+                        <div class="inst-icon-sm">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
                                 <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
                                 <line x1="6" y1="6" x2="6.01" y2="6"></line>
                                 <line x1="6" y1="18" x2="6.01" y2="18"></line>
                             </svg>
                         </div>
-                        <span class="inst-id">#${inst.id}</span>
-                    </div>
-                    <div class="card-body">
-                        <div class="inst-name">${inst.name}</div>
-                        <div class="status-badge ${statusClass}">
-                            <div class="status-dot"></div>
-                            ${inst.status}
+                        <div class="inst-text-group">
+                            <div class="inst-name-text">${inst.name}</div>
+                            <div class="inst-id-text">#${inst.id}</div>
                         </div>
                     </div>
-                    <div class="card-meta"><span>nodefy/app</span></div>
+                    <div class="status-pill ${rowClass}">
+                        <div class="status-pill-dot"></div>
+                        ${inst.status}
+                    </div>
+                    <div class="type-badge">docker</div>
+                    <div class="row-actions">${actionBtns}</div>
                 `;
-                grid.appendChild(card);
+                list.appendChild(row);
             });
+        }
+
+        /* ── Quick Action from row buttons ── */
+        function quickAction(name, type) {
+            if (type === 'kill') {
+                const idx = instances.findIndex(i => i.name === name);
+                if (idx > -1) instances.splice(idx, 1);
+                renderInstances();
+                showToast('Terminated', `"${name}" has been killed.`, 'error');
+            } else if (type === 'stop') {
+                const inst = instances.find(i => i.name === name);
+                if (inst) inst.status = 'stopped';
+                renderInstances();
+                showToast('Stopped', `"${name}" halted.`, 'info');
+            } else if (type === 'start') {
+                const inst = instances.find(i => i.name === name);
+                if (inst) inst.status = 'building';
+                renderInstances();
+                showToast('Starting', `Starting "${name}"...`, 'success');
+            }
         }
 
         /* ── Modals ── */
@@ -927,23 +1233,7 @@
             if (!validateImageName(imageInput, 'actionImgErr')) { imageInput.focus(); return; }
 
             closeModals();
-
-            if (type === 'kill') {
-                const idx = instances.findIndex(i => i.name === name);
-                if (idx > -1) instances.splice(idx, 1);
-                renderInstances();
-                showToast('Terminated', `"${name}" has been killed.`, 'error');
-            } else if (type === 'stop') {
-                const inst = instances.find(i => i.name === name);
-                if (inst) inst.status = 'stopped';
-                renderInstances();
-                showToast('Stopped', `"${name}" halted.`, 'info');
-            } else if (type === 'start') {
-                const inst = instances.find(i => i.name === name);
-                if (inst) inst.status = 'building';
-                renderInstances();
-                showToast('Starting', `Starting "${name}"...`, 'success');
-            }
+            quickAction(name, type);
         }
 
         function handleWorkspace() { showToast('Redirecting', 'Opening secure workspace...', 'info'); }
