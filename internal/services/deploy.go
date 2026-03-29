@@ -25,7 +25,7 @@ func Deployservices(sessionid string,Deploy *models.Deploy) error {
 	    return  errors.ErrInternalserver
    }
 
-   saverr := postgres.Savedeployinstance(username,*Deploy)
+   saverr := postgres.SaveDeployinstances(username,*Deploy)
 
    if saverr != nil {
 	  return errors.ErrInternalserver
