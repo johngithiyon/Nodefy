@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/johngithiyon/Nodefy/internal/errors"
+	"github.com/johngithiyon/Nodefy/internal/models"
 	"github.com/johngithiyon/Nodefy/internal/services"
 	"github.com/johngithiyon/Nodefy/pkg/response"
 	"github.com/johngithiyon/Nodefy/pkg/utils"
@@ -11,7 +12,7 @@ import (
 
 func Killcontainerhandler(w http.ResponseWriter, r *http.Request) {
 
-	    killinstancename := r.FormValue("killinstancename")     
+	    var killinstance models.Containermanage
 	
 		if r.Method != http.MethodPost {
 			response.Response(w,405,"Invalid Metheod")
@@ -28,7 +29,7 @@ func Killcontainerhandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 
-        killerr := services.Killcontainerservices(killinstancename,sessionid)
+        killerr := services.Killcontainerservices(&killinstance,sessionid)
 
 		if killerr == errors.ErrInternalserver {
 			response.Response(w,500,"Internal Server Error")
