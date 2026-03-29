@@ -8,6 +8,10 @@ import (
 
 func Routes() {
 
+	//serve the static files
+
+	 http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
+
 	  // frontend endpoints 
 
 	  http.HandleFunc("/signupage",handlers.Rendersignupage)
@@ -18,7 +22,7 @@ func Routes() {
 	  http.HandleFunc("/buildpage",handlers.RenderBuildpage)
 	  http.HandleFunc("/choosepage",handlers.RenderChoosepage)
 	  http.HandleFunc("/deploypage",handlers.RenderDeploypage)
-	  http.HandleFunc("/explorepage",handlers.RenderExplorepage)
+	  http.HandleFunc("/exploreospage",handlers.RenderExplorepage)
 	  http.HandleFunc("/teachpage",handlers.RenderTeachpage)
 	  http.HandleFunc("/buildinfopage",handlers.RenderBuildinstancepage)
 
