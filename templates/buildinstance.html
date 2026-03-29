@@ -437,19 +437,6 @@
             .empty-state-text { font-size: 1rem; margin-bottom: 6px; color: var(--text-muted); }
             .empty-state-hint { font-size: 0.85rem; opacity: 0.6; }
 
-            .loading-state { grid-column: 1 / -1; display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 80px 20px; color: var(--text-muted); }
-
-            .spinner {
-                width: 60px; height: 60px;
-                border-radius: 50%;
-                background: conic-gradient(from 0deg, transparent 0deg, var(--accent-color) 360deg);
-                position: relative;
-                animation: rotateSpinner 1s linear infinite;
-                box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
-            }
-            .spinner::after { content: ''; position: absolute; top: 4px; left: 4px; right: 4px; bottom: 4px; background: #050505; border-radius: 50%; }
-            @keyframes rotateSpinner { 100% { transform: rotate(360deg); } }
-
             .modal-overlay {
                 position: fixed; inset: 0;
                 background: rgba(5, 5, 10, 0.85);
@@ -675,12 +662,7 @@
                     </div>
                 </div>
 
-                <div class="instance-grid" id="instanceGrid">
-                    <div class="loading-state">
-                        <div class="spinner"></div>
-                        <span>Connecting to backend...</span>
-                    </div>
-                </div>
+                <div class="instance-grid" id="instanceGrid"></div>
             </div>
         </main>
 
@@ -719,8 +701,6 @@
                     <div class="validation-msg" id="actionNameErr"></div>
                 </div>
 
-                <!-- Hidden Logic: Status and Type are handled in JS, not shown here -->
-
                 <div class="modal-actions">
                     <button class="btn btn-secondary" onclick="closeModals()">Cancel</button>
                     <button class="btn btn-primary" id="btnActionSubmit" onclick="submitAction()">Execute</button>
@@ -732,14 +712,10 @@
 
         <script>
             document.addEventListener('DOMContentLoaded', function () {
-                // Initialize LocalStorage for Type if missing
                 if (!localStorage.getItem('selection_type')) {
-                    // Set a default for demonstration purposes
                     localStorage.setItem('selection_type', 'docker'); 
-                    console.log("Initialized localStorage 'selection_type' to 'docker'");
                 }
 
-                // Background Animations
                 var ambientGlow = document.getElementById('ambient-glow');
                 var spot1 = document.getElementById('spot1');
                 var spot2 = document.getElementById('spot2');
@@ -798,12 +774,6 @@
             }
 
             async function fetchInstances() {
-                var grid = document.getElementById('instanceGrid');
-
-                if (instances.length === 0) {
-                    grid.innerHTML = '<div class="loading-state"><div class="spinner"></div><span>Connecting to backend...</span></div>';
-                }
-
                 try {
                     var response = await fetch('/getbuildinstance', { method: 'GET', credentials: 'include' });
                     
@@ -824,10 +794,6 @@
                     renderInstances();
                 } catch (error) {
                     console.error('Fetch Error:', error);
-                    
-                    // REMOVED: Default demo data is no longer inserted here.
-                    // If the backend is unreachable or has no data, the UI will show the "No instances yet" state.
-                    
                     renderInstances(); 
                 }
             }
@@ -925,7 +891,6 @@
                 };
                 document.getElementById('actionTitle').innerText = labels[actionType] || actionType.toUpperCase();
                 
-                // Pre-fill Instance Name
                 var nameInput = document.getElementById('actionInstName');
                 if (selectedInstance) {
                     nameInput.value = selectedInstance;
@@ -998,7 +963,6 @@
                 } catch (error) {
                     console.error(error);
                     showToast('Info', 'This is a frontend demo. Backend call simulated.', 'info');
-                    // Add dummy instance to UI to show feedback
                     instances.push({ id: Date.now(), name: name, status: 'building' });
                     renderInstances();
                 } finally {
@@ -1006,28 +970,12 @@
                 }
             }
 
-            /*
-            * Start / Stop / Kill
-            * 
-            * Payload construction matches Go struct:
-            * type Containermanage struct {
-            *     Instancename string `json:"instance_name"`
-            *     Type         string `json:"type"`
-            *     Status       string `json:"status"`
-            * }
-            * 
-            * Logic:
-            * - 'instance_name': Comes from the input field (visible to user).
-            * - 'type': Comes from localStorage key 'selection_type' (hidden logic).
-            * - 'status': Determined automatically based on the action clicked (hidden logic).
-            */
             async function submitAction() {
                 var type = document.getElementById('currentAction').value;
                 var nameInput = document.getElementById('actionInstName');
                 var name = nameInput.value.trim();
                 var btn = document.getElementById('btnActionSubmit');
 
-                // 1. Determine Status Automatically (Hidden from user)
                 var status = 'stopped';
                 if (type === 'start') {
                     status = 'running';
@@ -1037,10 +985,8 @@
                     status = 'stopped';
                 }
 
-                // 2. Get Type from LocalStorage (Hidden from user)
                 var typeFromStorage = localStorage.getItem('selection_type') || 'docker';
 
-                // Validation (Name only)
                 if (!name) {
                     nameInput.classList.add('error');
                     document.getElementById('actionNameErr').textContent = 'Instance name is required.';
@@ -1061,14 +1007,11 @@
                     kill: '/killinstance'
                 };
 
-                // CONSTRUCT THE PAYLOAD EXACTLY AS REQUESTED
                 var payload = {
                     instance_name: name,
                     type: typeFromStorage,
                     status: status
                 };
-
-                console.log("Sending Payload:", JSON.stringify(payload, null, 2));
 
                 try {
                     var response = await fetch(endpoints[type], {
@@ -1078,7 +1021,6 @@
                         body: JSON.stringify(payload)
                     });
 
-                    // Demo fallback if server is not running
                     if (!response.ok) {
                         if(response.status === 404 || response.type === 'error') {
                             throw new Error("Backend unreachable (Demo Mode)");
@@ -1104,9 +1046,7 @@
                 } catch (error) {
                     console.error(error);
                     
-                    // DEMO VISUAL UPDATE: If fetch fails, pretend it worked for UI demo
                     if(error.message.includes("Demo Mode")) {
-                        // Find instance and update locally
                         var idx = instances.findIndex(i => i.name === name);
                         if(idx !== -1) {
                             instances[idx].status = status;
@@ -1138,7 +1078,6 @@
                     if (!response.ok) throw new Error('Failed to get workspace');
 
                     var url = (await response.text()).trim();
-                    // Remove quotes if stringified
                     if (url.charAt(0) === '"') url = JSON.parse(url);
 
                     if (url && url.indexOf('http') === 0) {
@@ -1196,7 +1135,6 @@
                 }, 5000);
             }
 
-            // Event Listeners for closing modals
             var overlays = document.querySelectorAll('.modal-overlay');
             for (var i = 0; i < overlays.length; i++) {
                 (function (overlay) {
