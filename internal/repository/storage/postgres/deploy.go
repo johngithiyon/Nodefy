@@ -50,3 +50,20 @@ func Getdeployinstance(username string) ([]models.Deployinfo,error) {
 
 	 return deployinfo,nil 
 }
+
+func SaveDeployAddinstances(username string,Deployaddinstances models.Deployaddinstances) error {
+	 
+	    query := `UPDATE deploy_instances
+		SET services = array_append(services,$1)
+		WHERE appname = $2 and username = $3; `
+
+		_,saverr := Database.Db.Exec(query,Deployaddinstances.Imagename,Deployaddinstances.Appname,username)
+
+		if saverr != nil {
+			log.Println("Save Err in the deploy_instances table for add instances",saverr)
+			return  saverr
+		}
+	
+        return  nil 
+
+}
