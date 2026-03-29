@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nodefy - About Us</title>
     
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
     <style>
-        /* --- 1. CORE VARIABLES & THEME (Preserved Exactly) --- */
         :root {
             --bg-gradient-start: #050505;
             --bg-gradient-end: #1a0b2e;
@@ -32,15 +30,8 @@
             --font-code: 'JetBrains Mono', monospace;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
 
         body {
             font-family: var(--font-ui);
@@ -55,7 +46,6 @@
             min-height: 100vh;
         }
 
-        /* --- 2. BACKGROUND ANIMATIONS (Preserved) --- */
         .ambient-glow {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.15), transparent 35%),
@@ -113,7 +103,6 @@
         .spot2 { bottom: -30vh; left: -10vw; animation-delay: -5s; width: 80vw; height: 80vw; background: radial-gradient(circle at center, rgba(59, 130, 246, 0.04), transparent 70%); }
         @keyframes spotMove { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(5%, 5%) scale(1.1); } }
 
-        /* --- 3. NAVIGATION --- */
         nav {
             position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
             width: 90%; max-width: 1200px; height: 64px;
@@ -141,7 +130,6 @@
         .nav-links a:hover { color: var(--text-main); }
         .nav-links a:hover::after { width: 100%; }
 
-        /* --- 4. LAYOUT UTILS --- */
         .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
         section { padding: 120px 0; position: relative; }
         
@@ -168,7 +156,6 @@
         }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
-        /* --- 5. HERO --- */
         .hero {
             min-height: 70vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
             text-align: center; padding-top: 80px;
@@ -183,7 +170,6 @@
             max-width: 650px; margin: 0 auto 40px; font-size: 1.2rem; color: #d1d5db;
         }
 
-        /* --- 6. VISION/MISSION --- */
         .grid-2 {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
             gap: 40px;
@@ -200,67 +186,68 @@
             transform: translateY(-8px);
             border-color: rgba(139, 92, 246, 0.3);
         }
-        .card-icon {
-            font-size: 2rem; margin-bottom: 24px; display: inline-block;
-        }
-        .info-card h3 {
-            font-size: 1.5rem; margin-bottom: 16px; color: white; font-weight: 600;
-        }
-        .info-card p {
-            font-size: 1rem; color: var(--text-muted); line-height: 1.7;
-        }
+        .card-icon { font-size: 2rem; margin-bottom: 24px; display: inline-block; }
+        .info-card h3 { font-size: 1.5rem; margin-bottom: 16px; color: white; font-weight: 600; }
+        .info-card p { font-size: 1rem; color: var(--text-muted); line-height: 1.7; }
 
-        /* --- 7. TEAM (Updated with Social Icons) --- */
+        /* ── TEAM (reduced size, improved layout) ── */
         .team-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            max-width: 720px;
+            margin: 0 auto;
         }
         .team-card {
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--border-subtle);
-            padding: 40px; border-radius: 20px;
-            text-align: center; transition: 0.3s;
-            display: flex; flex-direction: column; align-items: center;
+            padding: 28px 24px 24px;
+            border-radius: 18px;
+            text-align: center;
+            transition: 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         .team-card:hover {
-            border-color: var(--accent-color); background: rgba(255, 255, 255, 0.04);
+            border-color: var(--accent-color);
+            background: rgba(255, 255, 255, 0.04);
+            transform: translateY(-4px);
         }
         .avatar {
-            width: 140px; height: 140px; border-radius: 50%; object-fit: cover;
-            border: 3px solid rgba(139, 92, 246, 0.3); margin-bottom: 24px;
+            width: 88px; height: 88px; border-radius: 50%; object-fit: cover;
+            border: 2px solid rgba(139, 92, 246, 0.3); margin-bottom: 18px;
             transition: 0.3s;
         }
         .team-card:hover .avatar {
             border-color: var(--accent-color);
-            box-shadow: 0 0 30px rgba(139, 92, 246, 0.4);
+            box-shadow: 0 0 24px rgba(139, 92, 246, 0.35);
         }
         .team-name {
-            font-size: 1.5rem; font-weight: 700; color: white; margin-bottom: 4px;
+            font-size: 1.15rem; font-weight: 700; color: white; margin-bottom: 2px;
         }
         .team-role {
-            color: var(--accent-color); font-size: 0.85rem; text-transform: uppercase;
-            letter-spacing: 1px; font-weight: 600; margin-bottom: 16px;
+            color: var(--accent-color); font-size: 0.72rem; text-transform: uppercase;
+            letter-spacing: 0.8px; font-weight: 600; margin-bottom: 12px;
         }
         .team-bio {
-            font-size: 0.95rem; color: var(--text-muted); line-height: 1.6;
-            margin-bottom: 20px;
+            font-size: 0.85rem; color: var(--text-muted); line-height: 1.55;
+            margin-bottom: 16px;
         }
-        
-        /* NEW: Team Social Links */
         .team-social-links {
             display: flex;
             justify-content: center;
-            gap: 15px;
+            gap: 10px;
         }
         .team-social-icon {
-            width: 40px; height: 40px; border-radius: 50%;
+            width: 34px; height: 34px; border-radius: 50%;
             background: rgba(255,255,255,0.05);
             border: 1px solid var(--border-subtle);
             display: flex; align-items: center; justify-content: center;
             color: var(--text-muted); text-decoration: none;
             transition: all 0.3s ease;
         }
-        .team-social-icon svg { width: 20px; height: 20px; }
+        .team-social-icon svg { width: 16px; height: 16px; }
         .team-social-icon:hover {
             background: var(--accent-color);
             border-color: var(--accent-color);
@@ -269,7 +256,6 @@
             box-shadow: 0 5px 15px rgba(139, 92, 246, 0.3);
         }
 
-        /* --- 8. TIMELINE --- */
         .timeline {
             position: relative; max-width: 900px; margin: 0 auto; padding: 40px 0;
         }
@@ -282,7 +268,6 @@
         }
         .timeline-item:nth-child(odd) { left: 0; text-align: right; }
         .timeline-item:nth-child(even) { left: 55%; text-align: left; }
-        
         .timeline-dot {
             position: absolute; width: 16px; height: 16px;
             background: var(--bg-gradient-start); border: 3px solid var(--accent-color);
@@ -291,7 +276,6 @@
         }
         .timeline-item:nth-child(odd) .timeline-dot { right: -9px; }
         .timeline-item:nth-child(even) .timeline-dot { left: -9px; }
-        
         .timeline-content {
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--border-subtle);
@@ -303,20 +287,14 @@
             border-color: var(--accent-color);
             transform: translateY(-3px);
         }
-
-        .timeline-content h3 {
-            color: white; font-size: 1.25rem; margin-bottom: 8px; font-weight: 600;
-        }
+        .timeline-content h3 { color: white; font-size: 1.25rem; margin-bottom: 8px; font-weight: 600; }
         .timeline-date {
             font-family: var(--font-code); color: var(--accent-color); font-size: 0.75rem;
             margin-bottom: 12px; display: inline-block; background: rgba(139, 92, 246, 0.1);
             padding: 2px 8px; border-radius: 4px;
         }
-        .timeline-desc {
-            font-size: 0.95rem; color: var(--text-muted); line-height: 1.6;
-        }
+        .timeline-desc { font-size: 0.95rem; color: var(--text-muted); line-height: 1.6; }
 
-        /* --- 9. PROFESSIONAL FOOTER --- */
         footer {
             margin-top: auto;
             border-top: 1px solid var(--border-subtle);
@@ -324,104 +302,46 @@
             backdrop-filter: blur(20px);
             padding: 80px 0 40px;
         }
-
         .footer-grid {
             display: grid;
             grid-template-columns: 2fr 1fr 1fr 1fr;
             gap: 40px;
             margin-bottom: 60px;
         }
-
         .footer-brand h3 {
-            color: white;
-            font-size: 1.5rem;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            color: white; font-size: 1.5rem; margin-bottom: 16px;
+            display: flex; align-items: center; gap: 10px;
         }
         .footer-brand h3 span { color: var(--accent-color); }
-        
-        .footer-brand p {
-            font-size: 0.95rem;
-            line-height: 1.6;
-            max-width: 300px;
-            color: var(--text-muted);
-        }
-
+        .footer-brand p { font-size: 0.95rem; line-height: 1.6; max-width: 300px; color: var(--text-muted); }
         .footer-col h4 {
-            color: white;
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 24px;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
+            color: white; font-size: 1rem; font-weight: 600;
+            margin-bottom: 24px; letter-spacing: 0.05em; text-transform: uppercase;
         }
-
-        .footer-col ul {
-            list-style: none;
-        }
-
-        .footer-col ul li {
-            margin-bottom: 12px;
-        }
-
-        .footer-col ul li a {
-            text-decoration: none;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            transition: color 0.2s;
-        }
-
-        .footer-col ul li a:hover {
-            color: var(--accent-color);
-        }
-
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 12px; }
+        .footer-col ul li a { text-decoration: none; color: var(--text-muted); font-size: 0.9rem; transition: color 0.2s; }
+        .footer-col ul li a:hover { color: var(--accent-color); }
         .footer-bottom {
             border-top: 1px solid var(--border-subtle);
             padding-top: 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 20px;
         }
-
-        .copyright {
-            color: #666;
-            font-size: 0.85rem;
-        }
-
-        .social-links {
-            display: flex;
-            gap: 16px;
-        }
-
+        .copyright { color: #666; font-size: 0.85rem; }
+        .social-links { display: flex; gap: 16px; }
         .social-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
+            width: 36px; height: 36px; border-radius: 50%;
             background: rgba(255,255,255,0.05);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-muted);
-            transition: all 0.2s;
-            text-decoration: none;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--text-muted); transition: all 0.2s; text-decoration: none;
         }
+        .social-icon:hover { background: var(--accent-color); color: white; transform: translateY(-2px); }
 
-        .social-icon:hover {
-            background: var(--accent-color);
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        /* --- RESPONSIVE --- */
         @media (max-width: 900px) {
             .footer-grid { grid-template-columns: 1fr; gap: 40px; }
             .footer-bottom { flex-direction: column; text-align: center; }
         }
-
         @media (max-width: 768px) {
             .hero h1 { font-size: 2.2rem; }
             .timeline::before { left: 20px; }
@@ -429,12 +349,12 @@
             .timeline-item:nth-child(even) { left: 0; }
             .timeline-dot { left: 12px !important; right: auto !important; }
             .grid-2 { grid-template-columns: 1fr; }
+            .team-grid { grid-template-columns: 1fr; max-width: 400px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Original Backgrounds -->
     <div class="ambient-glow" id="ambient-glow"></div>
     <div class="mesh-bg"></div>
     <div class="glow-spot spot1" id="spot1"></div>
@@ -445,7 +365,6 @@
         <div class="bubble" style="left: 60%; width: 200px; height: 200px; animation-duration: 35s;"></div>
     </div>
 
-    <!-- Navigation -->
     <nav>
         <a href="home.html" class="nav-logo">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -462,7 +381,6 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
     <section class="hero">
         <div class="container hero-content reveal">
             <h1>Play With Cloud Infrastructure.<br><span style="color: var(--accent-color)">To Learn Infrastructure.</span></h1>
@@ -473,7 +391,6 @@
         </div>
     </section>
 
-    <!-- What Drives Us -->
     <section id="purpose">
         <div class="container">
             <div class="section-header reveal">
@@ -481,7 +398,6 @@
                 <h2>What Drives Us</h2>
                 <p class="lead">Why we built Nodefy</p>
             </div>
-            
             <div class="grid-2">
                 <div class="info-card reveal">
                     <div class="card-icon">🔭</div>
@@ -503,7 +419,6 @@
         </div>
     </section>
 
-    <!-- Team Section -->
     <section id="team" class="team-section">
         <div class="container">
             <div class="section-header reveal">
@@ -511,18 +426,14 @@
                 <h2>The Team</h2>
                 <p class="lead">Meet the developers behind the engine.</p>
             </div>
-            
             <div class="team-grid">
-                <!-- Member 1 -->
                 <div class="team-card reveal">
                     <img src="https://ui-avatars.com/api/?name=John+Githiyon&background=8b5cf6&color=fff&size=256&font-size=0.33" alt="John Githiyon" class="avatar">
                     <h3 class="team-name">John Githiyon</h3>
                     <div class="team-role">Founder & Backend Architect</div>
                     <p class="team-bio">
-                        John Githiyon is the backend developer and core architect of Nodefy. He designed and implemented the entire backend system, 
-                        including service handling, deployment logic, and GitHub integration. As the owner of Nodefy, he leads the technical vision of the platform.
+                        Designed and implemented the entire backend system, including service handling, deployment logic, and GitHub integration. Leads the technical vision of the platform.
                     </p>
-                    <!-- Social Links for John -->
                     <div class="team-social-links">
                         <a href="#" target="_blank" class="team-social-icon" aria-label="GitHub">
                             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
@@ -533,17 +444,13 @@
                     </div>
                 </div>
 
-                <!-- Member 2 -->
                 <div class="team-card reveal">
                     <img src="https://ui-avatars.com/api/?name=Kanagalekshmi&background=8b5cf6&color=fff&size=256&font-size=0.33" alt="Kanagalekshmi" class="avatar">
                     <h3 class="team-name">Kanagalekshmi</h3>
                     <div class="team-role">Co-Founder & Frontend Lead</div>
                     <p class="team-bio">
-                        Kanagalekshmi is the frontend developer of Nodefy, responsible for designing and building the user interface. 
-                        She focuses on creating a smooth and interactive experience, ensuring users can easily explore operating systems, 
-                        select services, and deploy their projects without complexity.
+                        Designed and built the entire user interface, creating a smooth interactive experience for OS exploration, service selection, and project deployment.
                     </p>
-                    <!-- Social Links for Kanagalekshmi -->
                     <div class="team-social-links">
                         <a href="#" target="_blank" class="team-social-icon" aria-label="GitHub">
                             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
@@ -557,7 +464,6 @@
         </div>
     </section>
 
-    <!-- The Growth Story (Timeline) -->
     <section id="workflow">
         <div class="container">
             <div class="section-header reveal">
@@ -565,76 +471,54 @@
                 <h2>The Growth Story</h2>
                 <p class="lead">From concept to deployment</p>
             </div>
-
             <div class="timeline">
-                <!-- Phase 1 -->
                 <div class="timeline-item reveal">
                     <div class="timeline-dot"></div>
                     <div class="timeline-content">
                         <span class="timeline-date">Phase 1: Inspiration</span>
                         <h3>Concept Idea</h3>
-                        <p class="timeline-desc">
-                            The idea of Nodefy was born to help students understand Linux systems practically instead of only theoretical learning.
-                        </p>
+                        <p class="timeline-desc">The idea of Nodefy was born to help students understand Linux systems practically instead of only theoretical learning.</p>
                     </div>
                 </div>
-
-                <!-- Phase 2 -->
                 <div class="timeline-item reveal">
                     <div class="timeline-dot"></div>
                     <div class="timeline-content">
                         <span class="timeline-date">Phase 2: Realization</span>
                         <h3>OS Exploration Module</h3>
-                        <p class="timeline-desc">
-                            Developed a feature where users can select operating systems and practice commands in an interactive environment.
-                        </p>
+                        <p class="timeline-desc">Developed a feature where users can select operating systems and practice commands in an interactive environment.</p>
                     </div>
                 </div>
-
-                <!-- Phase 3 -->
                 <div class="timeline-item reveal">
                     <div class="timeline-dot"></div>
                     <div class="timeline-content">
                         <span class="timeline-date">Phase 3: Challenge</span>
                         <h3>Service Builder</h3>
-                        <p class="timeline-desc">
-                            Introduced service selection where users can choose databases, servers, and tools required to build their projects.
-                        </p>
+                        <p class="timeline-desc">Introduced service selection where users can choose databases, servers, and tools required to build their projects.</p>
                     </div>
                 </div>
-
-                <!-- Phase 4 -->
                 <div class="timeline-item reveal">
                     <div class="timeline-dot"></div>
                     <div class="timeline-content">
                         <span class="timeline-date">Phase 4: Goal</span>
                         <h3>GitHub Deployment</h3>
-                        <p class="timeline-desc">
-                            Enabled direct deployment of projects using GitHub repositories, simplifying the deployment process for beginners.
-                        </p>
+                        <p class="timeline-desc">Enabled direct deployment of projects using GitHub repositories, simplifying the deployment process for beginners.</p>
                     </div>
                 </div>
-
-                <!-- Phase 5 -->
                 <div class="timeline-item reveal">
                     <div class="timeline-dot"></div>
                     <div class="timeline-content">
                         <span class="timeline-date">Future</span>
                         <h3>Advanced Features</h3>
-                        <p class="timeline-desc">
-                            Future updates include AI-based command suggestions, smart service recommendations, and real-time project monitoring.
-                        </p>
+                        <p class="timeline-desc">Future updates include AI-based command suggestions, smart service recommendations, and real-time project monitoring.</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- PROFESSIONAL FOOTER -->
     <footer>
         <div class="container">
             <div class="footer-grid">
-                <!-- Brand Column -->
                 <div class="footer-brand">
                     <h3>
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -646,8 +530,6 @@
                     </h3>
                     <p>The platform for exploring OS, selecting services, and deploying from GitHub. Simplifying infrastructure for developers and students.</p>
                 </div>
-
-                <!-- Links Column 1 -->
                 <div class="footer-col">
                     <h4>Product</h4>
                     <ul>
@@ -657,8 +539,6 @@
                         <li><a href="#">Pricing</a></li>
                     </ul>
                 </div>
-
-                <!-- Links Column 2 -->
                 <div class="footer-col">
                     <h4>Resources</h4>
                     <ul>
@@ -668,8 +548,6 @@
                         <li><a href="#">API Status</a></li>
                     </ul>
                 </div>
-
-                <!-- Links Column 3 -->
                 <div class="footer-col">
                     <h4>Company</h4>
                     <ul>
@@ -680,7 +558,6 @@
                     </ul>
                 </div>
             </div>
-
             <div class="footer-bottom">
                 <div class="copyright">
                     &copy; 2026 Nodefy Project. Built by John Githiyon (Backend & Owner) and Kanagalekshmi (Frontend Developer).
@@ -702,7 +579,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Scroll Reveal Animation
             const observerOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" };
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
@@ -711,7 +587,6 @@
             }, observerOptions);
             document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-            // Mouse Parallax (Preserved)
             const ambientGlow = document.getElementById('ambient-glow');
             const spot1 = document.getElementById('spot1');
             const spot2 = document.getElementById('spot2');
