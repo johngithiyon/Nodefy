@@ -7,7 +7,7 @@ import (
 	"github.com/johngithiyon/Nodefy/internal/models"
 )
 
-func Stopcontainer(username string ,Stopcontainer models.Stopcontainer) error {
+func Stopcontainer(username string ,Stopcontainer models.Containermanage) error {
 
 	cmd :=  exec.Command(
              "docker",
