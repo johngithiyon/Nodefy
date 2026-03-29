@@ -7,18 +7,32 @@ import (
 	"github.com/johngithiyon/Nodefy/internal/models"
 )
 
-func Stopcontainer(Stopcontainer models.Stopcontainer) error {
+func Stopcontainer(username string ,Stopcontainer models.Stopcontainer) error {
 
-	cmd :=  exec.Command("docker","stop",Stopcontainer.Instancename)
+	cmd :=  exec.Command(
+             "docker",
+			"ps",
+			"-aq",
+			"--filter", "label=owner="+username,
+			"--filter","label=instance="+Stopcontainer.Instancename,
+	)
 
-	output,outputerr := cmd.CombinedOutput()
+	output,outputerr :=  cmd.CombinedOutput()
 
 	if outputerr != nil {
-		 log.Println("Docker Stop Error",outputerr)
-		 return outputerr
+		log.Println("Docker Ps  Error in stop  container ",outputerr,string(output))
+		return outputerr
 	}
 
-	log.Println("Docker Stop Output",string(output))
+	
+	stopcmd := exec.Command("docker","stop",string(output))
+
+	stopoutput,stoperr := stopcmd.CombinedOutput()
+
+	if stoperr != nil {
+		log.Println("Stop Error",stoperr,string(stopoutput))
+		return stoperr
+	}
 
 	return  nil 
 }
