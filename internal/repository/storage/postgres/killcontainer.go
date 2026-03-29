@@ -29,13 +29,19 @@ func Containerkill(username string, Containerkill models.Containermanage) error 
 
 	if Containerkill.Type == "deploy" {
 
+	   appid,getiderr := GetAppId(Containerkill)
+
+	   if getiderr != nil {
+		  return getiderr
+	   }
+
 		query := `
 		DELETE FROM deploy_instances_services
 		WHERE app_id = $1
 		AND service_name = $2;
 		`
 
-		_, deleteErr := Database.Db.Exec(query, 9, Containerkill.Instancename)
+		_, deleteErr := Database.Db.Exec(query,appid, Containerkill.Instancename)
 		if deleteErr != nil {
 			log.Println("Error deleting in deploy_instances_services:", deleteErr)
 			return deleteErr
