@@ -668,7 +668,7 @@
         <div class="content-scroll">
             <div class="section-header">
                 <div>
-                    <div class="section-title">Deployed Apps</div>
+                    <div class="section-title">Deployments</div>
                     <div class="section-subtitle">Click a card to select, then use action buttons above</div>
                 </div>
             </div>
@@ -688,7 +688,7 @@
             <h3 class="modal-title">Deploy Application</h3>
             <div class="form-group">
                 <label class="form-label">App Name</label>
-                <input type="text" id="addAppName" class="code-editor" placeholder="e.g. mywebapp" oninput="validateAppName(this, 'addNameErr')" autocomplete="off" spellcheck="false">
+                <input type="text" id="addAppName" class="code-editor" placeholder="e.g. myapp" oninput="validateAppName(this, 'addNameErr')" autocomplete="off" spellcheck="false">
                 <div class="form-hint">Only lowercase letters, numbers, and hyphens allowed. No spaces, uppercase, or special characters.</div>
                 <div class="validation-msg" id="addNameErr"></div>
             </div>
@@ -712,7 +712,7 @@
             <input type="hidden" id="currentAction">
             <div class="form-group">
                 <label class="form-label">App Name</label>
-                <input type="text" id="actionAppName" class="code-editor" placeholder="e.g. mywebapp" oninput="validateAppName(this, 'actionNameErr')" autocomplete="off" spellcheck="false">
+                <input type="text" id="actionAppName" class="code-editor" placeholder="e.g. myapp" oninput="validateAppName(this, 'actionNameErr')" autocomplete="off" spellcheck="false">
                 <div class="form-hint">Only lowercase letters, numbers, and hyphens allowed. No spaces, uppercase, or special characters.</div>
                 <div class="validation-msg" id="actionNameErr"></div>
             </div>
@@ -808,7 +808,7 @@
                     var item = data[i];
                     instances.push({
                         id: item.id,
-                        name: item.app_name || item.instance_name || '',
+                        name: item.instance_name || item.appname || item.app_name || '',
                         status: item.status.toLowerCase()
                     });
                 }
@@ -827,7 +827,7 @@
             grid.innerHTML = '';
 
             if (instances.length === 0) {
-                grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🚀</div><div class="empty-state-text">No deployed apps yet</div><div class="empty-state-hint">Click "Deploy App" to get started</div></div>';
+                grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🚀</div><div class="empty-state-text">No deployments yet</div><div class="empty-state-hint">Click "Deploy App" to get started</div></div>';
                 return;
             }
 
@@ -851,7 +851,8 @@
                         '<div class="card-top">' +
                             '<div class="inst-icon">' +
                                 '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
-                                    '<path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>' +
+                                    '<path d="M22 12l-10 7V5l10 7z"></path>' +
+                                    '<path d="M2 5v14"></path>' +
                                 '</svg>' +
                             '</div>' +
                             '<span class="inst-id">#' + inst.id + '</span>' +
@@ -906,9 +907,9 @@
             document.getElementById('currentAction').value = actionType;
 
             var labels = {
-                start: '▶ Start App',
-                stop: '⏹ Stop App',
-                kill: '⛔ Kill App'
+                start: '▶ Start Instance',
+                stop: '⏹ Stop Instance',
+                kill: '⛔ Kill Instance'
             };
             document.getElementById('actionTitle').innerText = labels[actionType] || actionType.toUpperCase();
             document.getElementById('actionModal').classList.add('open');
@@ -938,6 +939,16 @@
             }
         }
 
+        /*
+         * Deploy Add Instance
+         *
+         * Your Deployaddinstances struct uses:
+         *   Appname   string `json:"appname"`
+         *   Imagename string `json:"imagename"`
+         *
+         * So we send { "appname": "...", "imagename": "..." }
+         * to endpoint /addinstancesdeploy
+         */
         async function submitAddInstance() {
             var nameInput = document.getElementById('addAppName');
             var imageInput = document.getElementById('addImageName');
@@ -986,7 +997,7 @@
                 }
 
                 await fetchInstances();
-                showToast('Deployed', 'App "' + appname + '" deployed successfully.', 'success');
+                showToast('Deployed', 'Application "' + appname + '" deployed successfully.', 'success');
             } catch (error) {
                 console.error(error);
                 showToast('Error', error.message, 'error');
@@ -998,9 +1009,9 @@
         /*
          * Start / Stop / Kill
          *
-         * Sends both "instancename" and "instance_name" to handle
-         * different Go struct tags across handlers.
-         * Go decoder ignores keys that don't match any struct tag.
+         * Sends both "instancename" and "instance_name" so it works
+         * regardless of which struct tag your handlers expect.
+         * Go's json decoder ignores keys that don't match any tag.
          */
         async function submitAction() {
             var type = document.getElementById('currentAction').value;
@@ -1041,8 +1052,7 @@
                     credentials: 'include',
                     body: JSON.stringify({
                         instancename: name,
-                        instance_name: name,
-                        appname: name
+                        instance_name: name
                     })
                 });
 
