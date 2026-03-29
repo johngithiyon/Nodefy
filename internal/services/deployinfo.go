@@ -15,7 +15,7 @@ func Getdeployinfo(sessionid string) (string,error)  {
 		return "",errors.ErrInternalserver
 	}
 
-	deployinstances,geterr := postgres.Getdeployinstance(username)
+	deployinstances,geterr := postgres.GetDeployinstances(username)
 
 	if geterr != nil {
 		 return "",errors.ErrInternalserver
