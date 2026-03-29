@@ -350,6 +350,11 @@
         .instance-card.building::after { background: linear-gradient(90deg, #f59e0b, transparent); }
         .instance-card.building:hover { border-color: rgba(245, 158, 11, 0.3); box-shadow: 0 15px 40px -10px rgba(0, 0, 0, 0.6), 0 0 25px rgba(245, 158, 11, 0.12); }
 
+        .instance-card.selected {
+            border-color: rgba(139, 92, 246, 0.5) !important;
+            box-shadow: 0 15px 40px -10px rgba(0, 0, 0, 0.6), 0 0 30px rgba(139, 92, 246, 0.2) !important;
+        }
+
         .card-top { display: flex; justify-content: space-between; align-items: flex-start; }
 
         .inst-icon {
@@ -497,6 +502,11 @@
         .btn-secondary { background: rgba(255, 255, 255, 0.05); color: white; border-color: var(--border-subtle); }
         .btn-secondary:hover { background: rgba(255, 255, 255, 0.08); border-color: var(--border-hover); transform: translateY(-1px); }
 
+        .btn-loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
         .toast-container {
             position: fixed;
             bottom: 40px;
@@ -640,19 +650,19 @@
         <header class="top-bar">
             <div class="page-title">Cloud Command Center</div>
             <div class="actions-group">
-                <button class="btn btn-deploy" onclick="handleAction('start')">
+                <button class="btn btn-deploy" id="btnStart" onclick="handleAction('start')">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                     Start
                 </button>
-                <button class="btn btn-stop" onclick="handleAction('stop')">
+                <button class="btn btn-stop" id="btnStop" onclick="handleAction('stop')">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="1"></rect></svg>
                     Stop
                 </button>
-                <button class="btn btn-kill" onclick="handleAction('kill')">
+                <button class="btn btn-kill" id="btnKill" onclick="handleAction('kill')">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
                     Kill
                 </button>
-                <button class="btn btn-workspace" onclick="handleWorkspace()">
+                <button class="btn btn-workspace" id="btnWorkspace" onclick="handleWorkspace()">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg>
                     Workspace
                 </button>
@@ -663,7 +673,7 @@
             <div class="section-header">
                 <div>
                     <div class="section-title">Services</div>
-                    <div class="section-subtitle">Running status or Stopped</div>
+                    <div class="section-subtitle">Click a card to select, then use action buttons above</div>
                 </div>
             </div>
 
@@ -694,7 +704,7 @@
             </div>
             <div class="modal-actions">
                 <button class="btn btn-secondary" onclick="closeModals()">Cancel</button>
-                <button class="btn btn-primary" onclick="submitAddInstance()">Provision</button>
+                <button class="btn btn-primary" id="btnAddSubmit" onclick="submitAddInstance()">Provision</button>
             </div>
         </div>
     </div>
@@ -710,15 +720,9 @@
                 <div class="form-hint">Only lowercase letters, numbers, and hyphens allowed. No spaces, uppercase, or special characters.</div>
                 <div class="validation-msg" id="actionNameErr"></div>
             </div>
-            <div class="form-group" id="actionImageGroup" style="display:none;">
-                <label class="form-label">Docker Image</label>
-                <input type="text" id="actionImageName" class="code-editor" placeholder="e.g. nginx:alpine" oninput="validateImageName(this, 'actionImgErr')" autocomplete="off" spellcheck="false">
-                <div class="form-hint">Enter a correct Docker image name. Format: <span style="color:var(--text-muted);font-family:var(--font-code);">image:tag</span> or <span style="color:var(--text-muted);font-family:var(--font-code);">registry/image:tag</span></div>
-                <div class="validation-msg" id="actionImgErr"></div>
-            </div>
             <div class="modal-actions">
                 <button class="btn btn-secondary" onclick="closeModals()">Cancel</button>
-                <button class="btn btn-primary" id="actionSubmitBtn" onclick="submitAction()">Execute</button>
+                <button class="btn btn-primary" id="btnActionSubmit" onclick="submitAction()">Execute</button>
             </div>
         </div>
     </div>
@@ -751,6 +755,7 @@
         });
 
         let instances = [];
+        let selectedInstance = '';
 
         /* ── Validation ── */
         function validateInstName(input, errId) {
@@ -787,7 +792,7 @@
             return true;
         }
 
-        /* ── Fetch Instances ── */
+        /* ── Fetch ── */
         async function fetchInstances() {
             const grid = document.getElementById('instanceGrid');
 
@@ -819,7 +824,7 @@
             }
         }
 
-        /* ── Render Instances ── */
+        /* ── Render ── */
         function renderInstances() {
             const grid = document.getElementById('instanceGrid');
             grid.innerHTML = '';
@@ -835,7 +840,8 @@
                 else if (inst.status === 'stopped') { statusClass = 'status-stopped'; cardClass = 'stopped'; }
 
                 const card = document.createElement('div');
-                card.className = `instance-card ${cardClass}`;
+                card.className = `instance-card ${cardClass}${inst.name === selectedInstance ? ' selected' : ''}`;
+                card.dataset.name = inst.name;
                 card.innerHTML = `
                     <div class="card-top">
                         <div class="inst-icon">
@@ -857,6 +863,13 @@
                     </div>
                     <div class="card-meta"><span>nodefy/app</span></div>
                 `;
+
+                card.addEventListener('click', () => {
+                    selectedInstance = inst.name;
+                    document.querySelectorAll('.instance-card').forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+                });
+
                 grid.appendChild(card);
             });
         }
@@ -866,12 +879,6 @@
             document.querySelectorAll('.modal-overlay').forEach(el => el.classList.remove('open'));
             document.querySelectorAll('.code-editor').forEach(el => { el.value = ''; el.classList.remove('error'); });
             document.querySelectorAll('.validation-msg').forEach(el => el.textContent = '');
-            // Reset the action image group visibility for next open
-            const imageGroup = document.getElementById('actionImageGroup');
-            if (imageGroup) imageGroup.style.display = 'none';
-            // Reset submit button state
-            const submitBtn = document.getElementById('actionSubmitBtn');
-            if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Execute'; }
         }
 
         function openAddModal() {
@@ -883,43 +890,30 @@
             document.getElementById('currentAction').value = actionType;
             const labels = { start: '▶ Start Instance', stop: '⏹ Stop Instance', kill: '⛔ Kill Instance' };
             document.getElementById('actionTitle').innerText = labels[actionType] || actionType.toUpperCase();
-            // Hide image group — start/stop/kill only need instance name
-            const imageGroup = document.getElementById('actionImageGroup');
-            if (imageGroup) imageGroup.style.display = 'none';
             document.getElementById('actionModal').classList.add('open');
-            setTimeout(() => document.getElementById('actionInstName').focus(), 100);
-        }
 
-        /* ── Helper: parse backend response into a message string ── */
-        async function extractMessage(response) {
-            const text = await response.text();
-            try {
-                const json = JSON.parse(text);
-                return json.message || json.error || json.msg || text;
-            } catch {
-                return text || `HTTP ${response.status}`;
+            const nameInput = document.getElementById('actionInstName');
+            if (selectedInstance) {
+                nameInput.value = selectedInstance;
             }
+            setTimeout(() => nameInput.focus(), 100);
         }
 
-        /* ── XHR wrapper for GET with body (your stop endpoint uses GET + JSON body) ── */
-        function xhrGetWithBody(url, body) {
-            return new Promise((resolve, reject) => {
-                const xhr = new XMLHttpRequest();
-                xhr.open('GET', url, true);
-                xhr.setRequestHeader('Content-Type', 'application/json');
-                xhr.withCredentials = true;
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState === 4) {
-                        if (xhr.status === 200) {
-                            resolve({ status: xhr.status, body: xhr.responseText });
-                        } else {
-                            reject({ status: xhr.status, body: xhr.responseText });
-                        }
-                    }
-                };
-                xhr.onerror = function () { reject({ status: 0, body: 'Network error' }); };
-                xhr.send(JSON.stringify(body));
-            });
+        /* ── Button loading helper ── */
+        function setButtonLoading(btn, loading) {
+            if (loading) {
+                btn.dataset.originalHtml = btn.innerHTML;
+                btn.classList.add('btn-loading');
+                const svg = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation:rotateSpinner 1s linear infinite"><path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"/></svg>`;
+                const text = btn.textContent.trim();
+                btn.innerHTML = svg + ' ' + text + '...';
+            } else {
+                btn.classList.remove('btn-loading');
+                if (btn.dataset.originalHtml) {
+                    btn.innerHTML = btn.dataset.originalHtml;
+                    delete btn.dataset.originalHtml;
+                }
+            }
         }
 
         /* ── Add Instance → POST /addinstancesbuild ── */
@@ -928,6 +922,7 @@
             const imageInput = document.getElementById('addImageName');
             const name = nameInput.value.trim();
             const image = imageInput.value.trim();
+            const btn = document.getElementById('btnAddSubmit');
 
             if (!name) { nameInput.classList.add('error'); document.getElementById('addNameErr').textContent = 'Instance name is required.'; nameInput.focus(); return; }
             if (!validateInstName(nameInput, 'addNameErr')) { nameInput.focus(); return; }
@@ -935,6 +930,7 @@
             if (!validateImageName(imageInput, 'addImgErr')) { imageInput.focus(); return; }
 
             closeModals();
+            setButtonLoading(btn, true);
 
             try {
                 const response = await fetch('/addinstancesbuild', {
@@ -944,127 +940,128 @@
                     body: JSON.stringify({ instancename: name, imagename: image })
                 });
                 if (!response.ok) {
-                    const msg = await extractMessage(response);
-                    throw new Error(msg);
+                    const errData = await response.json().catch(() => ({}));
+                    throw new Error(errData.error || errData.message || 'Server Error');
                 }
                 await fetchInstances();
                 showToast('Success', `Instance "${name}" created.`, 'success');
             } catch (error) {
                 console.error(error);
                 showToast('Error', error.message, 'error');
+            } finally {
+                setButtonLoading(btn, false);
             }
         }
 
-        /* ── Start / Stop / Kill — calls actual backend endpoints ── */
+        /*
+         * ── Start / Stop / Kill ──
+         *
+         * Your models have different JSON tags:
+         *   models.Startcontainer  → json:"instance_name"  (underscore)
+         *   models.Stopcontainer   → json:"instancename"   (no underscore)
+         *
+         * Since the handler decodes into models.Containermanage
+         * we send BOTH keys to guarantee a match regardless
+         * of which tag Containermanage actually uses.
+         */
         async function submitAction() {
             const type = document.getElementById('currentAction').value;
             const nameInput = document.getElementById('actionInstName');
             const name = nameInput.value.trim();
+            const btn = document.getElementById('btnActionSubmit');
 
-            if (!name) { nameInput.classList.add('error'); document.getElementById('actionNameErr').textContent = 'Instance name is required.'; nameInput.focus(); return; }
+            if (!name) {
+                nameInput.classList.add('error');
+                document.getElementById('actionNameErr').textContent = 'Instance name is required.';
+                nameInput.focus();
+                return;
+            }
             if (!validateInstName(nameInput, 'actionNameErr')) { nameInput.focus(); return; }
 
-            // Disable button to prevent double-submit
-            const submitBtn = document.getElementById('actionSubmitBtn');
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Executing...';
-
             closeModals();
+            setButtonLoading(btn, true);
 
-            if (type === 'start') {
-                /* ── POST /startinstance  body: {"instancename":"..."} ── */
-                try {
-                    const response = await fetch('/startinstance', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        credentials: 'include',
-                        body: JSON.stringify({ instancename: name })
-                    });
-                    if (!response.ok) {
-                        const msg = await extractMessage(response);
-                        throw new Error(msg);
-                    }
-                    // Optimistic UI: show building while container starts
-                    const inst = instances.find(i => i.name === name);
-                    if (inst) inst.status = 'building';
-                    renderInstances();
-                    showToast('Starting', `Instance "${name}" is starting...`, 'success');
-                    // Re-fetch after a few seconds so the card flips to "running"
-                    setTimeout(fetchInstances, 4000);
-                } catch (error) {
-                    console.error(error);
-                    showToast('Error', error.message, 'error');
+            const endpoints = {
+                start: '/startinstance',
+                stop:  '/stopinstance',
+                kill:  '/killinstance'
+            };
+
+            const toastConfig = {
+                start: { title: 'Started',      msg: `"${name}" is running.`, type: 'success' },
+                stop:  { title: 'Stopped',      msg: `"${name}" halted.`,    type: 'info' },
+                kill:  { title: 'Terminated',   msg: `"${name}" killed.`,    type: 'error' }
+            };
+
+            try {
+                const response = await fetch(endpoints[type], {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    /*
+                     * Send BOTH "instancename" and "instance_name" so the
+                     * Go JSON decoder picks up whichever key matches the
+                     * struct tag on Containermanage.Instancename.
+                     * The unmatched key is silently ignored.
+                     */
+                    body: JSON.stringify({
+                        instancename: name,
+                        instance_name: name
+                    })
+                });
+
+                if (!response.ok) {
+                    const errData = await response.json().catch(() => ({}));
+                    throw new Error(errData.error || errData.message || `Server Error (${response.status})`);
                 }
 
-            } else if (type === 'stop') {
-                /* ── GET /stopinstance  body: {"instancename":"..."} ──
-                   Your backend checks r.Method != http.MethodGet AND reads r.Body,
-                   so we must use XHR (fetch strips body on GET requests).        */
-                try {
-                    const result = await xhrGetWithBody('/stopinstance', { instancename: name });
-                    const inst = instances.find(i => i.name === name);
-                    if (inst) inst.status = 'stopped';
-                    renderInstances();
-                    showToast('Stopped', `Instance "${name}" stopped successfully.`, 'info');
-                } catch (err) {
-                    let msg = 'Failed to stop instance';
-                    try { const j = JSON.parse(err.body); msg = j.message || j.error || msg; } catch {}
-                    console.error(err);
-                    showToast('Error', msg, 'error');
-                }
+                await fetchInstances();
 
-            } else if (type === 'kill') {
-                /* ── POST /killinstance  body: {"instancename":"..."} ──
-                   Killcontainerhandler code wasn't provided so this is a best-effort call.
-                   Falls back to local-only removal if the endpoint doesn't exist.        */
-                try {
-                    const response = await fetch('/killinstance', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        credentials: 'include',
-                        body: JSON.stringify({ instancename: name })
-                    });
-                    if (!response.ok) {
-                        const msg = await extractMessage(response);
-                        throw new Error(msg);
-                    }
-                    const idx = instances.findIndex(i => i.name === name);
-                    if (idx > -1) instances.splice(idx, 1);
-                    renderInstances();
-                    showToast('Terminated', `Instance "${name}" has been killed.`, 'error');
-                } catch (error) {
-                    // If the endpoint doesn't exist yet, do local removal
-                    console.warn('Kill endpoint error (fallback to local):', error);
-                    const idx = instances.findIndex(i => i.name === name);
-                    if (idx > -1) instances.splice(idx, 1);
-                    renderInstances();
-                    showToast('Terminated', `Instance "${name}" removed locally.`, 'error');
-                }
+                const cfg = toastConfig[type];
+                showToast(cfg.title, cfg.msg, cfg.type);
+            } catch (error) {
+                console.error(error);
+                showToast('Error', error.message, 'error');
+            } finally {
+                setButtonLoading(btn, false);
             }
         }
 
-        /* ── Workspace → GET /workspace  (no body, uses session cookie) ── */
+        /* ── Workspace → GET /workspace ── */
         async function handleWorkspace() {
-            showToast('Connecting', 'Provisioning your workspace...', 'info');
+            const btn = document.getElementById('btnWorkspace');
+            setButtonLoading(btn, true);
+
             try {
                 const response = await fetch('/workspace', {
                     method: 'GET',
                     credentials: 'include'
                 });
+
                 if (!response.ok) {
-                    const msg = await extractMessage(response);
-                    throw new Error(msg);
+                    const errData = await response.json().catch(() => ({}));
+                    throw new Error(errData.error || errData.message || `Failed to get workspace (${response.status})`);
                 }
-                const url = (await response.text()).trim();
+
+                let url = await response.text();
+                url = url.trim();
+
+                /* Backend may return a JSON-wrapped string like "http://..." with quotes */
+                if (url.startsWith('"') && url.endsWith('"')) {
+                    try { url = JSON.parse(url); } catch (e) { /* keep as-is */ }
+                }
+
                 if (url && url.startsWith('http')) {
                     window.open(url, '_blank');
-                    showToast('Workspace', 'Workspace opened in new tab.', 'success');
+                    showToast('Redirecting', 'Opening workspace...', 'info');
                 } else {
-                    showToast('Error', 'Received invalid workspace URL.', 'error');
+                    throw new Error('Invalid workspace URL received from server.');
                 }
             } catch (error) {
                 console.error(error);
                 showToast('Error', error.message, 'error');
+            } finally {
+                setButtonLoading(btn, false);
             }
         }
 
@@ -1100,7 +1097,7 @@
             }, 5000);
         }
 
-        /* ── Global listeners ── */
+        /* ── Modal dismiss ── */
         document.querySelectorAll('.modal-overlay').forEach(overlay => {
             overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModals(); });
         });
