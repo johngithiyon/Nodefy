@@ -29,7 +29,6 @@
             --font-ui: 'Inter', sans-serif;
             --font-code: 'JetBrains Mono', monospace;
 
-            /* Layout specific variables mapped to theme */
             --bg-sidebar: rgba(10, 10, 15, 0.6);
             --bg-terminal: rgba(0, 0, 0, 0.6);
             --terminal-accent: var(--accent-color);
@@ -39,7 +38,6 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-
         html { scroll-behavior: smooth; }
 
         body {
@@ -53,7 +51,6 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* --- 2. BACKGROUND ANIMATIONS (From Nodefy Home) --- */
         .ambient-glow {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: 
@@ -99,13 +96,11 @@
             100% { transform: translateY(-120vh) scale(1.2); opacity: 0; }
         }
 
-        /* --- 3. SCROLLBAR --- */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--border-subtle); border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--accent-color); }
 
-        /* --- 4. SIDEBAR --- */
         aside {
             width: 300px;
             background: var(--bg-sidebar);
@@ -156,7 +151,6 @@
             padding: 20px 0;
         }
 
-        /* Dropdown (Level 1) */
         .dropdown { border-bottom: 1px solid rgba(255,255,255,0.03); }
         
         .dropdown-header {
@@ -193,7 +187,6 @@
         }
         .dropdown.open .dropdown-content { max-height: 3000px; }
 
-        /* --- NESTED DROPDOWN STYLES (Level 2) --- */
         .nested-dropdown {
             border-bottom: 1px solid rgba(255,255,255,0.02);
             background: rgba(255,255,255,0.01);
@@ -239,7 +232,6 @@
             font-weight: 500;
         }
 
-        /* --- 5. MAIN CONTENT --- */
         main {
             flex: 1;
             display: flex;
@@ -290,7 +282,6 @@
         }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
-        /* --- 6. TERMINAL --- */
         .content-container {
             flex: 1;
             padding: 40px;
@@ -417,7 +408,6 @@
             background: rgba(139, 92, 246, 0.1); 
         }
 
-        /* Teaching Panel */
         .teaching-panel {
             margin-top: 25px;
             padding-top: 20px;
@@ -460,7 +450,6 @@
             font-family: var(--font-code);
         }
 
-        /* Responsive */
         @media (max-width: 900px) {
             body { flex-direction: column; overflow-y: auto; }
             aside { width: 100%; height: auto; max-height: 250px; border-right: none; border-bottom: 1px solid var(--border-subtle); }
@@ -471,7 +460,6 @@
 </head>
 <body>
 
-    <!-- Background Animations -->
     <div class="ambient-glow"></div>
     <div class="mesh-bg"></div>
     <div class="bubbles-container">
@@ -492,7 +480,6 @@
                 <span class="logo-sub">Command Center</span>
             </div>
         </div>
-        
         <nav id="sidebar-nav"></nav>
     </aside>
 
@@ -520,14 +507,12 @@
                 </div>
                 
                 <div class="terminal-body" id="terminal-body">
-                    <div id="welcome-area">
-                        <div class="output-line" style="color: var(--accent-color)">System initialized. Welcome to Nodefy Terminal v2.1</div>
-                        <div class="output-line" style="color: #555">Select a command category from the sidebar to begin.</div>
-                    </div>
+                    <div id="welcome-line-1" class="output-line" style="color: var(--accent-color)">System initialized. Welcome to Nodefy Terminal v2.1</div>
+                    <div id="welcome-line-2" class="output-line" style="color: #555">Select a command category from the sidebar to begin.</div>
                     <br>
                     
                     <div class="prompt-line">
-                        <span class="prompt" id="terminal-prompt">guest@nodefy:~$</span>
+                        <span id="terminal-prompt" class="prompt">guest@nodefy:~$</span>
                         <span id="command-display" class="command-input"></span><span class="cursor"></span>
                         <button class="copy-btn" onclick="copyCommand()">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
@@ -554,9 +539,8 @@
     </main>
 
     <script>
-        // --- OS Info Mapping ---
         function getOSInfo(osValue) {
-            const map = {
+            var map = {
                 'ubuntu': { displayName: 'Ubuntu', prompt: 'user@ubuntu:~$' },
                 'alpine': { displayName: 'Alpine', prompt: 'user@alpine:~$' },
                 'fedora': { displayName: 'Fedora', prompt: 'user@fedora:~$' },
@@ -566,939 +550,221 @@
             return map[osValue] || { displayName: 'Linux', prompt: 'user@linux:~$' };
         }
 
-        // --- Basic Commands (Universal Linux) ---
-        const basicCommands = {
-            'ls': {
-                label: '1. List Files (ls)',
-                command: 'ls -la',
-                desc: 'Lists all files and directories in the current location, including hidden files (those starting with a dot).\n\nFlags used:\n  -l : Long format (permissions, owner, size, date)\n  -a : Show hidden files',
-                params: ['-l', '-a', '-h', '-R'],
-                output: [
-                    'total 48',
-                    'drwxr-xr-x  6 user user 4096 Nov 15 10:00 .',
-                    'drwxr-xr-x  3 root root 4096 Nov 10 08:00 ..',
-                    '-rw-r--r--  1 user user  220 Nov 10 08:00 .bash_logout',
-                    '-rw-r--r--  1 user user 3771 Nov 10 08:00 .bashrc',
-                    'drwxr-xr-x  2 user user 4096 Nov 15 10:00 Desktop',
-                    'drwxr-xr-x  2 user user 4096 Nov 15 10:00 Documents',
-                    'drwxr-xr-x  2 user user 4096 Nov 15 10:00 Downloads',
-                    '-rw-r--r--  1 user user  807 Nov 10 08:00 .profile'
-                ]
-            },
-            'cd': {
-                label: '2. Change Directory (cd)',
-                command: 'cd /home/user/Documents',
-                desc: 'Changes the current working directory to the specified path.\n\nUseful shortcuts:\n  cd ..    \u2192 Go up one directory\n  cd ~     \u2192 Go to home directory\n  cd -     \u2192 Go to previous directory\n  cd /     \u2192 Go to root directory',
-                params: ['..', '~', '-', '/'],
-                output: [
-                    'user@linux:~$ cd /home/user/Documents',
-                    'user@linux:~/Documents$ pwd',
-                    '/home/user/Documents'
-                ]
-            },
-            'pwd': {
-                label: '3. Print Working Directory (pwd)',
-                command: 'pwd',
-                desc: 'Displays the full absolute path of the current working directory.\n\nThis is helpful when you lose track of where you are in the file system.',
-                params: ['-L', '-P'],
-                output: [
-                    '/home/user/Documents'
-                ]
-            },
-            'mkdir': {
-                label: '4. Create Directory (mkdir)',
-                command: 'mkdir -p projects/web-app/src',
-                desc: 'Creates a new directory. The -p flag creates parent directories if they don\'t exist, so "projects", "web-app", and "src" are all created in one command.',
-                params: ['-p', '-v', '-m'],
-                output: [
-                    'user@linux:~$ mkdir -p projects/web-app/src',
-                    'user@linux:~$ ls projects/',
-                    'web-app'
-                ]
-            },
-            'touch': {
-                label: '5. Create File (touch)',
-                command: 'touch notes.txt script.sh',
-                desc: 'Creates empty files if they don\'t exist. If the file already exists, it updates the modification timestamp without changing the content.',
-                params: ['-a', '-m', '-t'],
-                output: [
-                    'user@linux:~$ touch notes.txt script.sh',
-                    'user@linux:~$ ls -l notes.txt script.sh',
-                    '-rw-r--r-- 1 user user 0 Nov 15 10:30 notes.txt',
-                    '-rw-r--r-- 1 user user 0 Nov 15 10:30 script.sh'
-                ]
-            },
-            'cat': {
-                label: '6. Read File (cat)',
-                command: 'cat notes.txt',
-                desc: 'Displays the entire content of a file in the terminal.\n\nUseful variations:\n  cat file1 file2  \u2192 Concatenate multiple files\n  cat -n file       \u2192 Show line numbers\n  head -n 10 file   \u2192 Show first 10 lines\n  tail -n 10 file   \u2192 Show last 10 lines',
-                params: ['-n', '-b', '-s', 'head', 'tail'],
-                output: [
-                    'Hello, this is my first note.',
-                    'Learning Linux commands step by step.',
-                    'Practice makes perfect!'
-                ]
-            },
-            'cp': {
-                label: '7. Copy Files (cp)',
-                command: 'cp notes.txt backup/notes.txt',
-                desc: 'Copies files or directories from one location to another.\n\nFor directories, use the -r flag:\n  cp -r projects/ projects-backup/',
-                params: ['-r', '-i', '-v', '-u'],
-                output: [
-                    'user@linux:~$ cp notes.txt backup/notes.txt',
-                    'user@linux:~$ ls backup/',
-                    'notes.txt'
-                ]
-            },
-            'mv': {
-                label: '8. Move / Rename (mv)',
-                command: 'mv oldname.txt newname.txt',
-                desc: 'Moves files to a new location OR renames them.\n\nExamples:\n  mv file.txt /new/location/     \u2192 Move file\n  mv old.txt new.txt              \u2192 Rename file\n  mv *.txt folder/                \u2192 Move all .txt files',
-                params: ['-i', '-v', '-n', '-f'],
-                output: [
-                    'user@linux:~$ mv oldname.txt newname.txt',
-                    'user@linux:~$ ls',
-                    'newname.txt'
-                ]
-            },
-            'rm': {
-                label: '9. Remove Files (rm)',
-                command: 'rm -rf temp_folder/',
-                desc: 'Deletes files or directories permanently.\n\n\u26A0\uFE0F WARNING: This action cannot be undone!\n\nFlags:\n  -r : Remove directories and their contents recursively\n  -f : Force removal without confirmation\n  -i : Ask for confirmation before each removal (safer)',
-                params: ['-r', '-f', '-i', '-v'],
-                output: [
-                    'user@linux:~$ rm -rf temp_folder/',
-                    'user@linux:~$ ls',
-                    'Documents  Downloads  notes.txt'
-                ]
-            },
-            'echo': {
-                label: '10. Print Text (echo)',
-                command: 'echo "Hello World" > greeting.txt',
-                desc: 'Prints text to the terminal or writes it to a file using redirection (>).\n\nUseful for:\n  Writing to files: echo "text" > file.txt\n  Appending: echo "text" >> file.txt\n  Checking variables: echo $PATH',
-                params: ['>', '>>', '-n', '-e', '$VAR'],
-                output: [
-                    'user@linux:~$ echo "Hello World" > greeting.txt',
-                    'user@linux:~$ cat greeting.txt',
-                    'Hello World'
-                ]
-            },
-            'whoami': {
-                label: '11. Current User (whoami)',
-                command: 'whoami',
-                desc: 'Displays the username of the currently logged-in user.\n\nRelated commands:\n  id    \u2192 Shows user ID and group IDs\n  who   \u2192 Shows all logged-in users',
-                params: ['id', 'who', 'groups'],
-                output: [
-                    'user'
-                ]
-            },
-            'clear': {
-                label: '12. Clear Terminal (clear)',
-                command: 'clear',
-                desc: 'Clears all text from the terminal screen, giving you a clean workspace.\n\nShortcut: Ctrl + L also clears the terminal.',
-                params: ['Ctrl+L'],
-                output: [
-                    '[Terminal Cleared]'
-                ]
-            }
+        var basicCommands = {
+            'ls': { label: '1. List Files (ls)', command: 'ls -la', desc: 'Lists all files and directories in the current location, including hidden files.\n\nFlags used:\n  -l : Long format (permissions, owner, size, date)\n  -a : Show hidden files', params: ['-l', '-a', '-h', '-R'], output: ['total 48', 'drwxr-xr-x  6 user user 4096 Nov 15 10:00 .', 'drwxr-xr-x  3 root root 4096 Nov 10 08:00 ..', '-rw-r--r--  1 user user  220 Nov 10 08:00 .bash_logout', '-rw-r--r--  1 user user 3771 Nov 10 08:00 .bashrc', 'drwxr-xr-x  2 user user 4096 Nov 15 10:00 Desktop', 'drwxr-xr-x  2 user user 4096 Nov 15 10:00 Documents', 'drwxr-xr-x  2 user user 4096 Nov 15 10:00 Downloads', '-rw-r--r--  1 user user  807 Nov 10 08:00 .profile'] },
+            'cd': { label: '2. Change Directory (cd)', command: 'cd /home/user/Documents', desc: 'Changes the current working directory to the specified path.\n\nUseful shortcuts:\n  cd ..    -> Go up one directory\n  cd ~     -> Go to home directory\n  cd -     -> Go to previous directory\n  cd /     -> Go to root directory', params: ['..', '~', '-', '/'], output: ['user@linux:~$ cd /home/user/Documents', 'user@linux:~/Documents$ pwd', '/home/user/Documents'] },
+            'pwd': { label: '3. Print Working Directory (pwd)', command: 'pwd', desc: 'Displays the full absolute path of the current working directory.\n\nHelpful when you lose track of where you are in the file system.', params: ['-L', '-P'], output: ['/home/user/Documents'] },
+            'mkdir': { label: '4. Create Directory (mkdir)', command: 'mkdir -p projects/web-app/src', desc: 'Creates a new directory. The -p flag creates parent directories if they don\'t exist.', params: ['-p', '-v', '-m'], output: ['user@linux:~$ mkdir -p projects/web-app/src', 'user@linux:~$ ls projects/', 'web-app'] },
+            'touch': { label: '5. Create File (touch)', command: 'touch notes.txt script.sh', desc: 'Creates empty files if they don\'t exist. If the file already exists, it updates the modification timestamp.', params: ['-a', '-m', '-t'], output: ['user@linux:~$ touch notes.txt script.sh', 'user@linux:~$ ls -l notes.txt script.sh', '-rw-r--r-- 1 user user 0 Nov 15 10:30 notes.txt', '-rw-r--r-- 1 user user 0 Nov 15 10:30 script.sh'] },
+            'cat': { label: '6. Read File (cat)', command: 'cat notes.txt', desc: 'Displays the entire content of a file in the terminal.\n\nUseful variations:\n  cat -n file       -> Show line numbers\n  head -n 10 file   -> Show first 10 lines\n  tail -n 10 file   -> Show last 10 lines', params: ['-n', '-b', '-s', 'head', 'tail'], output: ['Hello, this is my first note.', 'Learning Linux commands step by step.', 'Practice makes perfect!'] },
+            'cp': { label: '7. Copy Files (cp)', command: 'cp notes.txt backup/notes.txt', desc: 'Copies files or directories from one location to another.\n\nFor directories, use the -r flag:\n  cp -r projects/ projects-backup/', params: ['-r', '-i', '-v', '-u'], output: ['user@linux:~$ cp notes.txt backup/notes.txt', 'user@linux:~$ ls backup/', 'notes.txt'] },
+            'mv': { label: '8. Move / Rename (mv)', command: 'mv oldname.txt newname.txt', desc: 'Moves files to a new location OR renames them.\n\nExamples:\n  mv file.txt /new/location/  -> Move file\n  mv old.txt new.txt           -> Rename file', params: ['-i', '-v', '-n', '-f'], output: ['user@linux:~$ mv oldname.txt newname.txt', 'user@linux:~$ ls', 'newname.txt'] },
+            'rm': { label: '9. Remove Files (rm)', command: 'rm -rf temp_folder/', desc: 'Deletes files or directories permanently.\n\nWARNING: This action cannot be undone!\n\nFlags:\n  -r : Remove directories recursively\n  -f : Force removal without confirmation\n  -i : Ask for confirmation (safer)', params: ['-r', '-f', '-i', '-v'], output: ['user@linux:~$ rm -rf temp_folder/', 'user@linux:~$ ls', 'Documents  Downloads  notes.txt'] },
+            'echo': { label: '10. Print Text (echo)', command: 'echo "Hello World" > greeting.txt', desc: 'Prints text to the terminal or writes it to a file using redirection (>).\n\nUseful for:\n  Writing to files: echo "text" > file.txt\n  Appending: echo "text" >> file.txt\n  Checking variables: echo $PATH', params: ['>', '>>', '-n', '-e', '$VAR'], output: ['user@linux:~$ echo "Hello World" > greeting.txt', 'user@linux:~$ cat greeting.txt', 'Hello World'] },
+            'whoami': { label: '11. Current User (whoami)', command: 'whoami', desc: 'Displays the username of the currently logged-in user.\n\nRelated commands:\n  id    -> Shows user ID and group IDs\n  who   -> Shows all logged-in users', params: ['id', 'who', 'groups'], output: ['user'] },
+            'clear': { label: '12. Clear Terminal (clear)', command: 'clear', desc: 'Clears all text from the terminal screen, giving you a clean workspace.\n\nShortcut: Ctrl + L also clears the terminal.', params: ['Ctrl+L'], output: ['[Terminal Cleared]'] }
         };
 
-        // --- Medium Commands (Universal Linux) ---
-        const mediumCommands = {
-            'grep': {
-                label: '1. Search Text (grep)',
-                command: 'grep -rn "error" /var/log/',
-                desc: 'Searches for a text pattern inside files. Extremely powerful for finding errors, configs, or specific data.\n\nFlags:\n  -r : Search recursively through directories\n  -n : Show line numbers\n  -i : Case-insensitive search\n  -c : Count matching lines',
-                params: ['-r', '-n', '-i', '-c', '-v'],
-                output: [
-                    '/var/log/app.log:45:[ERROR] Connection timeout',
-                    '/var/log/app.log:112:[ERROR] Database not responding',
-                    '/var/log/syslog:890:kernel: error in module xfs'
-                ]
-            },
-            'find': {
-                label: '2. Find Files (find)',
-                command: 'find /home -name "*.txt" -type f',
-                desc: 'Searches for files and directories based on various criteria like name, size, type, modification date, and permissions.\n\nCommon filters:\n  -name "pattern"  \u2192 Match filename\n  -type f/d        \u2192 File or Directory\n  -size +100M      \u2192 Larger than 100MB\n  -mtime -7        \u2192 Modified in last 7 days',
-                params: ['-name', '-type', '-size', '-mtime', '-exec'],
-                output: [
-                    '/home/user/notes.txt',
-                    '/home/user/Documents/report.txt',
-                    '/home/user/Downloads/readme.txt',
-                    '/home/user/projects/todo.txt'
-                ]
-            },
-            'chmod': {
-                label: '3. Change Permissions (chmod)',
-                command: 'chmod 755 script.sh',
-                desc: 'Changes file permissions (read, write, execute) for owner, group, and others.\n\nPermission numbers:\n  7 = rwx (read + write + execute)\n  6 = rw- (read + write)\n  5 = r-x (read + execute)\n  4 = r-- (read only)\n  0 = --- (no permission)\n\nExample: 755 = owner(rwx) group(r-x) others(r-x)',
-                params: ['755', '644', 'u+x', 'a+r', '-R'],
-                output: [
-                    'user@linux:~$ chmod 755 script.sh',
-                    'user@linux:~$ ls -l script.sh',
-                    '-rwxr-xr-x 1 user user 256 Nov 15 10:30 script.sh'
-                ]
-            },
-            'chown': {
-                label: '4. Change Ownership (chown)',
-                command: 'chown user:group file.txt',
-                desc: 'Changes the owner and/or group of a file or directory.\n\nRequires root/sudo privileges.\n\nExamples:\n  chown user file       \u2192 Change owner\n  chown :group file      \u2192 Change group only\n  chown -R user:group dir/ \u2192 Recursive',
-                params: ['-R', 'user:group', ':group'],
-                output: [
-                    'user@linux:~$ sudo chown user:user file.txt',
-                    'user@linux:~$ ls -l file.txt',
-                    '-rw-r--r-- 1 user user 1024 Nov 15 10:30 file.txt'
-                ]
-            },
-            'tar': {
-                label: '5. Archive Files (tar)',
-                command: 'tar -czvf backup.tar.gz /home/user/projects/',
-                desc: 'Creates or extracts compressed archive files (.tar.gz).\n\nCommon operations:\n  -c : Create archive\n  -x : Extract archive\n  -z : Compress with gzip\n  -v : Verbose (show files)\n  -f : Specify filename',
-                params: ['-c', '-x', '-z', '-v', '-f', '-C'],
-                output: [
-                    '/home/user/projects/',
-                    '/home/user/projects/web-app/',
-                    '/home/user/projects/web-app/index.html',
-                    '/home/user/projects/web-app/style.css',
-                    '/home/user/projects/cli-tool/main.go'
-                ]
-            },
-            'wget': {
-                label: '6. Download Files (wget)',
-                command: 'wget https://example.com/file.zip',
-                desc: 'Downloads files from the internet directly to the terminal.\n\nUseful flags:\n  -O name.zip   \u2192 Save with custom filename\n  -q            \u2192 Quiet mode (no output)\n  -c            \u2192 Resume incomplete download\n  --limit-rate  \u2192 Throttle download speed',
-                params: ['-O', '-q', '-c', '--limit-rate', '-P'],
-                output: [
-                    '--2023-11-15 10:30:00--  https://example.com/file.zip',
-                    'Resolving example.com... 93.184.216.34',
-                    'Connecting to example.com... connected.',
-                    'HTTP request sent, awaiting response... 200 OK',
-                    'Length: 5242880 (5.0M) [application/zip]',
-                    'Saving to: \'file.zip\'',
-                    'file.zip            100%[==================>]   5.0M  2.5MB/s    in 2.0s',
-                    'Downloaded: 1 files, 5.0M in 2.0s (2.5 MB/s)'
-                ]
-            },
-            'ps': {
-                label: '7. List Processes (ps)',
-                command: 'ps aux',
-                desc: 'Displays a snapshot of currently running processes.\n\nFlags:\n  a : Show all users\' processes\n  u : User-oriented format\n  x : Show processes not attached to a terminal\n\nTo find a specific process: ps aux | grep nginx',
-                params: ['aux', 'ef', '| grep', '--sort'],
-                output: [
-                    'USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND',
-                    'root         1  0.0  0.1 169936 13280 ?        Ss   10:00   0:02 /sbin/init',
-                    'root       245  0.0  0.1  35872  8864 ?        Ss   10:00   0:00 /usr/sbin/sshd',
-                    'user       512  0.0  0.1  21468  5120 pts/0    Ss   10:05   0:00 -bash',
-                    'user       678  0.0  0.0  37368  3420 pts/0    R+   10:30   0:00 ps aux'
-                ]
-            },
-            'df': {
-                label: '8. Disk Free Space (df)',
-                command: 'df -h',
-                desc: 'Shows disk space usage for all mounted filesystems.\n\nThe -h flag makes sizes human-readable (KB, MB, GB) instead of raw blocks.',
-                params: ['-h', '-T', '-i', '--total'],
-                output: [
-                    'Filesystem      Size  Used Avail Use% Mounted on',
-                    '/dev/sda1        50G   15G   33G  32% /',
-                    'tmpfs           3.9G     0  3.9G   0% /dev/shm',
-                    '/dev/sda2       200G   80G  110G  43% /home',
-                    'tmpfs           789M  1.2M  788M   1% /run'
-                ]
-            },
-            'du': {
-                label: '9. Disk Usage (du)',
-                command: 'du -sh /home/user/*',
-                desc: 'Shows disk space used by files and directories.\n\nFlags:\n  -s : Show total for each argument\n  -h : Human-readable sizes\n  *  : Apply to all items in directory\n\nTo find largest folders: du -sh * | sort -rh | head -5',
-                params: ['-s', '-h', '-a', '-c', 'sort'],
-                output: [
-                    '15M     /home/user/Documents',
-                    '2.3G    /home/user/Downloads',
-                    '456K    /home/user/Pictures',
-                    '890M    /home/user/projects',
-                    '4.0K    /home/user/notes.txt'
-                ]
-            },
-            'pipe': {
-                label: '10. Pipe & Redirect (| > >>)',
-                command: 'cat access.log | grep "404" | wc -l',
-                desc: 'Pipes (|) send the output of one command as input to another. Redirects save output to files.\n\nExamples:\n  cmd1 | cmd2        \u2192 Pipe output\n  cmd > file          \u2192 Overwrite file with output\n  cmd >> file         \u2192 Append output to file\n  cmd < file          \u2192 Use file as input\n  cmd 2> errors.log   \u2192 Redirect errors to file',
-                params: ['|', '>', '>>', '<', '2>', '&>'],
-                output: [
-                    '42'
-                ]
-            }
+        var mediumCommands = {
+            'grep': { label: '1. Search Text (grep)', command: 'grep -rn "error" /var/log/', desc: 'Searches for a text pattern inside files. Extremely powerful for finding errors, configs, or specific data.\n\nFlags:\n  -r : Search recursively through directories\n  -n : Show line numbers\n  -i : Case-insensitive search\n  -c : Count matching lines', params: ['-r', '-n', '-i', '-c', '-v'], output: ['/var/log/app.log:45:[ERROR] Connection timeout', '/var/log/app.log:112:[ERROR] Database not responding', '/var/log/syslog:890:kernel: error in module xfs'] },
+            'find': { label: '2. Find Files (find)', command: 'find /home -name "*.txt" -type f', desc: 'Searches for files and directories based on criteria like name, size, type, and modification date.\n\nCommon filters:\n  -name "pattern"  -> Match filename\n  -type f/d        -> File or Directory\n  -size +100M      -> Larger than 100MB\n  -mtime -7        -> Modified in last 7 days', params: ['-name', '-type', '-size', '-mtime', '-exec'], output: ['/home/user/notes.txt', '/home/user/Documents/report.txt', '/home/user/Downloads/readme.txt', '/home/user/projects/todo.txt'] },
+            'chmod': { label: '3. Change Permissions (chmod)', command: 'chmod 755 script.sh', desc: 'Changes file permissions (read, write, execute) for owner, group, and others.\n\nPermission numbers:\n  7 = rwx (read + write + execute)\n  6 = rw- (read + write)\n  5 = r-x (read + execute)\n  4 = r-- (read only)\n  0 = --- (no permission)\n\nExample: 755 = owner(rwx) group(r-x) others(r-x)', params: ['755', '644', 'u+x', 'a+r', '-R'], output: ['user@linux:~$ chmod 755 script.sh', 'user@linux:~$ ls -l script.sh', '-rwxr-xr-x 1 user user 256 Nov 15 10:30 script.sh'] },
+            'chown': { label: '4. Change Ownership (chown)', command: 'chown user:group file.txt', desc: 'Changes the owner and/or group of a file or directory.\n\nRequires root/sudo privileges.\n\nExamples:\n  chown user file         -> Change owner\n  chown :group file        -> Change group only\n  chown -R user:group dir/  -> Recursive', params: ['-R', 'user:group', ':group'], output: ['user@linux:~$ sudo chown user:user file.txt', 'user@linux:~$ ls -l file.txt', '-rw-r--r-- 1 user user 1024 Nov 15 10:30 file.txt'] },
+            'tar': { label: '5. Archive Files (tar)', command: 'tar -czvf backup.tar.gz /home/user/projects/', desc: 'Creates or extracts compressed archive files (.tar.gz).\n\nCommon operations:\n  -c : Create archive\n  -x : Extract archive\n  -z : Compress with gzip\n  -v : Verbose (show files)\n  -f : Specify filename', params: ['-c', '-x', '-z', '-v', '-f', '-C'], output: ['/home/user/projects/', '/home/user/projects/web-app/', '/home/user/projects/web-app/index.html', '/home/user/projects/web-app/style.css', '/home/user/projects/cli-tool/main.go'] },
+            'wget': { label: '6. Download Files (wget)', command: 'wget https://example.com/file.zip', desc: 'Downloads files from the internet directly to the terminal.\n\nUseful flags:\n  -O name.zip   -> Save with custom filename\n  -q            -> Quiet mode (no output)\n  -c            -> Resume incomplete download\n  --limit-rate  -> Throttle download speed', params: ['-O', '-q', '-c', '--limit-rate', '-P'], output: ['--2023-11-15 10:30:00--  https://example.com/file.zip', 'Resolving example.com... 93.184.216.34', 'Connecting to example.com... connected.', 'HTTP request sent, awaiting response... 200 OK', 'Length: 5242880 (5.0M) [application/zip]', 'Saving to: \'file.zip\'', 'file.zip            100%[==================>]   5.0M  2.5MB/s    in 2.0s'] },
+            'ps': { label: '7. List Processes (ps)', command: 'ps aux', desc: 'Displays a snapshot of currently running processes.\n\nFlags:\n  a : Show all users\' processes\n  u : User-oriented format\n  x : Show processes not attached to a terminal\n\nTo find a specific process: ps aux | grep nginx', params: ['aux', 'ef', '| grep', '--sort'], output: ['USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND', 'root         1  0.0  0.1 169936 13280 ?        Ss   10:00   0:02 /sbin/init', 'root       245  0.0  0.1  35872  8864 ?        Ss   10:00   0:00 /usr/sbin/sshd', 'user       512  0.0  0.1  21468  5120 pts/0    Ss   10:05   0:00 -bash', 'user       678  0.0  0.0  37368  3420 pts/0    R+   10:30   0:00 ps aux'] },
+            'df': { label: '8. Disk Free Space (df)', command: 'df -h', desc: 'Shows disk space usage for all mounted filesystems.\n\nThe -h flag makes sizes human-readable (KB, MB, GB) instead of raw blocks.', params: ['-h', '-T', '-i', '--total'], output: ['Filesystem      Size  Used Avail Use% Mounted on', '/dev/sda1        50G   15G   33G  32% /', 'tmpfs           3.9G     0  3.9G   0% /dev/shm', '/dev/sda2       200G   80G  110G  43% /home', 'tmpfs           789M  1.2M  788M   1% /run'] },
+            'du': { label: '9. Disk Usage (du)', command: 'du -sh /home/user/*', desc: 'Shows disk space used by files and directories.\n\nFlags:\n  -s : Show total for each argument\n  -h : Human-readable sizes\n\nTo find largest folders: du -sh * | sort -rh | head -5', params: ['-s', '-h', '-a', '-c', 'sort'], output: ['15M     /home/user/Documents', '2.3G    /home/user/Downloads', '456K    /home/user/Pictures', '890M    /home/user/projects', '4.0K    /home/user/notes.txt'] },
+            'pipe': { label: '10. Pipe & Redirect (| > >>)', command: 'cat access.log | grep "404" | wc -l', desc: 'Pipes (|) send the output of one command as input to another. Redirects save output to files.\n\nExamples:\n  cmd1 | cmd2        -> Pipe output\n  cmd > file          -> Overwrite file with output\n  cmd >> file         -> Append output to file\n  cmd < file          -> Use file as input\n  cmd 2> errors.log   -> Redirect errors to file', params: ['|', '>', '>>', '<', '2>', '&>'], output: ['42'] }
         };
 
-        // --- Package Manager Commands (OS-Specific) ---
-        const packageManagers = {
+        var packageManagers = {
             'ubuntu': {
-                'update': {
-                    label: '1. Update Package List',
-                    command: 'sudo apt update',
-                    desc: 'Downloads the latest package information from Ubuntu repositories. Always run this before installing or upgrading packages.',
-                    params: ['sudo', 'apt update'],
-                    output: [
-                        'Hit:1 http://archive.ubuntu.com/ubuntu jammy InRelease',
-                        'Hit:2 http://archive.ubuntu.com/ubuntu jammy-updates InRelease',
-                        'Hit:3 http://archive.ubuntu.com/ubuntu jammy-backports InRelease',
-                        'Reading package lists... Done',
-                        'Building dependency tree... Done',
-                        'All packages are up to date.'
-                    ]
-                },
-                'install': {
-                    label: '2. Install Package',
-                    command: 'sudo apt install nginx -y',
-                    desc: 'Installs a package from Ubuntu repositories. The -y flag automatically confirms the installation prompt.',
-                    params: ['sudo', 'apt install', '-y'],
-                    output: [
-                        'Reading package lists... Done',
-                        'Building dependency tree... Done',
-                        'The following NEW packages will be installed:',
-                        '  nginx nginx-common nginx-core',
-                        '0 upgraded, 3 newly installed, 0 to remove.',
-                        'Setting up nginx (1.24.0-1ubuntu1) ...',
-                        'nginx.service is enabled and running.'
-                    ]
-                },
-                'remove': {
-                    label: '3. Remove Package',
-                    command: 'sudo apt remove nginx --purge -y',
-                    desc: 'Removes a package. The --purge flag also deletes configuration files. Use autoremove after to clean up dependencies.',
-                    params: ['remove', '--purge', 'autoremove'],
-                    output: [
-                        'Reading package lists... Done',
-                        'The following packages will be REMOVED:',
-                        '  nginx* nginx-common* nginx-core*',
-                        'Removing nginx configuration files...',
-                        '0 upgraded, 0 newly installed, 3 to remove.'
-                    ]
-                },
-                'search': {
-                    label: '4. Search Package',
-                    command: 'apt search python3',
-                    desc: 'Searches the package repositories for packages matching the given keyword.',
-                    params: ['search'],
-                    output: [
-                        'Sorting... Done',
-                        'Full Text Search... Done',
-                        'python3/jammy-updates 3.10.12-1ubuntu1 amd64',
-                        '  Interactive high-level object-oriented language',
-                        'python3-pip/jammy-updates 23.0.1-2 all',
-                        '  Python package installer',
-                        'python3-venv/jammy-updates 3.10.12-1ubuntu1 all',
-                        '  venv module for python3'
-                    ]
-                },
-                'upgrade': {
-                    label: '5. Upgrade All Packages',
-                    command: 'sudo apt upgrade -y',
-                    desc: 'Upgrades all installed packages to their latest available versions. Run "apt update" first to refresh the package list.',
-                    params: ['upgrade', 'full-upgrade', '-y'],
-                    output: [
-                        'Reading package lists... Done',
-                        'Calculating upgrade... Done',
-                        'The following packages will be upgraded:',
-                        '  curl libcurl4 openssl',
-                        '3 upgraded, 0 newly installed, 0 to remove.',
-                        'Setting up curl (8.4.0-2ubuntu1) ...',
-                        'Setting up openssl (3.0.10-1ubuntu1) ...'
-                    ]
-                }
+                'update': { label: '1. Update Package List', command: 'sudo apt update', desc: 'Downloads the latest package information from Ubuntu repositories.', params: ['sudo', 'apt update'], output: ['Hit:1 http://archive.ubuntu.com/ubuntu jammy InRelease', 'Hit:2 http://archive.ubuntu.com/ubuntu jammy-updates InRelease', 'Reading package lists... Done', 'All packages are up to date.'] },
+                'install': { label: '2. Install Package', command: 'sudo apt install nginx -y', desc: 'Installs a package from Ubuntu repositories. The -y flag automatically confirms.', params: ['sudo', 'apt install', '-y'], output: ['Reading package lists... Done', 'The following NEW packages will be installed:', '  nginx nginx-common nginx-core', '0 upgraded, 3 newly installed, 0 to remove.', 'Setting up nginx (1.24.0-1ubuntu1) ...', 'nginx.service is enabled and running.'] },
+                'remove': { label: '3. Remove Package', command: 'sudo apt remove nginx --purge -y', desc: 'Removes a package. The --purge flag also deletes configuration files.', params: ['remove', '--purge', 'autoremove'], output: ['Reading package lists... Done', 'The following packages will be REMOVED:', '  nginx* nginx-common* nginx-core*', 'Removing nginx configuration files...', '0 upgraded, 0 newly installed, 3 to remove.'] },
+                'search': { label: '4. Search Package', command: 'apt search python3', desc: 'Searches the package repositories for packages matching the given keyword.', params: ['search'], output: ['Sorting... Done', 'Full Text Search... Done', 'python3/jammy-updates 3.10.12-1ubuntu1 amd64', '  Interactive high-level object-oriented language', 'python3-pip/jammy-updates 23.0.1-2 all', '  Python package installer'] },
+                'upgrade': { label: '5. Upgrade All Packages', command: 'sudo apt upgrade -y', desc: 'Upgrades all installed packages to their latest available versions.', params: ['upgrade', 'full-upgrade', '-y'], output: ['Reading package lists... Done', 'Calculating upgrade... Done', 'The following packages will be upgraded:', '  curl libcurl4 openssl', '3 upgraded, 0 newly installed, 0 to remove.', 'Complete!'] }
             },
             'alpine': {
-                'update': {
-                    label: '1. Update Package Index',
-                    command: 'sudo apk update',
-                    desc: 'Fetches the latest package index from Alpine repositories. Required before installing packages.',
-                    params: ['sudo', 'apk update'],
-                    output: [
-                        'fetch https://dl-cdn.alpinelinux.org/alpine/v3.19/main/x86_64/APKINDEX.tar.gz',
-                        'fetch https://dl-cdn.alpinelinux.org/alpine/v3.19/community/x86_64/APKINDEX.tar.gz',
-                        'v3.19.0-rc2-31-g9cb4f9e3c8 [https://dl-cdn.alpinelinux.org/alpine/v3.19/main]',
-                        'OK: 19123 distinct packages available'
-                    ]
-                },
-                'install': {
-                    label: '2. Add Package',
-                    command: 'sudo apk add nginx',
-                    desc: 'Installs a package from Alpine repositories. Alpine uses "add" instead of "install".',
-                    params: ['sudo', 'apk add'],
-                    output: [
-                        '(1/3) Installing pcre2-10.42',
-                        '(2/3) Installing nginx-1.25.3-r0',
-                        '(3/3) Installing nginx-common-1.25.3-r0',
-                        'Executing busybox-1.36.1-r8.trigger',
-                        'OK: 245 MiB in 62 packages'
-                    ]
-                },
-                'remove': {
-                    label: '3. Delete Package',
-                    command: 'sudo apk del nginx',
-                    desc: 'Removes a package and its dependencies that are no longer needed. Alpine uses "del" instead of "remove".',
-                    params: ['del', '--purge'],
-                    output: [
-                        '(1/3) Purging nginx-common-1.25.3-r0',
-                        '(2/3) Purging nginx-1.25.3-r0',
-                        '(3/3) Purging pcre2-10.42',
-                        'OK: 238 MiB in 59 packages'
-                    ]
-                },
-                'search': {
-                    label: '4. Search Package',
-                    command: 'apk search python3',
-                    desc: 'Searches for packages matching the keyword in Alpine repositories.',
-                    params: ['search'],
-                    output: [
-                        'python3-3.11.6-r0',
-                        'python3-dev-3.11.6-r0',
-                        'py3-pip-23.3.1-r0',
-                        'py3-virtualenv-20.24.6-r0'
-                    ]
-                },
-                'upgrade': {
-                    label: '5. Upgrade Packages',
-                    command: 'sudo apk upgrade',
-                    desc: 'Upgrades all installed packages to the latest versions available in the repositories.',
-                    params: ['upgrade', '--available'],
-                    output: [
-                        '(1/2) Upgrading openssl-3.1.4-r0 -> 3.1.4-r1',
-                        '(2/2) Upgrading curl-8.4.0-r0 -> 8.4.0-r1',
-                        'OK: 245 MiB in 62 packages'
-                    ]
-                }
+                'update': { label: '1. Update Package Index', command: 'sudo apk update', desc: 'Fetches the latest package index from Alpine repositories.', params: ['sudo', 'apk update'], output: ['fetch https://dl-cdn.alpinelinux.org/alpine/v3.19/main/x86_64/APKINDEX.tar.gz', 'fetch https://dl-cdn.alpinelinux.org/alpine/v3.19/community/x86_64/APKINDEX.tar.gz', 'OK: 19123 distinct packages available'] },
+                'install': { label: '2. Add Package', command: 'sudo apk add nginx', desc: 'Installs a package. Alpine uses "add" instead of "install".', params: ['sudo', 'apk add'], output: ['(1/3) Installing pcre2-10.42', '(2/3) Installing nginx-1.25.3-r0', '(3/3) Installing nginx-common-1.25.3-r0', 'OK: 245 MiB in 62 packages'] },
+                'remove': { label: '3. Delete Package', command: 'sudo apk del nginx', desc: 'Removes a package. Alpine uses "del" instead of "remove".', params: ['del', '--purge'], output: ['(1/3) Purging nginx-common-1.25.3-r0', '(2/3) Purging nginx-1.25.3-r0', '(3/3) Purging pcre2-10.42', 'OK: 238 MiB in 59 packages'] },
+                'search': { label: '4. Search Package', command: 'apk search python3', desc: 'Searches for packages matching the keyword in Alpine repositories.', params: ['search'], output: ['python3-3.11.6-r0', 'python3-dev-3.11.6-r0', 'py3-pip-23.3.1-r0', 'py3-virtualenv-20.24.6-r0'] },
+                'upgrade': { label: '5. Upgrade Packages', command: 'sudo apk upgrade', desc: 'Upgrades all installed packages to the latest versions.', params: ['upgrade', '--available'], output: ['(1/2) Upgrading openssl-3.1.4-r0 -> 3.1.4-r1', '(2/2) Upgrading curl-8.4.0-r0 -> 8.4.0-r1', 'OK: 245 MiB in 62 packages'] }
             },
             'fedora': {
-                'update': {
-                    label: '1. Check for Updates',
-                    command: 'sudo dnf check-update',
-                    desc: 'Checks for available package updates from Fedora repositories without actually installing them.',
-                    params: ['sudo', 'dnf check-update'],
-                    output: [
-                        'curl.x86_64                    8.4.0-2.fc39             updates',
-                        'openssl.x86_64                 3.1.4-1.fc39            updates',
-                        'python3.x86_64                 3.12.0-1.fc39           updates'
-                    ]
-                },
-                'install': {
-                    label: '2. Install Package',
-                    command: 'sudo dnf install nginx -y',
-                    desc: 'Installs a package from Fedora repositories. DNF automatically resolves and installs dependencies.',
-                    params: ['sudo', 'dnf install', '-y'],
-                    output: [
-                        'Dependencies resolved.',
-                        '================================================================================',
-                        ' Package           Arch      Version           Repository               Size',
-                        '================================================================================',
-                        'Installing:',
-                        ' nginx             x86_64    1:1.25.3-1.fc39  updates                  36 k',
-                        'Installing dependencies:',
-                        ' nginx-filesystem  noarch    1:1.25.3-1.fc39  updates                  24 k',
-                        'Transaction Summary',
-                        '================================================================================',
-                        'Install  2 Packages',
-                        'Complete!'
-                    ]
-                },
-                'remove': {
-                    label: '3. Remove Package',
-                    command: 'sudo dnf remove nginx -y',
-                    desc: 'Removes a package. Use "dnf autoremove" afterward to clean up orphaned dependencies.',
-                    params: ['remove', 'autoremove'],
-                    output: [
-                        'Dependencies resolved.',
-                        '================================================================================',
-                        'Removing:',
-                        ' nginx             x86_64    1:1.25.3-1.fc39   @updates                  36 k',
-                        'Removing dependent packages:',
-                        ' nginx-filesystem  noarch    1:1.25.3-1.fc39   @updates                  24 k',
-                        'Transaction Summary',
-                        '================================================================================',
-                        'Remove  2 Packages',
-                        'Complete!'
-                    ]
-                },
-                'search': {
-                    label: '4. Search Package',
-                    command: 'dnf search python3',
-                    desc: 'Searches for packages matching the keyword across enabled Fedora repositories.',
-                    params: ['search'],
-                    output: [
-                        'Last metadata expiration check: 0:05:00 ago on Tue Nov 15 10:00:00 2023.',
-                        '======================== Name Exactly Matched: python3 =========================',
-                        'python3.x86_64 : Interpreter of the Python programming language',
-                        '======================== Name & Summary Matched: python3 ========================',
-                        'python3-pip.noarch : Pip install tool for Python 3',
-                        'python3-devel.x86_64 : Libraries for developing Python 3 extensions'
-                    ]
-                },
-                'upgrade': {
-                    label: '5. Upgrade All Packages',
-                    command: 'sudo dnf upgrade -y',
-                    desc: 'Upgrades all installed packages to the latest available versions.',
-                    params: ['upgrade', '-y'],
-                    output: [
-                        'Dependencies resolved.',
-                        'Upgrading:',
-                        ' curl              x86_64    8.4.0-3.fc39        updates    403 k',
-                        ' openssl-libs      x86_64    3.1.4-2.fc39        baseos     2.2 M',
-                        'Transaction Summary',
-                        'Upgrade  2 Packages',
-                        'Complete!'
-                    ]
-                }
+                'update': { label: '1. Check for Updates', command: 'sudo dnf check-update', desc: 'Checks for available package updates from Fedora repositories.', params: ['sudo', 'dnf check-update'], output: ['curl.x86_64                    8.4.0-2.fc39             updates', 'openssl.x86_64                 3.1.4-1.fc39            updates', 'python3.x86_64                 3.12.0-1.fc39           updates'] },
+                'install': { label: '2. Install Package', command: 'sudo dnf install nginx -y', desc: 'Installs a package from Fedora repositories. DNF resolves dependencies automatically.', params: ['sudo', 'dnf install', '-y'], output: ['Dependencies resolved.', 'Installing:', ' nginx             x86_64    1:1.25.3-1.fc39  updates                  36 k', 'Transaction Summary', 'Install  2 Packages', 'Complete!'] },
+                'remove': { label: '3. Remove Package', command: 'sudo dnf remove nginx -y', desc: 'Removes a package. Use "dnf autoremove" afterward to clean up.', params: ['remove', 'autoremove'], output: ['Dependencies resolved.', 'Removing:', ' nginx             x86_64    1:1.25.3-1.fc39   @updates                  36 k', 'Transaction Summary', 'Remove  2 Packages', 'Complete!'] },
+                'search': { label: '4. Search Package', command: 'dnf search python3', desc: 'Searches for packages across enabled Fedora repositories.', params: ['search'], output: ['python3.x86_64 : Interpreter of the Python programming language', 'python3-pip.noarch : Pip install tool for Python 3', 'python3-devel.x86_64 : Libraries for developing Python 3 extensions'] },
+                'upgrade': { label: '5. Upgrade All Packages', command: 'sudo dnf upgrade -y', desc: 'Upgrades all installed packages to the latest versions.', params: ['upgrade', '-y'], output: ['Dependencies resolved.', 'Upgrading:', ' curl              x86_64    8.4.0-3.fc39        updates    403 k', ' openssl-libs      x86_64    3.1.4-2.fc39        baseos     2.2 M', 'Transaction Summary', 'Upgrade  2 Packages', 'Complete!'] }
             },
             'quay.io/centos/centos:stream9': {
-                'update': {
-                    label: '1. Check for Updates',
-                    command: 'sudo dnf check-update',
-                    desc: 'Checks for available updates from CentOS Stream 9 repositories.',
-                    params: ['sudo', 'dnf check-update'],
-                    output: [
-                        'centos-stream-release.noarch   9.0-24.el9          baseos',
-                        'curl.x86_64                     8.0.1-7.el9        baseos',
-                        'openssl-libs.x86_64             3.0.7-25.el9       baseos'
-                    ]
-                },
-                'install': {
-                    label: '2. Install Package',
-                    command: 'sudo dnf install httpd -y',
-                    desc: 'Installs a package. Note: CentOS uses "httpd" instead of "nginx" as the default web server package name.',
-                    params: ['sudo', 'dnf install', '-y', 'httpd'],
-                    output: [
-                        'Dependencies resolved.',
-                        'Installing:',
-                        ' httpd              x86_64    2.4.57-5.el9       baseos    1.4 M',
-                        'Installing dependencies:',
-                        ' httpd-filesystem   noarch    2.4.57-5.el9       baseos     16 k',
-                        ' httpd-tools        x86_64    2.4.57-5.el9       baseos    108 k',
-                        'Transaction Summary',
-                        'Install  3 Packages',
-                        'Complete!'
-                    ]
-                },
-                'remove': {
-                    label: '3. Remove Package',
-                    command: 'sudo dnf remove httpd -y',
-                    desc: 'Removes the specified package from the system.',
-                    params: ['remove', 'autoremove'],
-                    output: [
-                        'Dependencies resolved.',
-                        'Removing:',
-                        ' httpd              x86_64    2.4.57-5.el9       @baseos    1.4 M',
-                        'Transaction Summary',
-                        'Remove  1 Package',
-                        'Complete!'
-                    ]
-                },
-                'search': {
-                    label: '4. Search Package',
-                    command: 'dnf search python3',
-                    desc: 'Searches CentOS Stream repositories for matching packages.',
-                    params: ['search'],
-                    output: [
-                        'Last metadata expiration check: 0:10:00 ago on Tue Nov 15 10:00:00 2023.',
-                        'python3.x86_64 : Interpreter of Python 3',
-                        'python3-pip.noarch : Pip package manager for Python 3',
-                        'python3-devel.x86_64 : Development files for Python 3'
-                    ]
-                },
-                'upgrade': {
-                    label: '5. Upgrade All Packages',
-                    command: 'sudo dnf upgrade -y',
-                    desc: 'Upgrades all installed packages to latest versions in CentOS Stream repositories.',
-                    params: ['upgrade', '-y'],
-                    output: [
-                        'Dependencies resolved.',
-                        'Upgrading:',
-                        ' curl              x86_64    8.0.1-8.el9        baseos    403 k',
-                        ' openssl-libs      x86_64    3.0.7-27.el9       baseos    2.2 M',
-                        'Transaction Summary',
-                        'Upgrade  2 Packages',
-                        'Complete!'
-                    ]
-                }
+                'update': { label: '1. Check for Updates', command: 'sudo dnf check-update', desc: 'Checks for available updates from CentOS Stream 9 repositories.', params: ['sudo', 'dnf check-update'], output: ['centos-stream-release.noarch   9.0-24.el9          baseos', 'curl.x86_64                     8.0.1-7.el9        baseos', 'openssl-libs.x86_64             3.0.7-25.el9       baseos'] },
+                'install': { label: '2. Install Package', command: 'sudo dnf install httpd -y', desc: 'Installs a package. CentOS uses "httpd" as the default web server.', params: ['sudo', 'dnf install', '-y', 'httpd'], output: ['Dependencies resolved.', 'Installing:', ' httpd              x86_64    2.4.57-5.el9       baseos    1.4 M', ' httpd-filesystem   noarch    2.4.57-5.el9       baseos     16 k', 'Transaction Summary', 'Install  3 Packages', 'Complete!'] },
+                'remove': { label: '3. Remove Package', command: 'sudo dnf remove httpd -y', desc: 'Removes the specified package from the system.', params: ['remove', 'autoremove'], output: ['Dependencies resolved.', 'Removing:', ' httpd              x86_64    2.4.57-5.el9       @baseos    1.4 M', 'Transaction Summary', 'Remove  1 Package', 'Complete!'] },
+                'search': { label: '4. Search Package', command: 'dnf search python3', desc: 'Searches CentOS Stream repositories for matching packages.', params: ['search'], output: ['python3.x86_64 : Interpreter of Python 3', 'python3-pip.noarch : Pip package manager for Python 3', 'python3-devel.x86_64 : Development files for Python 3'] },
+                'upgrade': { label: '5. Upgrade All Packages', command: 'sudo dnf upgrade -y', desc: 'Upgrades all installed packages to latest versions.', params: ['upgrade', '-y'], output: ['Dependencies resolved.', 'Upgrading:', ' curl              x86_64    8.0.1-8.el9        baseos    403 k', ' openssl-libs      x86_64    3.0.7-27.el9       baseos    2.2 M', 'Transaction Summary', 'Upgrade  2 Packages', 'Complete!'] }
             },
             'kalilinux/kali-rolling': {
-                'update': {
-                    label: '1. Update Package List',
-                    command: 'sudo apt update',
-                    desc: 'Kali Linux is Debian-based, so it uses the same APT package manager as Ubuntu.',
-                    params: ['sudo', 'apt update'],
-                    output: [
-                        'Hit:1 http://http.kali.org/kali kali-rolling InRelease',
-                        'Hit:2 http://http.kali.org/kali kali-rolling/main amd64 Packages',
-                        'Reading package lists... Done',
-                        'All packages are up to date.'
-                    ]
-                },
-                'install': {
-                    label: '2. Install Tool',
-                    command: 'sudo apt install nmap -y',
-                    desc: 'Kali comes pre-loaded with many security tools, but you can install additional ones using apt.',
-                    params: ['sudo', 'apt install', '-y', 'nmap'],
-                    output: [
-                        'Reading package lists... Done',
-                        'The following NEW packages will be installed:',
-                        '  nmap',
-                        '0 upgraded, 1 newly installed, 0 to remove.',
-                        'Setting up nmap (7.94-1) ...',
-                        'nmap is now installed. Run "nmap --help" for usage.'
-                    ]
-                },
-                'remove': {
-                    label: '3. Remove Tool',
-                    command: 'sudo apt remove nmap --purge -y',
-                    desc: 'Removes a security tool and its configuration files.',
-                    params: ['remove', '--purge', 'autoremove'],
-                    output: [
-                        'Reading package lists... Done',
-                        'The following packages will be REMOVED:',
-                        '  nmap*',
-                        'Removing nmap configuration files...',
-                        '0 upgraded, 0 newly installed, 1 to remove.'
-                    ]
-                },
-                'search': {
-                    label: '4. Search Tool',
-                    command: 'apt search wireshark',
-                    desc: 'Searches Kali repositories for security and networking tools.',
-                    params: ['search'],
-                    output: [
-                        'Sorting... Done',
-                        'Full Text Search... Done',
-                        'wireshark/jammy 4.2.0-1 amd64',
-                        '  Network traffic analyzer',
-                        'wireshark-qt/jammy 4.2.0-1 amd64',
-                        '  Network traffic analyzer (Qt GUI)'
-                    ]
-                },
-                'upgrade': {
-                    label: '5. Upgrade All Packages',
-                    command: 'sudo apt full-upgrade -y',
-                    desc: 'Kali recommends "full-upgrade" over "upgrade" as it handles dependency changes and package removals better.',
-                    params: ['full-upgrade', '-y'],
-                    output: [
-                        'Reading package lists... Done',
-                        'Calculating upgrade... Done',
-                        '0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.',
-                        'Complete!'
-                    ]
-                }
+                'update': { label: '1. Update Package List', command: 'sudo apt update', desc: 'Kali Linux is Debian-based, uses the same APT package manager as Ubuntu.', params: ['sudo', 'apt update'], output: ['Hit:1 http://http.kali.org/kali kali-rolling InRelease', 'Hit:2 http://http.kali.org/kali kali-rolling/main amd64 Packages', 'Reading package lists... Done', 'All packages are up to date.'] },
+                'install': { label: '2. Install Tool', command: 'sudo apt install nmap -y', desc: 'Kali comes pre-loaded with security tools. Install additional ones using apt.', params: ['sudo', 'apt install', '-y', 'nmap'], output: ['Reading package lists... Done', 'The following NEW packages will be installed:', '  nmap', '0 upgraded, 1 newly installed, 0 to remove.', 'Setting up nmap (7.94-1) ...', 'nmap is now installed.'] },
+                'remove': { label: '3. Remove Tool', command: 'sudo apt remove nmap --purge -y', desc: 'Removes a security tool and its configuration files.', params: ['remove', '--purge', 'autoremove'], output: ['Reading package lists... Done', 'The following packages will be REMOVED:', '  nmap*', 'Removing nmap configuration files...', '0 upgraded, 0 newly installed, 1 to remove.'] },
+                'search': { label: '4. Search Tool', command: 'apt search wireshark', desc: 'Searches Kali repositories for security and networking tools.', params: ['search'], output: ['Sorting... Done', 'Full Text Search... Done', 'wireshark/jammy 4.2.0-1 amd64', '  Network traffic analyzer', 'wireshark-qt/jammy 4.2.0-1 amd64', '  Network traffic analyzer (Qt GUI)'] },
+                'upgrade': { label: '5. Upgrade All Packages', command: 'sudo apt full-upgrade -y', desc: 'Kali recommends "full-upgrade" over "upgrade" for better dependency handling.', params: ['full-upgrade', '-y'], output: ['Reading package lists... Done', 'Calculating upgrade... Done', '0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.', 'Complete!'] }
             }
         };
 
-        // --- Cloudflared Data (Existing) ---
-        const commandsData = {
-            'cloudflared': {
-                label: 'Cloudflared Setup',
-                icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>',
-                items: {
-                    'linux-user': {
-                        label: 'For Linux User',
-                        isFolder: true, 
-                        items: {
-                            'update': {
-                                label: '1. Update System',
-                                command: 'sudo apt-get update && sudo apt-get upgrade -y',
-                                desc: 'Updates the package list and upgrades all installed packages to their latest versions to ensure compatibility.',
-                                params: ['sudo', 'apt-get update', 'apt-get upgrade'],
-                                output: [
-                                    'Hit:1 http://archive.ubuntu.com/ubuntu jammy InRelease',
-                                    'Hit:2 http://archive.ubuntu.com/ubuntu jammy-updates InRelease',
-                                    'Reading package lists... Done',
-                                    'Calculating upgrade... Done',
-                                    '0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.'
-                                ]
-                            },
-                            'install': {
-                                label: '2. Install Cloudflared',
-                                command: 'sudo apt install cloudflared',
-                                desc: 'Installs the Cloudflare Tunnel daemon (cloudflared) required for SSH tunneling.',
-                                params: ['sudo', 'apt install', 'cloudflared'],
-                                output: [
-                                    'Reading package lists... Done',
-                                    'Building dependency tree... Done',
-                                    'The following NEW packages will be installed:',
-                                    '  cloudflared',
-                                    '0 upgraded, 1 newly installed, 0 to remove.',
-                                    'Setting up cloudflared (2023.x.x) ...'
-                                ]
-                            },
-                            'ssh': {
-                                label: '3. Connect using SSH',
-                                command: 'ssh username@serverurl -o ProxyCommand="cloudflared access ssh --hostname %h"',
-                                desc: 'Connects to the server via Cloudflare Access. Replace "username" with your actual login username on the server.',
-                                params: ['ssh', 'username', 'ProxyCommand', 'cloudflared access ssh'],
-                                output: [
-                                    'Authenticating with Cloudflare Access...',
-                                    'Browser window opened for authentication.',
-                                    'Success! You are validated.'
-                                ]
-                            },
-                            'prompt-yes': {
-                                label: '4. Verify Fingerprint',
-                                command: 'yes',
-                                desc: 'When the terminal asks "The authenticity of host... can\'t be established", type "yes" to continue.',
-                                params: ['yes'],
-                                output: [
-                                    'The authenticity of host \'serverurl\' can\'t be established.',
-                                    'ED25519 key fingerprint is SHA256:AbCdEfGhIjKlMnOpQrStUvWxYz.',
-                                    'Are you sure you want to continue connecting (yes/no/[fingerprint])? yes',
-                                    'Warning: Permanently added \'serverurl\' (ED25519) to the list of known hosts.'
-                                ]
-                            },
-                            'prompt-pass': {
-                                label: '5. Enter Password',
-                                command: '[Enter Password]',
-                                desc: 'When prompted, enter your Signup password associated with your Cloudflare account or server user.',
-                                params: ['password'],
-                                output: [
-                                    'username@serverurl\'s password: ',
-                                    'Welcome to Ubuntu 22.04 LTS (GNU/Linux 5.15.0-91-generic x86_64)',
-                                    'System load: 0.01, 0.03, 0.05',
-                                    'Usage of /:   15.2% of 50GB'
-                                ]
-                            }
-                        }
-                    },
-                    'windows-user': {
-                        label: 'For Windows User',
-                        isFolder: true,
-                        items: {
-                            'win-step-1': {
-                                label: '1. Download',
-                                command: 'https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-amd64.exe',
-                                desc: 'Download the latest Windows executable from GitHub.\nFile will be located at: C:\\Users\\s8983\\Downloads',
-                                params: ['GitHub', 'Download', 'amd64'],
-                                output: [
-                                    'Initiating download...',
-                                    'Source: github.com/cloudflare/cloudflared/releases',
-                                    'Destination: C:\\Users\\s8983\\Downloads\\cloudflared-windows-amd64.exe',
-                                    'Download Complete.'
-                                ]
-                            },
-                            'win-step-2': {
-                                label: '2. Rename File',
-                                command: 'ren cloudflared-windows-amd64.exe cloudflared.exe',
-                                desc: 'Rename the downloaded file to make it easier to run. Run this in the Downloads folder.',
-                                params: ['ren', 'rename'],
-                                output: [
-                                    'C:\\Users\\s8983\\Downloads>ren cloudflared-windows-amd64.exe cloudflared.exe',
-                                    '1 file(s) renamed.'
-                                ]
-                            },
-                            'win-step-3': {
-                                label: '3. Create Folder',
-                                command: 'mkdir C:\\Users\\s8983\\cloudflared',
-                                desc: 'Create a dedicated folder to hold the cloudflared executable.',
-                                params: ['mkdir', 'create directory'],
-                                output: [
-                                    'C:\\Users\\s8983>mkdir C:\\Users\\s8983\\cloudflared',
-                                    'Directory created successfully.'
-                                ]
-                            },
-                            'win-step-4': {
-                                label: '4. Move File',
-                                command: 'move C:\\Users\\s8983\\Downloads\\cloudflared.exe C:\\Users\\s8983\\cloudflared\\',
-                                desc: 'Move the renamed executable into the newly created folder.',
-                                params: ['move', 'file transfer'],
-                                output: [
-                                    'C:\\Users\\s8983>move C:\\Users\\s8983\\Downloads\\cloudflared.exe C:\\Users\\s8983\\cloudflared\\',
-                                    '        1 file(s) moved.'
-                                ]
-                            },
-                            'win-step-5': {
-                                label: '5. Verify',
-                                command: 'dir C:\\Users\\s8983\\cloudflared',
-                                desc: 'List the contents of the folder to ensure the file is there.',
-                                params: ['dir', 'list'],
-                                output: [
-                                    ' Volume in drive C has no label.',
-                                    ' Directory of C:\\Users\\s8983\\cloudflared',
-                                    '',
-                                    '11/15/2023  10:00 AM    <DIR>          .',
-                                    '11/15/2023  10:00 AM    <DIR>          ..',
-                                    '11/15/2023  10:05 AM        25,000,000 cloudflared.exe',
-                                    '               1 File(s)   25,000,000 bytes'
-                                ]
-                            },
-                            'win-step-6': {
-                                label: '6. Run / Test',
-                                command: '"C:\\Users\\s8983\\cloudflared\\cloudflared.exe" --version',
-                                desc: 'Run the executable with the version flag to test if it works correctly.',
-                                params: ['--version', 'test'],
-                                output: [
-                                    'cloudflared version 2026.x.x',
-                                    'Built with go1.21.5',
-                                    'Feature flags: None'
-                                ]
-                            },
-                            'win-step-7': {
-                                label: '7. Add to PATH',
-                                command: '# Environment Variables: C:\\Users\\s8983\\cloudflared',
-                                desc: 'Add the folder to System Environment Variables.\n\nHow to do it:\n1. Search "Environment Variables".\n2. Click "Edit the system environment variables".\n3. Click "Environment Variables".\n4. Under "System variables", find "Path" and click "Edit".\n5. Click "New" and paste: C:\\Users\\s8983\\cloudflared\n6. Restart CMD and test: cloudflared --version',
-                                params: ['PATH', 'Environment Variables', 'Restart CMD'],
-                                output: [
-                                    '[System Configuration]',
-                                    'Adding C:\\Users\\s8983\\cloudflared to PATH...',
-                                    'Success. Restart command prompt to apply changes.',
-                                    '',
-                                    '> cloudflared --version',
-                                    'cloudflared version 2026.x.x',
-                                    'Works without full path!'
-                                ]
-                            }
-                        }
+        // ========== CLOUDFLARED (Original - Untouched) ==========
+        var cloudflaredSection = {
+            label: 'Cloudflared Setup',
+            icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>',
+            items: {
+                'linux-user': {
+                    label: 'For Linux User',
+                    isFolder: true, 
+                    items: {
+                        'update': { label: '1. Update System', command: 'sudo apt-get update && sudo apt-get upgrade -y', desc: 'Updates the package list and upgrades all installed packages to their latest versions to ensure compatibility.', params: ['sudo', 'apt-get update', 'apt-get upgrade'], output: ['Hit:1 http://archive.ubuntu.com/ubuntu jammy InRelease', 'Hit:2 http://archive.ubuntu.com/ubuntu jammy-updates InRelease', 'Reading package lists... Done', 'Calculating upgrade... Done', '0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.'] },
+                        'install': { label: '2. Install Cloudflared', command: 'sudo apt install cloudflared', desc: 'Installs the Cloudflare Tunnel daemon (cloudflared) required for SSH tunneling.', params: ['sudo', 'apt install', 'cloudflared'], output: ['Reading package lists... Done', 'Building dependency tree... Done', 'The following NEW packages will be installed:', '  cloudflared', '0 upgraded, 1 newly installed, 0 to remove.', 'Setting up cloudflared (2023.x.x) ...'] },
+                        'ssh': { label: '3. Connect using SSH', command: 'ssh username@serverurl -o ProxyCommand="cloudflared access ssh --hostname %h"', desc: 'Connects to the server via Cloudflare Access. Replace "username" with your actual login username on the server.', params: ['ssh', 'username', 'ProxyCommand', 'cloudflared access ssh'], output: ['Authenticating with Cloudflare Access...', 'Browser window opened for authentication.', 'Success! You are validated.'] },
+                        'prompt-yes': { label: '4. Verify Fingerprint', command: 'yes', desc: 'When the terminal asks "The authenticity of host... can\'t be established", type "yes" to continue.', params: ['yes'], output: ['The authenticity of host \'serverurl\' can\'t be established.', 'ED25519 key fingerprint is SHA256:AbCdEfGhIjKlMnOpQrStUvWxYz.', 'Are you sure you want to continue connecting (yes/no/[fingerprint])? yes', 'Warning: Permanently added \'serverurl\' (ED25519) to the list of known hosts.'] },
+                        'prompt-pass': { label: '5. Enter Password', command: '[Enter Password]', desc: 'When prompted, enter your Signup password associated with your Cloudflare account or server user.', params: ['password'], output: ['username@serverurl\'s password: ', 'Welcome to Ubuntu 22.04 LTS (GNU/Linux 5.15.0-91-generic x86_64)', 'System load: 0.01, 0.03, 0.05', 'Usage of /:   15.2% of 50GB'] }
+                    }
+                },
+                'windows-user': {
+                    label: 'For Windows User',
+                    isFolder: true,
+                    items: {
+                        'win-step-1': { label: '1. Download', command: 'https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-amd64.exe', desc: 'Download the latest Windows executable from GitHub.\nFile will be located at: C:\\Users\\s8983\\Downloads', params: ['GitHub', 'Download', 'amd64'], output: ['Initiating download...', 'Source: github.com/cloudflare/cloudflared/releases', 'Destination: C:\\Users\\s8983\\Downloads\\cloudflared-windows-amd64.exe', 'Download Complete.'] },
+                        'win-step-2': { label: '2. Rename File', command: 'ren cloudflared-windows-amd64.exe cloudflared.exe', desc: 'Rename the downloaded file to make it easier to run. Run this in the Downloads folder.', params: ['ren', 'rename'], output: ['C:\\Users\\s8983\\Downloads>ren cloudflared-windows-amd64.exe cloudflared.exe', '1 file(s) renamed.'] },
+                        'win-step-3': { label: '3. Create Folder', command: 'mkdir C:\\Users\\s8983\\cloudflared', desc: 'Create a dedicated folder to hold the cloudflared executable.', params: ['mkdir', 'create directory'], output: ['C:\\Users\\s8983>mkdir C:\\Users\\s8983\\cloudflared', 'Directory created successfully.'] },
+                        'win-step-4': { label: '4. Move File', command: 'move C:\\Users\\s8983\\Downloads\\cloudflared.exe C:\\Users\\s8983\\cloudflared\\', desc: 'Move the renamed executable into the newly created folder.', params: ['move', 'file transfer'], output: ['C:\\Users\\s8983>move C:\\Users\\s8983\\Downloads\\cloudflared.exe C:\\Users\\s8983\\cloudflared\\', '        1 file(s) moved.'] },
+                        'win-step-5': { label: '5. Verify', command: 'dir C:\\Users\\s8983\\cloudflared', desc: 'List the contents of the folder to ensure the file is there.', params: ['dir', 'list'], output: [' Volume in drive C has no label.', ' Directory of C:\\Users\\s8983\\cloudflared', '', '11/15/2023  10:00 AM    <DIR>          .', '11/15/2023  10:00 AM    <DIR>          ..', '11/15/2023  10:05 AM        25,000,000 cloudflared.exe', '               1 File(s)   25,000,000 bytes'] },
+                        'win-step-6': { label: '6. Run / Test', command: '"C:\\Users\\s8983\\cloudflared\\cloudflared.exe" --version', desc: 'Run the executable with the version flag to test if it works correctly.', params: ['--version', 'test'], output: ['cloudflared version 2026.x.x', 'Built with go1.21.5', 'Feature flags: None'] },
+                        'win-step-7': { label: '7. Add to PATH', command: '# Environment Variables: C:\\Users\\s8983\\cloudflared', desc: 'Add the folder to System Environment Variables.\n\nHow to do it:\n1. Search "Environment Variables".\n2. Click "Edit the system environment variables".\n3. Click "Environment Variables".\n4. Under "System variables", find "Path" and click "Edit".\n5. Click "New" and paste: C:\\Users\\s8983\\cloudflared\n6. Restart CMD and test: cloudflared --version', params: ['PATH', 'Environment Variables', 'Restart CMD'], output: ['[System Configuration]', 'Adding C:\\Users\\s8983\\cloudflared to PATH...', 'Success. Restart command prompt to apply changes.', '', '> cloudflared --version', 'cloudflared version 2026.x.x', 'Works without full path!'] }
                     }
                 }
             }
         };
 
         // --- State ---
-        let currentCommandText = "";
-        let currentPromptText = "guest@nodefy:~$";
+        var currentCommandText = "";
+        var typingTimeout = null;
+        var currentPromptText = "guest@nodefy:~$";
 
-        // --- DOM Elements ---
-        const navContainer = document.getElementById('sidebar-nav');
-        const pageTitle = document.getElementById('page-title');
-        const commandDisplay = document.getElementById('command-display');
-        const terminalOutput = document.getElementById('terminal-output');
-        const teachPanel = document.getElementById('teaching-panel');
-        const teachTitle = document.getElementById('teach-title');
-        const teachDesc = document.getElementById('teach-desc');
-        const teachParams = document.getElementById('teach-params');
+        var navContainer = document.getElementById('sidebar-nav');
+        var pageTitle = document.getElementById('page-title');
+        var commandDisplay = document.getElementById('command-display');
+        var terminalOutput = document.getElementById('terminal-output');
+        var teachPanel = document.getElementById('teaching-panel');
+        var teachTitle = document.getElementById('teach-title');
+        var teachDesc = document.getElementById('teach-desc');
+        var teachParams = document.getElementById('teach-params');
 
         // --- Init ---
-        window.onload = () => {
-            const selectedOS = localStorage.getItem('selectedOS');
-            
+        window.onload = function() {
+            var selectedOS = localStorage.getItem('selectedOS');
+
+            // ALWAYS build sidebar as an ARRAY to guarantee Cloudflared is first
+            var sidebarItems = [cloudflaredSection];
+
             if (selectedOS) {
-                const osInfo = getOSInfo(selectedOS);
+                var osInfo = getOSInfo(selectedOS);
                 currentPromptText = osInfo.prompt;
 
-                // Build OS command section
-                const osSection = {
+                document.getElementById('terminal-prompt').textContent = currentPromptText;
+                document.getElementById('terminal-title-text').textContent = ' ' + currentPromptText.replace(':~$', ': ~/');
+
+                var osSection = {
                     label: osInfo.displayName,
                     icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>',
                     items: {
-                        'basic': {
-                            label: 'Basic Commands',
-                            isFolder: true,
-                            items: basicCommands
-                        },
-                        'medium': {
-                            label: 'Medium Commands',
-                            isFolder: true,
-                            items: mediumCommands
-                        },
-                        'pkg': {
-                            label: 'Package Manager',
-                            isFolder: true,
-                            items: packageManagers[selectedOS] || {}
-                        }
+                        'basic': { label: 'Basic Commands', isFolder: true, items: basicCommands },
+                        'medium': { label: 'Medium Commands', isFolder: true, items: mediumCommands },
+                        'pkg': { label: 'Package Manager', isFolder: true, items: packageManagers[selectedOS] || {} }
                     }
                 };
 
-                // OS section first, then cloudflared
-                const mergedData = { 'os-commands': osSection, 'cloudflared': commandsData['cloudflared'] };
-                renderSidebar(mergedData);
+                // Push OS section AFTER cloudflared — array guarantees order
+                sidebarItems.push(osSection);
 
-                // Update terminal UI for the OS
-                document.getElementById('terminal-prompt').textContent = osInfo.prompt;
-                document.getElementById('terminal-title-text').textContent = osInfo.prompt.replace(':~$', ': ~/');
-                document.getElementById('welcome-area').innerHTML = `
-                    <div class="output-line" style="color: var(--accent-color)">System initialized. Welcome to Nodefy Terminal v2.1</div>
-                    <div class="output-line" style="color: var(--text-muted)">Selected OS: ${osInfo.displayName}</div>
-                    <div class="output-line" style="color: #555">Select a command from the sidebar to start learning.</div>
-                `;
-
-                // Auto-open OS dropdown and Basic Commands
-                setTimeout(() => {
-                    const osDropdown = document.getElementById('dropdown-os-commands');
-                    if (osDropdown) {
-                        osDropdown.classList.add('open');
-                        const osHeader = osDropdown.querySelector('.dropdown-header');
-                        if (osHeader) osHeader.classList.add('active-group');
-
-                        const basicDropdown = document.getElementById('dropdown-basic');
-                        if (basicDropdown) {
-                            basicDropdown.classList.add('open');
-                            const basicHeader = basicDropdown.querySelector('.dropdown-header');
-                            if (basicHeader) basicHeader.classList.add('active-group');
-                        }
-                    }
-                }, 100);
-
+                document.getElementById('welcome-line-1').textContent = 'System initialized. Welcome to Nodefy Terminal v2.1';
+                document.getElementById('welcome-line-1').style.color = 'var(--accent-color)';
+                document.getElementById('welcome-line-2').textContent = 'Selected OS: ' + osInfo.displayName + '  |  Select a command from the sidebar.';
+                document.getElementById('welcome-line-2').style.color = 'var(--text-muted)';
             } else {
-                // No OS selected - show only cloudflared
-                renderSidebar(commandsData);
-                document.getElementById('welcome-area').innerHTML = `
-                    <div class="output-line" style="color: var(--accent-color)">System initialized. Welcome to Nodefy Terminal v2.1</div>
-                    <div class="output-line" style="color: var(--terminal-error)">No OS selected. Please go back and select an OS first.</div>
-                    <div class="output-line" style="color: #555">Cloudflared setup is still available below.</div>
-                `;
+                document.getElementById('welcome-line-2').textContent = 'No OS selected. Go back and select an OS for tailored commands.';
+                document.getElementById('welcome-line-2').style.color = 'var(--terminal-error)';
             }
+
+            renderSidebar(sidebarItems);
         };
 
-        // --- Render Sidebar (Accepts data parameter) ---
-        function renderSidebar(data) {
+        // --- Render Sidebar: accepts ARRAY, order is always guaranteed ---
+        function renderSidebar(itemsArray) {
             navContainer.innerHTML = '';
 
-            for (const key in data) {
-                const group = data[key];
-                
-                const dropdown = document.createElement('div');
+            itemsArray.forEach(function(group, index) {
+                var dropdown = document.createElement('div');
                 dropdown.className = 'dropdown';
-                dropdown.id = `dropdown-${key}`;
+                dropdown.id = 'dropdown-' + index;
 
-                const header = document.createElement('div');
+                var header = document.createElement('div');
                 header.className = 'dropdown-header';
-                header.innerHTML = `
-                    <span style="display:flex; align-items:center; gap:10px;">
-                        ${group.icon}
-                        ${group.label}
-                    </span>
-                    <svg class="dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                `;
-                header.onclick = (e) => {
-                    e.stopPropagation();
-                    toggleDropdown(dropdown, header);
-                };
+                header.innerHTML = '<span style="display:flex; align-items:center; gap:10px;">' + group.icon + ' ' + group.label + '</span><svg class="dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>';
+                
+                header.onclick = (function(dropdownEl, headerEl) {
+                    return function(e) {
+                        e.stopPropagation();
+                        toggleDropdown(dropdownEl, headerEl);
+                    };
+                })(dropdown, header);
 
-                const content = document.createElement('div');
+                var content = document.createElement('div');
                 content.className = 'dropdown-content';
 
-                for (const subKey in group.items) {
-                    const item = group.items[subKey];
+                var subKeys = Object.keys(group.items);
+                for (var s = 0; s < subKeys.length; s++) {
+                    var subKey = subKeys[s];
+                    var item = group.items[subKey];
 
                     if (item.isFolder) {
-                        const subDropdown = document.createElement('div');
+                        var subDropdown = document.createElement('div');
                         subDropdown.className = 'dropdown nested-dropdown';
-                        subDropdown.id = `dropdown-${subKey}`;
+                        subDropdown.id = 'dropdown-' + subKey;
 
-                        const subHeader = document.createElement('div');
+                        var subHeader = document.createElement('div');
                         subHeader.className = 'dropdown-header';
                         subHeader.textContent = item.label;
-                        subHeader.onclick = (e) => {
-                            e.stopPropagation();
-                            toggleDropdown(subDropdown, subHeader);
-                        };
+                        
+                        subHeader.onclick = (function(subDropdownEl, subHeaderEl) {
+                            return function(e) {
+                                e.stopPropagation();
+                                toggleDropdown(subDropdownEl, subHeaderEl);
+                            };
+                        })(subDropdown, subHeader);
 
-                        const subContent = document.createElement('div');
+                        var subContent = document.createElement('div');
                         subContent.className = 'dropdown-content';
 
-                        for (const cmdKey in item.items) {
-                            const cmdItem = item.items[cmdKey];
-                            const cmdDiv = document.createElement('div');
+                        var cmdKeys = Object.keys(item.items);
+                        for (var c = 0; c < cmdKeys.length; c++) {
+                            var cmdKey = cmdKeys[c];
+                            var cmdItem = item.items[cmdKey];
+                            var cmdDiv = document.createElement('div');
                             cmdDiv.className = 'submenu-item';
                             cmdDiv.textContent = cmdItem.label;
-                            cmdDiv.onclick = (e) => {
-                                e.stopPropagation();
-                                selectCommand(cmdItem);
-                                document.querySelectorAll('.submenu-item').forEach(el => el.classList.remove('active'));
-                                cmdDiv.classList.add('active');
-                            };
+                            
+                            cmdDiv.onclick = (function(cmdData, cmdEl) {
+                                return function(e) {
+                                    e.stopPropagation();
+                                    selectCommand(cmdData);
+                                    document.querySelectorAll('.submenu-item').forEach(function(el) { el.classList.remove('active'); });
+                                    cmdEl.classList.add('active');
+                                };
+                            })(cmdItem, cmdDiv);
+
                             subContent.appendChild(cmdDiv);
                         }
 
@@ -1507,15 +773,19 @@
                         content.appendChild(subDropdown);
 
                     } else {
-                        const subItem = document.createElement('div');
+                        var subItem = document.createElement('div');
                         subItem.className = 'submenu-item';
                         subItem.textContent = item.label;
-                        subItem.onclick = (e) => {
-                            e.stopPropagation();
-                            selectCommand(item);
-                            document.querySelectorAll('.submenu-item').forEach(el => el.classList.remove('active'));
-                            subItem.classList.add('active');
-                        };
+                        
+                        subItem.onclick = (function(cmdData, cmdEl) {
+                            return function(e) {
+                                e.stopPropagation();
+                                selectCommand(cmdData);
+                                document.querySelectorAll('.submenu-item').forEach(function(el) { el.classList.remove('active'); });
+                                cmdEl.classList.add('active');
+                            };
+                        })(item, subItem);
+
                         content.appendChild(subItem);
                     }
                 }
@@ -1523,24 +793,25 @@
                 dropdown.appendChild(header);
                 dropdown.appendChild(content);
                 navContainer.appendChild(dropdown);
-            }
+            });
         }
 
         function toggleDropdown(dropdownElement, headerElement) {
-            const parentContainer = dropdownElement.parentElement;
-            const siblings = parentContainer.querySelectorAll(':scope > .dropdown');
+            var parentContainer = dropdownElement.parentElement;
+            var siblings = parentContainer.querySelectorAll(':scope > .dropdown');
 
-            siblings.forEach(sibling => {
+            for (var i = 0; i < siblings.length; i++) {
+                var sibling = siblings[i];
                 if (sibling !== dropdownElement && sibling.classList.contains('open')) {
                     sibling.classList.remove('open');
-                    const siblingHeader = sibling.querySelector('.dropdown-header');
+                    var siblingHeader = sibling.querySelector('.dropdown-header');
                     if (siblingHeader) {
                         siblingHeader.classList.remove('active-group');
                     }
                 }
-            });
+            }
 
-            const wasOpen = dropdownElement.classList.contains('open');
+            var wasOpen = dropdownElement.classList.contains('open');
             if (wasOpen) {
                 dropdownElement.classList.remove('open');
                 headerElement.classList.remove('active-group');
@@ -1550,7 +821,6 @@
             }
         }
 
-        // --- Terminal Logic ---
         function selectCommand(data) {
             pageTitle.textContent = data.label;
             currentCommandText = data.command;
@@ -1560,14 +830,14 @@
             terminalOutput.innerHTML = '';
             teachPanel.style.display = 'none';
 
-            let i = 0;
+            var i = 0;
             function type() {
                 if (i < data.command.length) {
                     commandDisplay.textContent += data.command.charAt(i);
                     i++;
                     typingTimeout = setTimeout(type, 40); 
                 } else {
-                    setTimeout(() => {
+                    setTimeout(function() {
                         showTerminalOutput(data.output);
                         showTeaching(data);
                     }, 400);
@@ -1577,28 +847,34 @@
         }
 
         function showTerminalOutput(lines) {
-            lines.forEach((line, index) => {
-                const div = document.createElement('div');
-                div.className = 'output-line';
-                div.textContent = line;
-                div.style.animationDelay = `${index * 0.05}s`;
-                
-                if(line.includes('Killed') || line.includes('error') || line.includes('ERROR')) div.style.color = 'var(--terminal-error)';
-                else if(line.includes('OK') || line.includes('complete') || line.includes('Success') || line.includes('Works without') || line.includes('Complete!')) div.style.color = 'var(--accent-color)';
-                else if(line.includes('Proto') || line.includes('PID') || line.includes('Filesystem') || line.includes('USER')) div.style.color = 'var(--terminal-info)';
-                
-                terminalOutput.appendChild(div);
-                
-                if (index === lines.length - 1) {
-                    const prompt = document.createElement('div');
-                    prompt.className = 'output-line';
-                    prompt.style.color = 'var(--accent-color)';
-                    prompt.style.marginTop = '10px';
-                    prompt.textContent = currentPromptText + ' ';
-                    terminalOutput.appendChild(prompt);
-                    terminalOutput.scrollTop = terminalOutput.scrollHeight;
-                }
-            });
+            for (var index = 0; index < lines.length; index++) {
+                (function(line, idx) {
+                    var div = document.createElement('div');
+                    div.className = 'output-line';
+                    div.textContent = line;
+                    div.style.animationDelay = (idx * 0.05) + 's';
+                    
+                    if(line.indexOf('Killed') !== -1 || line.indexOf('error') !== -1 || line.indexOf('ERROR') !== -1) {
+                        div.style.color = 'var(--terminal-error)';
+                    } else if(line.indexOf('OK') !== -1 || line.indexOf('complete') !== -1 || line.indexOf('Success') !== -1 || line.indexOf('Works without') !== -1 || line.indexOf('Complete!') !== -1) {
+                        div.style.color = 'var(--accent-color)';
+                    } else if(line.indexOf('Proto') !== -1 || line.indexOf('PID') !== -1 || line.indexOf('Filesystem') !== -1 || line.indexOf('USER') !== -1) {
+                        div.style.color = 'var(--terminal-info)';
+                    }
+                    
+                    terminalOutput.appendChild(div);
+                    
+                    if (idx === lines.length - 1) {
+                        var prompt = document.createElement('div');
+                        prompt.className = 'output-line';
+                        prompt.style.color = 'var(--accent-color)';
+                        prompt.style.marginTop = '10px';
+                        prompt.textContent = currentPromptText + ' ';
+                        terminalOutput.appendChild(prompt);
+                        terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                    }
+                })(lines[index], index);
+            }
         }
 
         function showTeaching(data) {
@@ -1608,24 +884,25 @@
 
             teachParams.innerHTML = '';
             if (data.params) {
-                data.params.forEach(param => {
-                    const tag = document.createElement('span');
-                    tag.className = 'param-tag';
-                    tag.textContent = param;
-                    teachParams.appendChild(tag);
-                });
+                for (var i = 0; i < data.params.length; i++) {
+                    (function(param) {
+                        var tag = document.createElement('span');
+                        tag.className = 'param-tag';
+                        tag.textContent = param;
+                        teachParams.appendChild(tag);
+                    })(data.params[i]);
             }
         }
 
         function copyCommand() {
             if (!currentCommandText) return;
-            navigator.clipboard.writeText(currentCommandText).then(() => {
-                const btn = document.querySelector('.copy-btn');
-                const originalHTML = btn.innerHTML;
+            navigator.clipboard.writeText(currentCommandText).then(function() {
+                var btn = document.querySelector('.copy-btn');
+                var originalHTML = btn.innerHTML;
                 btn.innerHTML = 'Copied!';
                 btn.style.color = 'var(--accent-color)';
                 btn.style.borderColor = 'var(--accent-color)';
-                setTimeout(() => {
+                setTimeout(function() {
                     btn.innerHTML = originalHTML;
                     btn.style.color = '';
                     btn.style.borderColor = '';
