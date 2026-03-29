@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nodefy - Deploy Manager</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-gradient-start: #050505;
+            --bg-gradient-end: #1a0b2e;
+            --accent-color: #8b5cf6;
+            --accent-hover: #7c3aed;
+            --accent-glow: rgba(139, 92, 246, 0.4);
+
+            --text-main: #FFFFFF;
+            --text-muted: #A1A1AA;
+            --text-dark: #52525B;
+
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(255, 255, 255, 0.2);
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-blur: blur(16px);
+
+            --font-ui: 'Inter', sans-serif;
+            --font-code: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            font-family: var(--font-ui);
+            background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+            background-attachment: fixed;
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow: hidden;
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .ambient-glow {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background:
+                radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.15), transparent 35%),
+                radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.12), transparent 35%),
+                radial-gradient(circle at 40% 80%, rgba(139, 92, 246, 0.1), transparent 40%);
+            z-index: -2;
+            pointer-events: none;
+            transition: transform 0.1s ease-out;
+            animation: pulseGlow 12s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            0% { opacity: 0.4; transform: scale(1); filter: blur(0px); }
+            50% { opacity: 0.8; transform: scale(1.02); filter: blur(2px); }
+            100% { opacity: 0.5; transform: scale(1); filter: blur(0px); }
+        }
+
+        .mesh-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-image:
+                linear-gradient(rgba(139, 92, 246, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(139, 92, 246, 0.02) 1px, transparent 1px);
+            background-size: 60px 60px;
+            z-index: -2;
+            pointer-events: none;
+            animation: meshMove 20s linear infinite alternate;
+        }
+
+        @keyframes meshMove {
+            0% { transform: translate(0, 0) rotate(0deg); opacity: 0.3; }
+            100% { transform: translate(-10px, -10px) rotate(0.5deg); opacity: 0.7; }
+        }
+
+        .particles {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -2;
+            pointer-events: none;
+            overflow: hidden;
+            transition: transform 0.1s ease-out;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px; height: 4px;
+            background: rgba(139, 92, 246, 0.2);
+            border-radius: 50%;
+            box-shadow: 0 0 15px 2px rgba(139, 92, 246, 0.2);
+            animation: floatParticle 18s infinite ease-in-out;
+        }
+
+        @keyframes floatParticle {
+            0% { transform: translateY(0) translateX(0) scale(1); opacity: 0.2; }
+            50% { transform: translateY(-120px) translateX(40px) scale(1.5); opacity: 0.6; }
+            100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.2; }
+        }
+
+        .bubbles-container {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -2;
+            pointer-events: none;
+            overflow: hidden;
+            transition: transform 0.2s ease-out;
+        }
+
+        .bubble {
+            position: absolute;
+            bottom: -100px;
+            background: radial-gradient(circle at 30% 30%, rgba(139, 92, 246, 0.08), rgba(139, 92, 246, 0.01) 60%, transparent 80%);
+            border-radius: 50%;
+            border: 1px solid rgba(139, 92, 246, 0.05);
+            animation: riseBubble 25s infinite ease-in;
+            filter: blur(2px);
+        }
+
+        @keyframes riseBubble {
+            0% { transform: translateY(0) translateX(0) scale(0.8); opacity: 0; }
+            20% { opacity: 0.5; }
+            80% { opacity: 0.5; }
+            100% { transform: translateY(-120vh) translateX(50px) scale(1.2); opacity: 0; }
+        }
+
+        .glow-spot {
+            position: fixed;
+            width: 60vw; height: 60vw;
+            background: radial-gradient(circle at center, rgba(139, 92, 246, 0.05), transparent 70%);
+            border-radius: 50%;
+            z-index: -2;
+            pointer-events: none;
+            animation: spotMove 25s infinite alternate;
+            transition: transform 0.2s ease-out;
+        }
+
+        .spot1 { top: -20vh; right: -10vw; }
+        .spot2 { bottom: -30vh; left: -10vw; animation-delay: -5s; width: 80vw; height: 80vw; background: radial-gradient(circle at center, rgba(59, 130, 246, 0.04), transparent 70%); }
+
+        @keyframes spotMove {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(5%, 5%) scale(1.1); }
+        }
+
+        .sidebar {
+            width: 240px;
+            background: rgba(15, 15, 20, 0.5);
+            backdrop-filter: var(--glass-blur);
+            border-right: 1px solid var(--border-subtle);
+            display: flex;
+            flex-direction: column;
+            padding: 32px 20px;
+            z-index: 10;
+            flex-shrink: 0;
+            gap: 14px;
+        }
+
+        .sidebar-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: -0.03em;
+            margin-bottom: 28px;
+            padding-bottom: 28px;
+            border-bottom: 1px solid var(--border-subtle);
+            text-decoration: none;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .sidebar-logo span { color: var(--accent-color); }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            width: 100%;
+            padding: 16px 18px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            border-radius: 14px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-family: var(--font-ui);
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--border-hover);
+            color: white;
+            transform: translateX(4px);
+        }
+
+        .nav-btn.primary {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+            color: white;
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
+        }
+
+        .nav-btn.primary:hover {
+            background: var(--accent-hover);
+            transform: translateX(2px) translateY(-2px);
+            box-shadow: 0 8px 30px rgba(139, 92, 246, 0.45);
+        }
+
+        .nav-btn svg { flex-shrink: 0; opacity: 0.7; }
+        .nav-btn:hover svg { opacity: 1; }
+        .nav-btn.primary svg { opacity: 1; }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 5;
+            min-width: 0;
+        }
+
+        .top-bar {
+            padding: 20px 36px;
+            border-bottom: 1px solid var(--border-subtle);
+            background: rgba(5, 5, 10, 0.15);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+
+        .page-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff 30%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.02em;
+        }
+
+        .actions-group { display: flex; gap: 8px; }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.78rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border: 1px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font-ui);
+            white-space: nowrap;
+        }
+
+        .btn svg { flex-shrink: 0; }
+
+        .btn-deploy { background: rgba(16, 185, 129, 0.12); color: #10b981; border-color: rgba(16, 185, 129, 0.25); }
+        .btn-deploy:hover { background: rgba(16, 185, 129, 0.22); box-shadow: 0 0 16px rgba(16, 185, 129, 0.15); transform: translateY(-1px); }
+
+        .btn-stop { background: rgba(245, 158, 11, 0.12); color: #f59e0b; border-color: rgba(245, 158, 11, 0.25); }
+        .btn-stop:hover { background: rgba(245, 158, 11, 0.22); box-shadow: 0 0 16px rgba(245, 158, 11, 0.15); transform: translateY(-1px); }
+
+        .btn-kill { background: rgba(239, 68, 68, 0.12); color: #ef4444; border-color: rgba(239, 68, 68, 0.25); }
+        .btn-kill:hover { background: rgba(239, 68, 68, 0.22); box-shadow: 0 0 16px rgba(239, 68, 68, 0.15); transform: translateY(-1px); }
+
+        .btn-workspace { background: rgba(139, 92, 246, 0.12); color: var(--accent-color); border-color: rgba(139, 92, 246, 0.25); }
+        .btn-workspace:hover { background: rgba(139, 92, 246, 0.22); box-shadow: 0 0 16px rgba(139, 92, 246, 0.15); transform: translateY(-1px); }
+
+        .content-scroll { flex: 1; padding: 36px; overflow-y: auto; }
+
+        .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+        .section-title { color: white; font-weight: 600; font-size: 1.1rem; }
+        .section-subtitle { color: var(--text-muted); font-size: 0.82rem; margin-top: 2px; }
+
+        .instance-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+
+        .instance-card {
+            background: rgba(20, 20, 25, 0.6);
+            border: 1px solid var(--border-subtle);
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+            min-height: 180px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .instance-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.04), transparent);
+            transition: 0.6s;
+            pointer-events: none;
+        }
+        .instance-card:hover::before { left: 100%; }
+
+        .instance-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: transparent;
+            transition: background 0.4s ease;
+        }
+
+        .instance-card:hover {
+            border-color: rgba(139, 92, 246, 0.3);
+            background: rgba(30, 30, 40, 0.7);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px -10px rgba(0, 0, 0, 0.6), 0 0 20px rgba(139, 92, 246, 0.15);
+        }
+
+        .instance-card.running::after { background: linear-gradient(90deg, #10b981, transparent); }
+        .instance-card.running:hover { border-color: rgba(16, 185, 129, 0.3); box-shadow: 0 15px 40px -10px rgba(0, 0, 0, 0.6), 0 0 25px rgba(16, 185, 129, 0.12); }
+
+        .instance-card.stopped::after { background: linear-gradient(90deg, #ef4444, transparent); }
+        .instance-card.stopped:hover { border-color: rgba(239, 68, 68, 0.3); box-shadow: 0 15px 40px -10px rgba(0, 0, 0, 0.6), 0 0 25px rgba(239, 68, 68, 0.12); }
+
+        .instance-card.building::after { background: linear-gradient(90deg, #f59e0b, transparent); }
+        .instance-card.building:hover { border-color: rgba(245, 158, 11, 0.3); box-shadow: 0 15px 40px -10px rgba(0, 0, 0, 0.6), 0 0 25px rgba(245, 158, 11, 0.12); }
+
+        .instance-card.selected {
+            border-color: rgba(139, 92, 246, 0.5) !important;
+            box-shadow: 0 15px 40px -10px rgba(0, 0, 0, 0.6), 0 0 30px rgba(139, 92, 246, 0.2) !important;
+        }
+
+        .card-top { display: flex; justify-content: space-between; align-items: flex-start; }
+
+        .inst-icon {
+            width: 48px; height: 48px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            border: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .instance-card.running .inst-icon { color: #10b981; }
+        .instance-card.stopped .inst-icon { color: #ef4444; }
+        .instance-card.building .inst-icon { color: #f59e0b; }
+
+        .instance-card:hover .inst-icon {
+            background: rgba(139, 92, 246, 0.1);
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+        .instance-card:hover .inst-icon svg { transform: scale(1.15); }
+        .instance-card .inst-icon svg { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+
+        .inst-id {
+            font-family: var(--font-code);
+            font-size: 0.7rem;
+            color: var(--text-dark);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+
+        .card-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+
+        .inst-name {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 12px;
+            letter-spacing: -0.01em;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 5px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            width: fit-content;
+        }
+
+        .status-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+        .status-running { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.2); }
+        .status-running .status-dot { background: #34d399; box-shadow: 0 0 8px #34d399; animation: pulseStatus 2s infinite; }
+
+        .status-stopped { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); }
+        .status-stopped .status-dot { background: #f87171; box-shadow: 0 0 6px rgba(239, 68, 68, 0.4); }
+
+        .status-building { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.2); }
+        .status-building .status-dot { background: #fbbf24; box-shadow: 0 0 8px #fbbf24; animation: pulseStatus 1s infinite; }
+
+        @keyframes pulseStatus { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+
+        .card-meta {
+            display: flex; align-items: center; gap: 16px;
+            margin-top: 14px; font-size: 0.75rem;
+            color: var(--text-dark); font-family: var(--font-code);
+        }
+
+        .empty-state { grid-column: 1 / -1; text-align: center; padding: 80px 20px; color: var(--text-dark); }
+        .empty-state-icon { font-size: 3rem; margin-bottom: 16px; opacity: 0.4; }
+        .empty-state-text { font-size: 1rem; margin-bottom: 6px; color: var(--text-muted); }
+        .empty-state-hint { font-size: 0.85rem; opacity: 0.6; }
+
+        .loading-state { grid-column: 1 / -1; display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 80px 20px; color: var(--text-muted); }
+
+        .spinner {
+            width: 60px; height: 60px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, transparent 0deg, var(--accent-color) 360deg);
+            position: relative;
+            animation: rotateSpinner 1s linear infinite;
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+        }
+        .spinner::after { content: ''; position: absolute; top: 4px; left: 4px; right: 4px; bottom: 4px; background: #050505; border-radius: 50%; }
+        @keyframes rotateSpinner { 100% { transform: rotate(360deg); } }
+
+        .modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(5, 5, 10, 0.85);
+            backdrop-filter: blur(12px);
+            z-index: 2000;
+            display: none; align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .modal-overlay.open { display: flex; opacity: 1; }
+
+        .modal-content {
+            background: rgba(20, 20, 25, 0.95);
+            border: 1px solid var(--border-subtle);
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+            padding: 28px;
+            width: 100%; max-width: 440px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            transform: scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .modal-overlay.open .modal-content { transform: scale(1); }
+
+        .modal-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 22px; color: white; letter-spacing: -0.02em; }
+        .form-group { margin-bottom: 16px; }
+        .form-label { display: block; color: var(--text-muted); margin-bottom: 6px; font-size: 0.85rem; font-weight: 500; }
+        .form-hint { color: var(--text-dark); font-size: 0.72rem; margin-top: 5px; line-height: 1.4; }
+
+        .code-editor {
+            width: 100%;
+            background: #0f0f13;
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            color: #e4e4e7;
+            font-family: var(--font-code);
+            padding: 14px 18px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.6);
+        }
+        .code-editor:focus { border-color: var(--accent-color); box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2), inset 0 4px 12px rgba(0, 0, 0, 0.6); }
+        .code-editor.error { border-color: #ef4444; box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.15), inset 0 4px 12px rgba(0, 0, 0, 0.6); }
+
+        .validation-msg { color: #ef4444; font-size: 0.75rem; margin-top: 5px; min-height: 0; }
+
+        .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; }
+
+        .btn-primary { background: var(--accent-color); color: white; border-color: var(--accent-color); box-shadow: 0 4px 15px rgba(139, 92, 246, 0.25); }
+        .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(139, 92, 246, 0.35); }
+
+        .btn-secondary { background: rgba(255, 255, 255, 0.05); color: white; border-color: var(--border-subtle); }
+        .btn-secondary:hover { background: rgba(255, 255, 255, 0.08); border-color: var(--border-hover); transform: translateY(-1px); }
+
+        .btn-loading { pointer-events: none; opacity: 0.7; }
+
+        .toast-container {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            pointer-events: none;
+        }
+
+        .toast {
+            position: relative;
+            pointer-events: auto;
+            background: rgba(20, 20, 25, 0.85);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 16px 20px;
+            color: white;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            min-width: 340px;
+            max-width: 420px;
+            overflow: hidden;
+            transform-origin: right center;
+            animation: toastIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .toast-icon-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px; height: 36px;
+            border-radius: 10px;
+            flex-shrink: 0;
+        }
+
+        .toast.success .toast-icon-wrapper { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.2); }
+        .toast.error .toast-icon-wrapper { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); }
+        .toast.info .toast-icon-wrapper { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.2); }
+
+        .toast-content { flex: 1; display: flex; flex-direction: column; justify-content: center; padding-right: 8px; }
+        .toast-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; color: #f3f4f6; letter-spacing: 0.01em; }
+        .toast-message { font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; }
+
+        .toast-close {
+            background: transparent; border: none; color: rgba(255, 255, 255, 0.3);
+            cursor: pointer; padding: 6px; border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s;
+        }
+        .toast-close:hover { background: rgba(255, 255, 255, 0.1); color: white; }
+
+        .toast-progress {
+            position: absolute; bottom: 0; left: 0; height: 3px; width: 100%;
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-hover));
+            transform-origin: left;
+            animation: toastTimer 5s linear forwards;
+        }
+        .toast.success .toast-progress { background: #10b981; }
+        .toast.error .toast-progress { background: #ef4444; }
+        .toast.info .toast-progress { background: #3b82f6; }
+
+        @keyframes toastTimer { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+        @keyframes toastIn { from { transform: translateX(100%) skewX(-10deg); opacity: 0; } to { transform: translateX(0) skewX(0); opacity: 1; } }
+        @keyframes toastOut { to { transform: translateX(50px) scale(0.9); opacity: 0; } }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.08); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.15); }
+
+        @media (max-width: 900px) {
+            body { flex-direction: column; overflow-y: auto; }
+            .sidebar { width: 100%; flex-direction: row; align-items: center; padding: 14px 16px; gap: 10px; border-bottom: 1px solid var(--border-subtle); border-right: none; }
+            .sidebar-logo { margin-bottom: 0; margin-right: auto; font-size: 1.2rem; padding-bottom: 0; border-bottom: none; }
+            .nav-btn { width: auto; padding: 10px 14px; }
+            .nav-btn span { display: none; }
+            .top-bar { padding: 14px 16px; flex-wrap: wrap; gap: 10px; }
+            .actions-group { width: 100%; flex-wrap: wrap; }
+            .btn { flex: 1; justify-content: center; font-size: 0.75rem; padding: 7px 10px; min-width: 100px; }
+            .content-scroll { padding: 20px; }
+            .instance-grid { grid-template-columns: 1fr; }
+            .toast-container { right: 20px; left: 20px; bottom: 20px; }
+            .toast { width: 100%; min-width: auto; max-width: none; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="ambient-glow" id="ambient-glow"></div>
+    <div class="mesh-bg"></div>
+    <div class="glow-spot spot1" id="spot1"></div>
+    <div class="glow-spot spot2" id="spot2"></div>
+    <div class="bubbles-container" id="bubbles-container">
+        <div class="bubble" style="left: 10%; width: 150px; height: 150px; animation-duration: 35s; animation-delay: 0s;"></div>
+        <div class="bubble" style="left: 30%; width: 80px; height: 80px; animation-duration: 45s; animation-delay: -5s;"></div>
+        <div class="bubble" style="left: 60%; width: 200px; height: 200px; animation-duration: 55s; animation-delay: -10s;"></div>
+        <div class="bubble" style="left: 85%; width: 120px; height: 120px; animation-duration: 25s; animation-delay: -2s;"></div>
+        <div class="bubble" style="left: 45%; width: 60px; height: 60px; animation-duration: 30s; animation-delay: -15s;"></div>
+    </div>
+    <div class="particles" id="particles">
+        <div class="particle" style="top: 20%; left: 15%; animation-duration: 25s;"></div>
+        <div class="particle" style="top: 70%; left: 80%; width: 6px; height: 6px; animation-duration: 30s; animation-delay: -2s;"></div>
+        <div class="particle" style="top: 40%; left: 40%; width: 3px; height: 3px; animation-duration: 22s; animation-delay: -5s;"></div>
+        <div class="particle" style="top: 10%; left: 90%; animation-duration: 28s;"></div>
+        <div class="particle" style="top: 80%; left: 10%; animation-duration: 32s; animation-delay: -12s;"></div>
+        <div class="particle" style="top: 30%; left: 5%; width: 2px; height: 2px; animation-duration: 12s; animation-delay: -4s;"></div>
+        <div class="particle" style="top: 60%; left: 50%; width: 5px; height: 5px; animation-duration: 20s; animation-delay: -12s;"></div>
+        <div class="particle" style="top: 15%; left: 70%; width: 3px; height: 3px; animation-duration: 15s; animation-delay: -6s;"></div>
+    </div>
+
+    <aside class="sidebar">
+        <a href="/" class="sidebar-logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="var(--accent-color)" />
+                <path d="M2 17L12 22L22 17" stroke="white" />
+                <path d="M2 12L12 17L22 12" stroke="white" />
+            </svg>
+            <span>Nodefy</span>
+        </a>
+
+        <button class="nav-btn primary" onclick="openAddModal()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            <span>Deploy App</span>
+        </button>
+
+        <button class="nav-btn" onclick="showToast('SSH', 'Opening secure gateway...', 'info')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+            <span>Access SSH</span>
+        </button>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-bar">
+            <div class="page-title">Deploy Command Center</div>
+            <div class="actions-group">
+                <button class="btn btn-deploy" id="btnStart" onclick="handleAction('start')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                    Start
+                </button>
+                <button class="btn btn-stop" id="btnStop" onclick="handleAction('stop')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="1"></rect></svg>
+                    Stop
+                </button>
+                <button class="btn btn-kill" id="btnKill" onclick="handleAction('kill')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                    Kill
+                </button>
+                <button class="btn btn-workspace" id="btnWorkspace" onclick="handleWorkspace()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg>
+                    Workspace
+                </button>
+            </div>
+        </header>
+
+        <div class="content-scroll">
+            <div class="section-header">
+                <div>
+                    <div class="section-title">Deployments</div>
+                    <div class="section-subtitle">Click a card to select, then use action buttons above</div>
+                </div>
+            </div>
+
+            <div class="instance-grid" id="instanceGrid">
+                <div class="loading-state">
+                    <div class="spinner"></div>
+                    <span>Connecting to backend...</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add Instance Modal -->
+    <div class="modal-overlay" id="addModal">
+        <div class="modal-content">
+            <h3 class="modal-title">Deploy Application</h3>
+            <div class="form-group">
+                <label class="form-label">App Name</label>
+                <input type="text" id="addAppName" class="code-editor" placeholder="e.g. myapp" oninput="validateAppName(this, 'addNameErr')" autocomplete="off" spellcheck="false">
+                <div class="form-hint">Only lowercase letters, numbers, and hyphens allowed. No spaces, uppercase, or special characters.</div>
+                <div class="validation-msg" id="addNameErr"></div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Docker Image</label>
+                <input type="text" id="addImageName" class="code-editor" placeholder="e.g. nginx:alpine" oninput="validateImageName(this, 'addImgErr')" autocomplete="off" spellcheck="false">
+                <div class="form-hint">Enter a correct Docker image name. Format: <span style="color:var(--text-muted);font-family:var(--font-code);">image:tag</span> or <span style="color:var(--text-muted);font-family:var(--font-code);">registry/image:tag</span></div>
+                <div class="validation-msg" id="addImgErr"></div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModals()">Cancel</button>
+                <button class="btn btn-primary" id="btnAddSubmit" onclick="submitAddInstance()">Deploy</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Modal (Start / Stop / Kill) -->
+    <div class="modal-overlay" id="actionModal">
+        <div class="modal-content">
+            <h3 class="modal-title" id="actionTitle">Execute Command</h3>
+            <input type="hidden" id="currentAction">
+            <div class="form-group">
+                <label class="form-label">App Name</label>
+                <input type="text" id="actionAppName" class="code-editor" placeholder="e.g. myapp" oninput="validateAppName(this, 'actionNameErr')" autocomplete="off" spellcheck="false">
+                <div class="form-hint">Only lowercase letters, numbers, and hyphens allowed. No spaces, uppercase, or special characters.</div>
+                <div class="validation-msg" id="actionNameErr"></div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModals()">Cancel</button>
+                <button class="btn btn-primary" id="btnActionSubmit" onclick="submitAction()">Execute</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toast-container"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var ambientGlow = document.getElementById('ambient-glow');
+            var spot1 = document.getElementById('spot1');
+            var spot2 = document.getElementById('spot2');
+            var particles = document.getElementById('particles');
+            var bubblesContainer = document.getElementById('bubbles-container');
+
+            if (ambientGlow || spot1 || spot2 || particles || bubblesContainer) {
+                document.addEventListener('mousemove', function (e) {
+                    var x = (window.innerWidth - e.pageX * 2) / 100;
+                    var y = (window.innerHeight - e.pageY * 2) / 100;
+                    if (ambientGlow) ambientGlow.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
+                    if (spot1) spot1.style.transform = 'translate(' + (x * 1.5) + 'px, ' + (y * 1.5) + 'px)';
+                    if (spot2) spot2.style.transform = 'translate(' + (x * 0.5) + 'px, ' + (y * 0.5) + 'px)';
+                    if (particles) particles.style.transform = 'translate(' + (x * -0.5) + 'px, ' + (y * -0.5) + 'px)';
+                    if (bubblesContainer) bubblesContainer.style.transform = 'translate(' + (x * -0.2) + 'px, ' + (y * -0.2) + 'px)';
+                });
+            }
+
+            fetchInstances();
+            setInterval(fetchInstances, 5000);
+        });
+
+        var instances = [];
+        var selectedInstance = '';
+
+        function validateAppName(input, errId) {
+            var val = input.value;
+            var errEl = document.getElementById(errId);
+            var regex = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
+
+            if (!val) { input.classList.remove('error'); errEl.textContent = ''; return false; }
+            if (/[A-Z]/.test(val)) { input.classList.add('error'); errEl.textContent = 'Uppercase letters are not allowed.'; return false; }
+            if (/\s/.test(val)) { input.classList.add('error'); errEl.textContent = 'Spaces are not allowed.'; return false; }
+            if (/[^a-z0-9\-]/.test(val)) { input.classList.add('error'); errEl.textContent = 'Special characters are not allowed. Use only a-z, 0-9, and hyphens.'; return false; }
+            if (val.startsWith('-') || val.endsWith('-')) { input.classList.add('error'); errEl.textContent = 'Cannot start or end with a hyphen.'; return false; }
+            if (/--/.test(val)) { input.classList.add('error'); errEl.textContent = 'Consecutive hyphens are not allowed.'; return false; }
+            if (!regex.test(val)) { input.classList.add('error'); errEl.textContent = 'Must start with a lowercase letter.'; return false; }
+
+            input.classList.remove('error');
+            errEl.textContent = '';
+            return true;
+        }
+
+        function validateImageName(input, errId) {
+            var val = input.value.trim();
+            var errEl = document.getElementById(errId);
+
+            if (!val) { input.classList.remove('error'); errEl.textContent = ''; return false; }
+            if (/\s/.test(val)) { input.classList.add('error'); errEl.textContent = 'Spaces are not allowed in image names.'; return false; }
+
+            var pattern = /^(?:[a-z0-9.\-]+(?:\/[a-z0-9._\-]+)*\/)?[a-z0-9._\-]+(?::[a-zA-Z0-9._\-]+)?$/;
+            if (!pattern.test(val)) { input.classList.add('error'); errEl.textContent = 'Invalid image format. Use: image:tag or registry/image:tag'; return false; }
+            if (val.indexOf(':') !== -1) { var tag = val.split(':').pop(); if (tag.length > 128) { input.classList.add('error'); errEl.textContent = 'Tag is too long.'; return false; } }
+
+            input.classList.remove('error');
+            errEl.textContent = '';
+            return true;
+        }
+
+        async function fetchInstances() {
+            var grid = document.getElementById('instanceGrid');
+
+            if (instances.length === 0) {
+                grid.innerHTML = '<div class="loading-state"><div class="spinner"></div><span>Connecting to backend...</span></div>';
+            }
+
+            try {
+                var response = await fetch('/getdeployinstance', {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+
+                var data = await response.json();
+                instances.length = 0;
+
+                for (var i = 0; i < data.length; i++) {
+                    var item = data[i];
+                    instances.push({
+                        id: item.id,
+                        name: item.instance_name || item.appname || item.app_name || '',
+                        status: item.status.toLowerCase()
+                    });
+                }
+
+                renderInstances();
+            } catch (error) {
+                console.error('Fetch Error:', error);
+                if (instances.length === 0) {
+                    grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">⚠</div><div class="empty-state-text">Failed to connect</div><div class="empty-state-hint">' + error.message + '</div></div>';
+                }
+            }
+        }
+
+        function renderInstances() {
+            var grid = document.getElementById('instanceGrid');
+            grid.innerHTML = '';
+
+            if (instances.length === 0) {
+                grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🚀</div><div class="empty-state-text">No deployments yet</div><div class="empty-state-hint">Click "Deploy App" to get started</div></div>';
+                return;
+            }
+
+            for (var i = 0; i < instances.length; i++) {
+                (function (inst) {
+                    var statusClass = 'status-building';
+                    var cardClass = 'building';
+
+                    if (inst.status === 'running') {
+                        statusClass = 'status-running';
+                        cardClass = 'running';
+                    } else if (inst.status === 'stopped') {
+                        statusClass = 'status-stopped';
+                        cardClass = 'stopped';
+                    }
+
+                    var card = document.createElement('div');
+                    card.className = 'instance-card ' + cardClass + (inst.name === selectedInstance ? ' selected' : '');
+                    card.dataset.name = inst.name;
+                    card.innerHTML =
+                        '<div class="card-top">' +
+                            '<div class="inst-icon">' +
+                                '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                                    '<path d="M22 12l-10 7V5l10 7z"></path>' +
+                                    '<path d="M2 5v14"></path>' +
+                                '</svg>' +
+                            '</div>' +
+                            '<span class="inst-id">#' + inst.id + '</span>' +
+                        '</div>' +
+                        '<div class="card-body">' +
+                            '<div class="inst-name">' + inst.name + '</div>' +
+                            '<div class="status-badge ' + statusClass + '">' +
+                                '<div class="status-dot"></div>' +
+                                inst.status +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="card-meta"><span>nodefy/deploy</span></div>';
+
+                    card.addEventListener('click', function () {
+                        selectedInstance = inst.name;
+                        var allCards = document.querySelectorAll('.instance-card');
+                        for (var j = 0; j < allCards.length; j++) {
+                            allCards[j].classList.remove('selected');
+                        }
+                        card.classList.add('selected');
+                    });
+
+                    grid.appendChild(card);
+                })(instances[i]);
+            }
+        }
+
+        function closeModals() {
+            var overlays = document.querySelectorAll('.modal-overlay');
+            for (var i = 0; i < overlays.length; i++) {
+                overlays[i].classList.remove('open');
+            }
+            var editors = document.querySelectorAll('.code-editor');
+            for (var j = 0; j < editors.length; j++) {
+                editors[j].value = '';
+                editors[j].classList.remove('error');
+            }
+            var msgs = document.querySelectorAll('.validation-msg');
+            for (var k = 0; k < msgs.length; k++) {
+                msgs[k].textContent = '';
+            }
+        }
+
+        function openAddModal() {
+            document.getElementById('addModal').classList.add('open');
+            setTimeout(function () {
+                document.getElementById('addAppName').focus();
+            }, 100);
+        }
+
+        function handleAction(actionType) {
+            document.getElementById('currentAction').value = actionType;
+
+            var labels = {
+                start: '▶ Start Instance',
+                stop: '⏹ Stop Instance',
+                kill: '⛔ Kill Instance'
+            };
+            document.getElementById('actionTitle').innerText = labels[actionType] || actionType.toUpperCase();
+            document.getElementById('actionModal').classList.add('open');
+
+            var nameInput = document.getElementById('actionAppName');
+            if (selectedInstance) {
+                nameInput.value = selectedInstance;
+            }
+            setTimeout(function () {
+                nameInput.focus();
+            }, 100);
+        }
+
+        function setButtonLoading(btn, loading) {
+            if (loading) {
+                btn.dataset.originalHtml = btn.innerHTML;
+                btn.classList.add('btn-loading');
+                var svg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation:rotateSpinner 1s linear infinite"><path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"/></svg>';
+                var text = btn.textContent.trim();
+                btn.innerHTML = svg + ' ' + text + '...';
+            } else {
+                btn.classList.remove('btn-loading');
+                if (btn.dataset.originalHtml) {
+                    btn.innerHTML = btn.dataset.originalHtml;
+                    delete btn.dataset.originalHtml;
+                }
+            }
+        }
+
+        async function submitAddInstance() {
+            var nameInput = document.getElementById('addAppName');
+            var imageInput = document.getElementById('addImageName');
+            var appname = nameInput.value.trim();
+            var imagename = imageInput.value.trim();
+            var btn = document.getElementById('btnAddSubmit');
+
+            if (!appname) {
+                nameInput.classList.add('error');
+                document.getElementById('addNameErr').textContent = 'App name is required.';
+                nameInput.focus();
+                return;
+            }
+            if (!validateAppName(nameInput, 'addNameErr')) {
+                nameInput.focus();
+                return;
+            }
+            if (!imagename) {
+                imageInput.classList.add('error');
+                document.getElementById('addImgErr').textContent = 'Docker image name is required.';
+                imageInput.focus();
+                return;
+            }
+            if (!validateImageName(imageInput, 'addImgErr')) {
+                imageInput.focus();
+                return;
+            }
+
+            closeModals();
+            setButtonLoading(btn, true);
+
+            try {
+                var response = await fetch('/addinstancesdeploy', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        appname: appname,
+                        imagename: imagename
+                    })
+                });
+
+                if (!response.ok) {
+                    var errData = await response.json().catch(function () { return {}; });
+                    throw new Error(errData.error || errData.message || 'Server Error');
+                }
+
+                await fetchInstances();
+                showToast('Deployed', 'Application "' + appname + '" deployed successfully.', 'success');
+            } catch (error) {
+                console.error(error);
+                showToast('Error', error.message, 'error');
+            } finally {
+                setButtonLoading(btn, false);
+            }
+        }
+
+        async function submitAction() {
+            var type = document.getElementById('currentAction').value;
+            var nameInput = document.getElementById('actionAppName');
+            var name = nameInput.value.trim();
+            var btn = document.getElementById('btnActionSubmit');
+
+            if (!name) {
+                nameInput.classList.add('error');
+                document.getElementById('actionNameErr').textContent = 'App name is required.';
+                nameInput.focus();
+                return;
+            }
+            if (!validateAppName(nameInput, 'actionNameErr')) {
+                nameInput.focus();
+                return;
+            }
+
+            closeModals();
+            setButtonLoading(btn, true);
+
+            var endpoints = {
+                start: '/startinstance',
+                stop: '/stopinstance',
+                kill: '/killinstance'
+            };
+
+            var toastConfig = {
+                start: { title: 'Started',    msg: '"' + name + '" is running.', type: 'success' },
+                stop:  { title: 'Stopped',    msg: '"' + name + '" halted.',    type: 'info' },
+                kill:  { title: 'Terminated', msg: '"' + name + '" killed.',    type: 'error' }
+            };
+
+            try {
+                var response = await fetch(endpoints[type], {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        instancename: name,
+                        instance_name: name
+                    })
+                });
+
+                if (!response.ok) {
+                    var errData = await response.json().catch(function () { return {}; });
+                    throw new Error(errData.error || errData.message || 'Server Error (' + response.status + ')');
+                }
+
+                await fetchInstances();
+
+                var cfg = toastConfig[type];
+                showToast(cfg.title, cfg.msg, cfg.type);
+            } catch (error) {
+                console.error(error);
+                showToast('Error', error.message, 'error');
+            } finally {
+                setButtonLoading(btn, false);
+            }
+        }
+
+        async function handleWorkspace() {
+            var btn = document.getElementById('btnWorkspace');
+            setButtonLoading(btn, true);
+
+            try {
+                var response = await fetch('/workspace', {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+
+                if (!response.ok) {
+                    var errData = await response.json().catch(function () { return {}; });
+                    throw new Error(errData.error || errData.message || 'Failed to get workspace (' + response.status + ')');
+                }
+
+                var url = (await response.text()).trim();
+
+                if (url.charAt(0) === '"' && url.charAt(url.length - 1) === '"') {
+                    try { url = JSON.parse(url); } catch (e) { /* keep as-is */ }
+                }
+
+                if (url && url.indexOf('http') === 0) {
+                    window.open(url, '_blank');
+                    showToast('Redirecting', 'Opening workspace...', 'info');
+                } else {
+                    throw new Error('Invalid workspace URL received from server.');
+                }
+            } catch (error) {
+                console.error(error);
+                showToast('Error', error.message, 'error');
+            } finally {
+                setButtonLoading(btn, false);
+            }
+        }
+
+        function showToast(title, message, type) {
+            type = type || 'success';
+
+            var container = document.getElementById('toast-container');
+            if (container.children.length >= 3) {
+                container.removeChild(container.firstChild);
+            }
+
+            var toast = document.createElement('div');
+            toast.className = 'toast ' + type;
+
+            var iconSvg = '';
+            if (type === 'success') {
+                iconSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+            } else if (type === 'error') {
+                iconSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>';
+            } else {
+                iconSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>';
+            }
+
+            toast.innerHTML =
+                '<div class="toast-icon-wrapper">' + iconSvg + '</div>' +
+                '<div class="toast-content">' +
+                    '<div class="toast-title">' + title + '</div>' +
+                    '<div class="toast-message">' + message + '</div>' +
+                '</div>' +
+                '<button class="toast-close" onclick="this.parentElement.remove()">' +
+                    '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>' +
+                '</button>' +
+                '<div class="toast-progress"></div>';
+
+            container.appendChild(toast);
+
+            setTimeout(function () {
+                toast.style.animation = 'toastOut 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
+                toast.addEventListener('animationend', function () {
+                    if (toast.parentElement) toast.remove();
+                });
+            }, 5000);
+        }
+
+        var overlays = document.querySelectorAll('.modal-overlay');
+        for (var i = 0; i < overlays.length; i++) {
+            (function (overlay) {
+                overlay.addEventListener('click', function (e) {
+                    if (e.target === overlay) closeModals();
+                });
+            })(overlays[i]);
+        }
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') closeModals();
+        });
+    </script>
+</body>
+</html>
