@@ -116,3 +116,18 @@ func SaveDeployAddinstances(username string, deploy models.Deployaddinstances) e
 
 	return nil
 }
+
+func GetAppId(deploy models.Containermanage) (int,error) {
+
+	   var appid int 
+   
+	   query := "select app_id from deploy_instance_services where services_name=$1"
+
+	  appiderr :=  Database.Db.QueryRow(query,deploy.Instancename).Scan(&appid)
+       
+      if appiderr != nil {
+		  return 0,appiderr
+	  }
+
+	  return appid,nil 
+}
