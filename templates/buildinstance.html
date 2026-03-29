@@ -726,23 +726,22 @@
     <div class="toast-container" id="toast-container"></div>
 
     <script>
-        /* ── Parallax ── */
-        document.addEventListener('DOMContentLoaded', () => {
-            const ambientGlow = document.getElementById('ambient-glow');
-            const spot1 = document.getElementById('spot1');
-            const spot2 = document.getElementById('spot2');
-            const particles = document.getElementById('particles');
-            const bubblesContainer = document.getElementById('bubbles-container');
+        document.addEventListener('DOMContentLoaded', function () {
+            var ambientGlow = document.getElementById('ambient-glow');
+            var spot1 = document.getElementById('spot1');
+            var spot2 = document.getElementById('spot2');
+            var particles = document.getElementById('particles');
+            var bubblesContainer = document.getElementById('bubbles-container');
 
             if (ambientGlow || spot1 || spot2 || particles || bubblesContainer) {
-                document.addEventListener('mousemove', (e) => {
-                    const x = (window.innerWidth - e.pageX * 2) / 100;
-                    const y = (window.innerHeight - e.pageY * 2) / 100;
-                    if (ambientGlow) ambientGlow.style.transform = `translate(${x}px, ${y}px)`;
-                    if (spot1) spot1.style.transform = `translate(${x * 1.5}px, ${y * 1.5}px)`;
-                    if (spot2) spot2.style.transform = `translate(${x * 0.5}px, ${y * 0.5}px)`;
-                    if (particles) particles.style.transform = `translate(${x * -0.5}px, ${y * -0.5}px)`;
-                    if (bubblesContainer) bubblesContainer.style.transform = `translate(${x * -0.2}px, ${y * -0.2}px)`;
+                document.addEventListener('mousemove', function (e) {
+                    var x = (window.innerWidth - e.pageX * 2) / 100;
+                    var y = (window.innerHeight - e.pageY * 2) / 100;
+                    if (ambientGlow) ambientGlow.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
+                    if (spot1) spot1.style.transform = 'translate(' + (x * 1.5) + 'px, ' + (y * 1.5) + 'px)';
+                    if (spot2) spot2.style.transform = 'translate(' + (x * 0.5) + 'px, ' + (y * 0.5) + 'px)';
+                    if (particles) particles.style.transform = 'translate(' + (x * -0.5) + 'px, ' + (y * -0.5) + 'px)';
+                    if (bubblesContainer) bubblesContainer.style.transform = 'translate(' + (x * -0.2) + 'px, ' + (y * -0.2) + 'px)';
                 });
             }
 
@@ -750,14 +749,13 @@
             setInterval(fetchInstances, 5000);
         });
 
-        let instances = [];
-        let selectedInstance = '';
+        var instances = [];
+        var selectedInstance = '';
 
-        /* ── Validation ── */
         function validateInstName(input, errId) {
-            const val = input.value;
-            const errEl = document.getElementById(errId);
-            const regex = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
+            var val = input.value;
+            var errEl = document.getElementById(errId);
+            var regex = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
 
             if (!val) { input.classList.remove('error'); errEl.textContent = ''; return false; }
             if (/[A-Z]/.test(val)) { input.classList.add('error'); errEl.textContent = 'Uppercase letters are not allowed.'; return false; }
@@ -773,47 +771,47 @@
         }
 
         function validateImageName(input, errId) {
-            const val = input.value.trim();
-            const errEl = document.getElementById(errId);
+            var val = input.value.trim();
+            var errEl = document.getElementById(errId);
 
             if (!val) { input.classList.remove('error'); errEl.textContent = ''; return false; }
             if (/\s/.test(val)) { input.classList.add('error'); errEl.textContent = 'Spaces are not allowed in image names.'; return false; }
 
-            const pattern = /^(?:[a-z0-9.\-]+(?:\/[a-z0-9._\-]+)*\/)?[a-z0-9._\-]+(?::[a-zA-Z0-9._\-]+)?$/;
+            var pattern = /^(?:[a-z0-9.\-]+(?:\/[a-z0-9._\-]+)*\/)?[a-z0-9._\-]+(?::[a-zA-Z0-9._\-]+)?$/;
             if (!pattern.test(val)) { input.classList.add('error'); errEl.textContent = 'Invalid image format. Use: image:tag or registry/image:tag'; return false; }
-            if (val.includes(':')) { const tag = val.split(':').pop(); if (tag.length > 128) { input.classList.add('error'); errEl.textContent = 'Tag is too long.'; return false; } }
+            if (val.indexOf(':') !== -1) { var tag = val.split(':').pop(); if (tag.length > 128) { input.classList.add('error'); errEl.textContent = 'Tag is too long.'; return false; } }
 
             input.classList.remove('error');
             errEl.textContent = '';
             return true;
         }
 
-        /* ── Fetch Instances ── */
         async function fetchInstances() {
-            const grid = document.getElementById('instanceGrid');
+            var grid = document.getElementById('instanceGrid');
 
             if (instances.length === 0) {
                 grid.innerHTML = '<div class="loading-state"><div class="spinner"></div><span>Connecting to backend...</span></div>';
             }
 
             try {
-                const response = await fetch('/getbuildinstance', {
+                var response = await fetch('/getbuildinstance', {
                     method: 'GET',
                     credentials: 'include'
                 });
 
                 if (!response.ok) throw new Error('HTTP ' + response.status);
 
-                const data = await response.json();
+                var data = await response.json();
                 instances.length = 0;
 
-                data.forEach(item => {
+                for (var i = 0; i < data.length; i++) {
+                    var item = data[i];
                     instances.push({
                         id: item.id,
                         name: item.instance_name,
                         status: item.status.toLowerCase()
                     });
-                });
+                }
 
                 renderInstances();
             } catch (error) {
@@ -824,9 +822,8 @@
             }
         }
 
-        /* ── Render Cards ── */
         function renderInstances() {
-            const grid = document.getElementById('instanceGrid');
+            var grid = document.getElementById('instanceGrid');
             grid.innerHTML = '';
 
             if (instances.length === 0) {
@@ -834,66 +831,71 @@
                 return;
             }
 
-            instances.forEach(inst => {
-                let statusClass = 'status-building';
-                let cardClass = 'building';
+            for (var i = 0; i < instances.length; i++) {
+                (function (inst) {
+                    var statusClass = 'status-building';
+                    var cardClass = 'building';
 
-                if (inst.status === 'running') {
-                    statusClass = 'status-running';
-                    cardClass = 'running';
-                } else if (inst.status === 'stopped') {
-                    statusClass = 'status-stopped';
-                    cardClass = 'stopped';
-                }
+                    if (inst.status === 'running') {
+                        statusClass = 'status-running';
+                        cardClass = 'running';
+                    } else if (inst.status === 'stopped') {
+                        statusClass = 'status-stopped';
+                        cardClass = 'stopped';
+                    }
 
-                const card = document.createElement('div');
-                card.className = 'instance-card ' + cardClass + (inst.name === selectedInstance ? ' selected' : '');
-                card.dataset.name = inst.name;
-                card.innerHTML =
-                    '<div class="card-top">' +
-                        '<div class="inst-icon">' +
-                            '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
-                                '<rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>' +
-                                '<rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>' +
-                                '<line x1="6" y1="6" x2="6.01" y2="6"></line>' +
-                                '<line x1="6" y1="18" x2="6.01" y2="18"></line>' +
-                            '</svg>' +
+                    var card = document.createElement('div');
+                    card.className = 'instance-card ' + cardClass + (inst.name === selectedInstance ? ' selected' : '');
+                    card.dataset.name = inst.name;
+                    card.innerHTML =
+                        '<div class="card-top">' +
+                            '<div class="inst-icon">' +
+                                '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                                    '<rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>' +
+                                    '<rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>' +
+                                    '<line x1="6" y1="6" x2="6.01" y2="6"></line>' +
+                                    '<line x1="6" y1="18" x2="6.01" y2="18"></line>' +
+                                '</svg>' +
+                            '</div>' +
+                            '<span class="inst-id">#' + inst.id + '</span>' +
                         '</div>' +
-                        '<span class="inst-id">#' + inst.id + '</span>' +
-                    '</div>' +
-                    '<div class="card-body">' +
-                        '<div class="inst-name">' + inst.name + '</div>' +
-                        '<div class="status-badge ' + statusClass + '">' +
-                            '<div class="status-dot"></div>' +
-                            inst.status +
+                        '<div class="card-body">' +
+                            '<div class="inst-name">' + inst.name + '</div>' +
+                            '<div class="status-badge ' + statusClass + '">' +
+                                '<div class="status-dot"></div>' +
+                                inst.status +
+                            '</div>' +
                         '</div>' +
-                    '</div>' +
-                    '<div class="card-meta"><span>nodefy/app</span></div>';
+                        '<div class="card-meta"><span>nodefy/app</span></div>';
 
-                card.addEventListener('click', function () {
-                    selectedInstance = inst.name;
-                    document.querySelectorAll('.instance-card').forEach(function (c) {
-                        c.classList.remove('selected');
+                    card.addEventListener('click', function () {
+                        selectedInstance = inst.name;
+                        var allCards = document.querySelectorAll('.instance-card');
+                        for (var j = 0; j < allCards.length; j++) {
+                            allCards[j].classList.remove('selected');
+                        }
+                        card.classList.add('selected');
                     });
-                    card.classList.add('selected');
-                });
 
-                grid.appendChild(card);
-            });
+                    grid.appendChild(card);
+                })(instances[i]);
+            }
         }
 
-        /* ── Modal Helpers ── */
         function closeModals() {
-            document.querySelectorAll('.modal-overlay').forEach(function (el) {
-                el.classList.remove('open');
-            });
-            document.querySelectorAll('.code-editor').forEach(function (el) {
-                el.value = '';
-                el.classList.remove('error');
-            });
-            document.querySelectorAll('.validation-msg').forEach(function (el) {
-                el.textContent = '';
-            });
+            var overlays = document.querySelectorAll('.modal-overlay');
+            for (var i = 0; i < overlays.length; i++) {
+                overlays[i].classList.remove('open');
+            }
+            var editors = document.querySelectorAll('.code-editor');
+            for (var j = 0; j < editors.length; j++) {
+                editors[j].value = '';
+                editors[j].classList.remove('error');
+            }
+            var msgs = document.querySelectorAll('.validation-msg');
+            for (var k = 0; k < msgs.length; k++) {
+                msgs[k].textContent = '';
+            }
         }
 
         function openAddModal() {
@@ -923,7 +925,6 @@
             }, 100);
         }
 
-        /* ── Button Loading State ── */
         function setButtonLoading(btn, loading) {
             if (loading) {
                 btn.dataset.originalHtml = btn.innerHTML;
@@ -940,7 +941,6 @@
             }
         }
 
-        /* ── Add Instance: POST /addinstancesbuild ── */
         async function submitAddInstance() {
             var nameInput = document.getElementById('addInstName');
             var imageInput = document.getElementById('addImageName');
@@ -999,13 +999,13 @@
         }
 
         /*
-         * ── Start / Stop / Kill ──
+         * Start / Stop / Kill
          *
-         * Sends BOTH "instancename" and "instance_name" because
-         * Go models use different json tags:
-         *   models.Startcontainer  → json:"instance_name"
-         *   models.Stopcontainer   → json:"instancename"
-         * Go decoder picks the matching key and ignores the other.
+         * Containermanage struct uses json:"instance_name"
+         * so we must send "instance_name" in the JSON body.
+         * We also send "instancename" as fallback for Stopcontainer
+         * which uses json:"instancename".
+         * Go decoder ignores keys that don't match any struct tag.
          */
         async function submitAction() {
             var type = document.getElementById('currentAction').value;
@@ -1055,7 +1055,6 @@
                     throw new Error(errData.error || errData.message || 'Server Error (' + response.status + ')');
                 }
 
-                /* Refresh list from backend to get updated status */
                 await fetchInstances();
 
                 var cfg = toastConfig[type];
@@ -1068,7 +1067,6 @@
             }
         }
 
-        /* ── Workspace: GET /workspace → open URL ── */
         async function handleWorkspace() {
             var btn = document.getElementById('btnWorkspace');
             setButtonLoading(btn, true);
@@ -1086,7 +1084,6 @@
 
                 var url = (await response.text()).trim();
 
-                /* Backend may return JSON-wrapped string like "http://..." with quotes */
                 if (url.charAt(0) === '"' && url.charAt(url.length - 1) === '"') {
                     try { url = JSON.parse(url); } catch (e) { /* keep as-is */ }
                 }
@@ -1105,7 +1102,6 @@
             }
         }
 
-        /* ── Toast System ── */
         function showToast(title, message, type) {
             type = type || 'success';
 
@@ -1147,12 +1143,14 @@
             }, 5000);
         }
 
-        /* ── Modal Dismiss ── */
-        document.querySelectorAll('.modal-overlay').forEach(function (overlay) {
-            overlay.addEventListener('click', function (e) {
-                if (e.target === overlay) closeModals();
-            });
-        });
+        var overlays = document.querySelectorAll('.modal-overlay');
+        for (var i = 0; i < overlays.length; i++) {
+            (function (overlay) {
+                overlay.addEventListener('click', function (e) {
+                    if (e.target === overlay) closeModals();
+                });
+            })(overlays[i]);
+        }
 
         document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape') closeModals();
