@@ -4,12 +4,13 @@ import (
 	"log"
 
 	"github.com/johngithiyon/Nodefy/internal/errors"
+	"github.com/johngithiyon/Nodefy/internal/models"
 	"github.com/johngithiyon/Nodefy/internal/repository/docker"
 	"github.com/johngithiyon/Nodefy/internal/repository/storage/postgres"
 	"github.com/johngithiyon/Nodefy/internal/repository/storage/redis"
 )
 
-func Killcontainerservices(killinstancename string,sessionid string) error{
+func Killcontainerservices(killinstance *models.Containermanage,sessionid string) error{
 
 	username,getusernamerr := redis.Getusername(sessionid)
 
@@ -18,23 +19,17 @@ func Killcontainerservices(killinstancename string,sessionid string) error{
 		  return errors.ErrInternalserver
 	}
 
-    userid,getuseriderr := postgres.Getuserid(username)
+	killerr := docker.Killcontainer(*killinstance,username)
 
-	if getuseriderr != nil {
-		return errors.ErrInternalserver
+	if killerr != nil {
+		 return errors.ErrInternalserver
 	}
 
-	delerr := postgres.DeleteInstances(killinstancename,username,userid)
+	delerr := postgres.Containerkill(username,*killinstance)
 
 	if delerr != nil {
 		return errors.ErrInstancenotfound
 	}
 
-
-	killerr := docker.Killcontainer(killinstancename,username)
-
-	if killerr != nil {
-		 return errors.ErrInternalserver
-	}
 	return nil 
 }
