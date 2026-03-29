@@ -277,13 +277,13 @@
 
         .btn svg { flex-shrink: 0; }
 
-        .btn-deploy { background: rgba(16, 185, 129, 0.12); color: var(--green); border-color: rgba(16, 185, 129, 0.25); }
+        .btn-deploy { background: rgba(16, 185, 129, 0.12); color: #10b981; border-color: rgba(16, 185, 129, 0.25); }
         .btn-deploy:hover { background: rgba(16, 185, 129, 0.22); box-shadow: 0 0 16px rgba(16, 185, 129, 0.15); transform: translateY(-1px); }
 
-        .btn-stop { background: rgba(245, 158, 11, 0.12); color: var(--yellow); border-color: rgba(245, 158, 11, 0.25); }
+        .btn-stop { background: rgba(245, 158, 11, 0.12); color: #f59e0b; border-color: rgba(245, 158, 11, 0.25); }
         .btn-stop:hover { background: rgba(245, 158, 11, 0.22); box-shadow: 0 0 16px rgba(245, 158, 11, 0.15); transform: translateY(-1px); }
 
-        .btn-kill { background: rgba(239, 68, 68, 0.12); color: var(--red); border-color: rgba(239, 68, 68, 0.25); }
+        .btn-kill { background: rgba(239, 68, 68, 0.12); color: #ef4444; border-color: rgba(239, 68, 68, 0.25); }
         .btn-kill:hover { background: rgba(239, 68, 68, 0.22); box-shadow: 0 0 16px rgba(239, 68, 68, 0.15); transform: translateY(-1px); }
 
         .btn-workspace { background: rgba(139, 92, 246, 0.12); color: var(--accent-color); border-color: rgba(139, 92, 246, 0.25); }
@@ -502,10 +502,7 @@
         .btn-secondary { background: rgba(255, 255, 255, 0.05); color: white; border-color: var(--border-subtle); }
         .btn-secondary:hover { background: rgba(255, 255, 255, 0.08); border-color: var(--border-hover); transform: translateY(-1px); }
 
-        .btn-loading {
-            pointer-events: none;
-            opacity: 0.7;
-        }
+        .btn-loading { pointer-events: none; opacity: 0.7; }
 
         .toast-container {
             position: fixed;
@@ -546,7 +543,6 @@
             width: 36px; height: 36px;
             border-radius: 10px;
             flex-shrink: 0;
-            font-size: 18px;
         }
 
         .toast.success .toast-icon-wrapper { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.2); }
@@ -792,17 +788,21 @@
             return true;
         }
 
-        /* ── Fetch ── */
+        /* ── Fetch Instances ── */
         async function fetchInstances() {
             const grid = document.getElementById('instanceGrid');
 
             if (instances.length === 0) {
-                grid.innerHTML = `<div class="loading-state"><div class="spinner"></div><span>Connecting to backend...</span></div>`;
+                grid.innerHTML = '<div class="loading-state"><div class="spinner"></div><span>Connecting to backend...</span></div>';
             }
 
             try {
-                const response = await fetch('/getbuildinstance', { method: 'GET', credentials: 'include' });
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const response = await fetch('/getbuildinstance', {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+
+                if (!response.ok) throw new Error('HTTP ' + response.status);
 
                 const data = await response.json();
                 instances.length = 0;
@@ -819,54 +819,62 @@
             } catch (error) {
                 console.error('Fetch Error:', error);
                 if (instances.length === 0) {
-                    grid.innerHTML = `<div class="empty-state"><div class="empty-state-icon">⚠</div><div class="empty-state-text">Failed to connect</div><div class="empty-state-hint">${error.message}</div></div>`;
+                    grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">⚠</div><div class="empty-state-text">Failed to connect</div><div class="empty-state-hint">' + error.message + '</div></div>';
                 }
             }
         }
 
-        /* ── Render ── */
+        /* ── Render Cards ── */
         function renderInstances() {
             const grid = document.getElementById('instanceGrid');
             grid.innerHTML = '';
 
             if (instances.length === 0) {
-                grid.innerHTML = `<div class="empty-state"><div class="empty-state-icon">📦</div><div class="empty-state-text">No instances yet</div><div class="empty-state-hint">Click "Add Instance" to get started</div></div>`;
+                grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📦</div><div class="empty-state-text">No instances yet</div><div class="empty-state-hint">Click "Add Instance" to get started</div></div>';
                 return;
             }
 
             instances.forEach(inst => {
-                let statusClass = 'status-building', cardClass = 'building';
-                if (inst.status === 'running') { statusClass = 'status-running'; cardClass = 'running'; }
-                else if (inst.status === 'stopped') { statusClass = 'status-stopped'; cardClass = 'stopped'; }
+                let statusClass = 'status-building';
+                let cardClass = 'building';
+
+                if (inst.status === 'running') {
+                    statusClass = 'status-running';
+                    cardClass = 'running';
+                } else if (inst.status === 'stopped') {
+                    statusClass = 'status-stopped';
+                    cardClass = 'stopped';
+                }
 
                 const card = document.createElement('div');
-                card.className = `instance-card ${cardClass}${inst.name === selectedInstance ? ' selected' : ''}`;
+                card.className = 'instance-card ' + cardClass + (inst.name === selectedInstance ? ' selected' : '');
                 card.dataset.name = inst.name;
-                card.innerHTML = `
-                    <div class="card-top">
-                        <div class="inst-icon">
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
-                                <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
-                                <line x1="6" y1="6" x2="6.01" y2="6"></line>
-                                <line x1="6" y1="18" x2="6.01" y2="18"></line>
-                            </svg>
-                        </div>
-                        <span class="inst-id">#${inst.id}</span>
-                    </div>
-                    <div class="card-body">
-                        <div class="inst-name">${inst.name}</div>
-                        <div class="status-badge ${statusClass}">
-                            <div class="status-dot"></div>
-                            ${inst.status}
-                        </div>
-                    </div>
-                    <div class="card-meta"><span>nodefy/app</span></div>
-                `;
+                card.innerHTML =
+                    '<div class="card-top">' +
+                        '<div class="inst-icon">' +
+                            '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                                '<rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>' +
+                                '<rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>' +
+                                '<line x1="6" y1="6" x2="6.01" y2="6"></line>' +
+                                '<line x1="6" y1="18" x2="6.01" y2="18"></line>' +
+                            '</svg>' +
+                        '</div>' +
+                        '<span class="inst-id">#' + inst.id + '</span>' +
+                    '</div>' +
+                    '<div class="card-body">' +
+                        '<div class="inst-name">' + inst.name + '</div>' +
+                        '<div class="status-badge ' + statusClass + '">' +
+                            '<div class="status-dot"></div>' +
+                            inst.status +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="card-meta"><span>nodefy/app</span></div>';
 
-                card.addEventListener('click', () => {
+                card.addEventListener('click', function () {
                     selectedInstance = inst.name;
-                    document.querySelectorAll('.instance-card').forEach(c => c.classList.remove('selected'));
+                    document.querySelectorAll('.instance-card').forEach(function (c) {
+                        c.classList.remove('selected');
+                    });
                     card.classList.add('selected');
                 });
 
@@ -874,38 +882,54 @@
             });
         }
 
-        /* ── Modals ── */
+        /* ── Modal Helpers ── */
         function closeModals() {
-            document.querySelectorAll('.modal-overlay').forEach(el => el.classList.remove('open'));
-            document.querySelectorAll('.code-editor').forEach(el => { el.value = ''; el.classList.remove('error'); });
-            document.querySelectorAll('.validation-msg').forEach(el => el.textContent = '');
+            document.querySelectorAll('.modal-overlay').forEach(function (el) {
+                el.classList.remove('open');
+            });
+            document.querySelectorAll('.code-editor').forEach(function (el) {
+                el.value = '';
+                el.classList.remove('error');
+            });
+            document.querySelectorAll('.validation-msg').forEach(function (el) {
+                el.textContent = '';
+            });
         }
 
         function openAddModal() {
             document.getElementById('addModal').classList.add('open');
-            setTimeout(() => document.getElementById('addInstName').focus(), 100);
+            setTimeout(function () {
+                document.getElementById('addInstName').focus();
+            }, 100);
         }
 
         function handleAction(actionType) {
             document.getElementById('currentAction').value = actionType;
-            const labels = { start: '▶ Start Instance', stop: '⏹ Stop Instance', kill: '⛔ Kill Instance' };
+
+            var labels = {
+                start: '▶ Start Instance',
+                stop: '⏹ Stop Instance',
+                kill: '⛔ Kill Instance'
+            };
             document.getElementById('actionTitle').innerText = labels[actionType] || actionType.toUpperCase();
             document.getElementById('actionModal').classList.add('open');
 
-            const nameInput = document.getElementById('actionInstName');
+            var nameInput = document.getElementById('actionInstName');
             if (selectedInstance) {
                 nameInput.value = selectedInstance;
             }
-            setTimeout(() => nameInput.focus(), 100);
+            setTimeout(function () {
+                nameInput.focus();
+            }, 100);
         }
 
-        /* ── Button loading helper ── */
+        /* ── Button Loading State ── */
         function setButtonLoading(btn, loading) {
             if (loading) {
                 btn.dataset.originalHtml = btn.innerHTML;
                 btn.classList.add('btn-loading');
-                const svg = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation:rotateSpinner 1s linear infinite"><path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"/></svg>`;
-                const text = btn.textContent.trim();
+                var svg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation:rotateSpinner 1s linear infinite"><path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"/></svg>';
+                var text = btn.textContent.trim();
                 btn.innerHTML = svg + ' ' + text + '...';
             } else {
                 btn.classList.remove('btn-loading');
@@ -916,35 +940,56 @@
             }
         }
 
-        /* ── Add Instance → POST /addinstancesbuild ── */
+        /* ── Add Instance: POST /addinstancesbuild ── */
         async function submitAddInstance() {
-            const nameInput = document.getElementById('addInstName');
-            const imageInput = document.getElementById('addImageName');
-            const name = nameInput.value.trim();
-            const image = imageInput.value.trim();
-            const btn = document.getElementById('btnAddSubmit');
+            var nameInput = document.getElementById('addInstName');
+            var imageInput = document.getElementById('addImageName');
+            var name = nameInput.value.trim();
+            var image = imageInput.value.trim();
+            var btn = document.getElementById('btnAddSubmit');
 
-            if (!name) { nameInput.classList.add('error'); document.getElementById('addNameErr').textContent = 'Instance name is required.'; nameInput.focus(); return; }
-            if (!validateInstName(nameInput, 'addNameErr')) { nameInput.focus(); return; }
-            if (!image) { imageInput.classList.add('error'); document.getElementById('addImgErr').textContent = 'Docker image name is required.'; imageInput.focus(); return; }
-            if (!validateImageName(imageInput, 'addImgErr')) { imageInput.focus(); return; }
+            if (!name) {
+                nameInput.classList.add('error');
+                document.getElementById('addNameErr').textContent = 'Instance name is required.';
+                nameInput.focus();
+                return;
+            }
+            if (!validateInstName(nameInput, 'addNameErr')) {
+                nameInput.focus();
+                return;
+            }
+            if (!image) {
+                imageInput.classList.add('error');
+                document.getElementById('addImgErr').textContent = 'Docker image name is required.';
+                imageInput.focus();
+                return;
+            }
+            if (!validateImageName(imageInput, 'addImgErr')) {
+                imageInput.focus();
+                return;
+            }
 
             closeModals();
             setButtonLoading(btn, true);
 
             try {
-                const response = await fetch('/addinstancesbuild', {
+                var response = await fetch('/addinstancesbuild', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     credentials: 'include',
-                    body: JSON.stringify({ instancename: name, imagename: image })
+                    body: JSON.stringify({
+                        instancename: name,
+                        imagename: image
+                    })
                 });
+
                 if (!response.ok) {
-                    const errData = await response.json().catch(() => ({}));
+                    var errData = await response.json().catch(function () { return {}; });
                     throw new Error(errData.error || errData.message || 'Server Error');
                 }
+
                 await fetchInstances();
-                showToast('Success', `Instance "${name}" created.`, 'success');
+                showToast('Success', 'Instance "' + name + '" created.', 'success');
             } catch (error) {
                 console.error(error);
                 showToast('Error', error.message, 'error');
@@ -956,19 +1001,17 @@
         /*
          * ── Start / Stop / Kill ──
          *
-         * Your models have different JSON tags:
-         *   models.Startcontainer  → json:"instance_name"  (underscore)
-         *   models.Stopcontainer   → json:"instancename"   (no underscore)
-         *
-         * Since the handler decodes into models.Containermanage
-         * we send BOTH keys to guarantee a match regardless
-         * of which tag Containermanage actually uses.
+         * Sends BOTH "instancename" and "instance_name" because
+         * Go models use different json tags:
+         *   models.Startcontainer  → json:"instance_name"
+         *   models.Stopcontainer   → json:"instancename"
+         * Go decoder picks the matching key and ignores the other.
          */
         async function submitAction() {
-            const type = document.getElementById('currentAction').value;
-            const nameInput = document.getElementById('actionInstName');
-            const name = nameInput.value.trim();
-            const btn = document.getElementById('btnActionSubmit');
+            var type = document.getElementById('currentAction').value;
+            var nameInput = document.getElementById('actionInstName');
+            var name = nameInput.value.trim();
+            var btn = document.getElementById('btnActionSubmit');
 
             if (!name) {
                 nameInput.classList.add('error');
@@ -976,34 +1019,31 @@
                 nameInput.focus();
                 return;
             }
-            if (!validateInstName(nameInput, 'actionNameErr')) { nameInput.focus(); return; }
+            if (!validateInstName(nameInput, 'actionNameErr')) {
+                nameInput.focus();
+                return;
+            }
 
             closeModals();
             setButtonLoading(btn, true);
 
-            const endpoints = {
+            var endpoints = {
                 start: '/startinstance',
-                stop:  '/stopinstance',
-                kill:  '/killinstance'
+                stop: '/stopinstance',
+                kill: '/killinstance'
             };
 
-            const toastConfig = {
-                start: { title: 'Started',      msg: `"${name}" is running.`, type: 'success' },
-                stop:  { title: 'Stopped',      msg: `"${name}" halted.`,    type: 'info' },
-                kill:  { title: 'Terminated',   msg: `"${name}" killed.`,    type: 'error' }
+            var toastConfig = {
+                start: { title: 'Started',    msg: '"' + name + '" is running.', type: 'success' },
+                stop:  { title: 'Stopped',    msg: '"' + name + '" halted.',    type: 'info' },
+                kill:  { title: 'Terminated', msg: '"' + name + '" killed.',    type: 'error' }
             };
 
             try {
-                const response = await fetch(endpoints[type], {
+                var response = await fetch(endpoints[type], {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     credentials: 'include',
-                    /*
-                     * Send BOTH "instancename" and "instance_name" so the
-                     * Go JSON decoder picks up whichever key matches the
-                     * struct tag on Containermanage.Instancename.
-                     * The unmatched key is silently ignored.
-                     */
                     body: JSON.stringify({
                         instancename: name,
                         instance_name: name
@@ -1011,13 +1051,14 @@
                 });
 
                 if (!response.ok) {
-                    const errData = await response.json().catch(() => ({}));
-                    throw new Error(errData.error || errData.message || `Server Error (${response.status})`);
+                    var errData = await response.json().catch(function () { return {}; });
+                    throw new Error(errData.error || errData.message || 'Server Error (' + response.status + ')');
                 }
 
+                /* Refresh list from backend to get updated status */
                 await fetchInstances();
 
-                const cfg = toastConfig[type];
+                var cfg = toastConfig[type];
                 showToast(cfg.title, cfg.msg, cfg.type);
             } catch (error) {
                 console.error(error);
@@ -1027,31 +1068,30 @@
             }
         }
 
-        /* ── Workspace → GET /workspace ── */
+        /* ── Workspace: GET /workspace → open URL ── */
         async function handleWorkspace() {
-            const btn = document.getElementById('btnWorkspace');
+            var btn = document.getElementById('btnWorkspace');
             setButtonLoading(btn, true);
 
             try {
-                const response = await fetch('/workspace', {
+                var response = await fetch('/workspace', {
                     method: 'GET',
                     credentials: 'include'
                 });
 
                 if (!response.ok) {
-                    const errData = await response.json().catch(() => ({}));
-                    throw new Error(errData.error || errData.message || `Failed to get workspace (${response.status})`);
+                    var errData = await response.json().catch(function () { return {}; });
+                    throw new Error(errData.error || errData.message || 'Failed to get workspace (' + response.status + ')');
                 }
 
-                let url = await response.text();
-                url = url.trim();
+                var url = (await response.text()).trim();
 
-                /* Backend may return a JSON-wrapped string like "http://..." with quotes */
-                if (url.startsWith('"') && url.endsWith('"')) {
+                /* Backend may return JSON-wrapped string like "http://..." with quotes */
+                if (url.charAt(0) === '"' && url.charAt(url.length - 1) === '"') {
                     try { url = JSON.parse(url); } catch (e) { /* keep as-is */ }
                 }
 
-                if (url && url.startsWith('http')) {
+                if (url && url.indexOf('http') === 0) {
                     window.open(url, '_blank');
                     showToast('Redirecting', 'Opening workspace...', 'info');
                 } else {
@@ -1066,42 +1106,57 @@
         }
 
         /* ── Toast System ── */
-        function showToast(title, message, type = "success") {
-            const container = document.getElementById('toast-container');
-            if (container.children.length >= 3) { container.removeChild(container.firstChild); }
+        function showToast(title, message, type) {
+            type = type || 'success';
 
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
+            var container = document.getElementById('toast-container');
+            if (container.children.length >= 3) {
+                container.removeChild(container.firstChild);
+            }
 
-            let iconSvg = '';
-            if (type === 'success') iconSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
-            else if (type === 'error') iconSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`;
-            else iconSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`;
+            var toast = document.createElement('div');
+            toast.className = 'toast ' + type;
 
-            toast.innerHTML = `
-                <div class="toast-icon-wrapper">${iconSvg}</div>
-                <div class="toast-content">
-                    <div class="toast-title">${title}</div>
-                    <div class="toast-message">${message}</div>
-                </div>
-                <button class="toast-close" onclick="this.parentElement.remove()">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
-                <div class="toast-progress"></div>
-            `;
+            var iconSvg = '';
+            if (type === 'success') {
+                iconSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+            } else if (type === 'error') {
+                iconSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>';
+            } else {
+                iconSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>';
+            }
+
+            toast.innerHTML =
+                '<div class="toast-icon-wrapper">' + iconSvg + '</div>' +
+                '<div class="toast-content">' +
+                    '<div class="toast-title">' + title + '</div>' +
+                    '<div class="toast-message">' + message + '</div>' +
+                '</div>' +
+                '<button class="toast-close" onclick="this.parentElement.remove()">' +
+                    '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>' +
+                '</button>' +
+                '<div class="toast-progress"></div>';
+
             container.appendChild(toast);
 
-            setTimeout(() => {
+            setTimeout(function () {
                 toast.style.animation = 'toastOut 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
-                toast.addEventListener('animationend', () => { if (toast.parentElement) toast.remove(); });
+                toast.addEventListener('animationend', function () {
+                    if (toast.parentElement) toast.remove();
+                });
             }, 5000);
         }
 
-        /* ── Modal dismiss ── */
-        document.querySelectorAll('.modal-overlay').forEach(overlay => {
-            overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModals(); });
+        /* ── Modal Dismiss ── */
+        document.querySelectorAll('.modal-overlay').forEach(function (overlay) {
+            overlay.addEventListener('click', function (e) {
+                if (e.target === overlay) closeModals();
+            });
         });
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModals(); });
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') closeModals();
+        });
     </script>
 </body>
 </html>
