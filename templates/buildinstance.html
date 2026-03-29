@@ -52,7 +52,6 @@
             width: 100vw;
         }
 
-        /* ── Background Animations (exact from build.html) ── */
         .ambient-glow {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
@@ -158,7 +157,6 @@
             100% { transform: translate(5%, 5%) scale(1.1); }
         }
 
-        /* ── Sidebar ── */
         .sidebar {
             width: 240px;
             background: rgba(15, 15, 20, 0.5);
@@ -231,7 +229,6 @@
         .nav-btn:hover svg { opacity: 1; }
         .nav-btn.primary svg { opacity: 1; }
 
-        /* ── Main ── */
         .main-content {
             flex: 1;
             display: flex;
@@ -292,7 +289,6 @@
         .btn-workspace { background: rgba(139, 92, 246, 0.12); color: var(--accent-color); border-color: rgba(139, 92, 246, 0.25); }
         .btn-workspace:hover { background: rgba(139, 92, 246, 0.22); box-shadow: 0 0 16px rgba(139, 92, 246, 0.15); transform: translateY(-1px); }
 
-        /* ── Content ── */
         .content-scroll { flex: 1; padding: 36px; overflow-y: auto; }
 
         .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
@@ -301,7 +297,6 @@
 
         .instance-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
 
-        /* ── Card ── */
         .instance-card {
             background: rgba(20, 20, 25, 0.6);
             border: 1px solid var(--border-subtle);
@@ -448,7 +443,6 @@
         .spinner::after { content: ''; position: absolute; top: 4px; left: 4px; right: 4px; bottom: 4px; background: #050505; border-radius: 50%; }
         @keyframes rotateSpinner { 100% { transform: rotate(360deg); } }
 
-        /* ── Modal ── */
         .modal-overlay {
             position: fixed; inset: 0;
             background: rgba(5, 5, 10, 0.85);
@@ -503,7 +497,6 @@
         .btn-secondary { background: rgba(255, 255, 255, 0.05); color: white; border-color: var(--border-subtle); }
         .btn-secondary:hover { background: rgba(255, 255, 255, 0.08); border-color: var(--border-hover); transform: translateY(-1px); }
 
-        /* ── Toasts (exact from build.html) ── */
         .toast-container {
             position: fixed;
             bottom: 40px;
@@ -600,7 +593,6 @@
 
 <body>
 
-    <!-- Backgrounds (exact from build.html) -->
     <div class="ambient-glow" id="ambient-glow"></div>
     <div class="mesh-bg"></div>
     <div class="glow-spot spot1" id="spot1"></div>
@@ -623,7 +615,6 @@
         <div class="particle" style="top: 15%; left: 70%; width: 3px; height: 3px; animation-duration: 15s; animation-delay: -6s;"></div>
     </div>
 
-    <!-- Sidebar -->
     <aside class="sidebar">
         <a href="/" class="sidebar-logo">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -645,7 +636,6 @@
         </button>
     </aside>
 
-    <!-- Main -->
     <main class="main-content">
         <header class="top-bar">
             <div class="page-title">Cloud Command Center</div>
@@ -736,7 +726,7 @@
     <div class="toast-container" id="toast-container"></div>
 
     <script>
-        /* ── Parallax (exact from build.html) ── */
+        /* ── Parallax ── */
         document.addEventListener('DOMContentLoaded', () => {
             const ambientGlow = document.getElementById('ambient-glow');
             const spot1 = document.getElementById('spot1');
@@ -806,7 +796,7 @@
             }
 
             try {
-                const response = await fetch('/buildinstances', { method: 'GET', credentials: 'include' });
+                const response = await fetch('/getbuildinstance', { method: 'GET', credentials: 'include' });
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
                 const data = await response.json();
@@ -814,11 +804,9 @@
 
                 data.forEach(item => {
                     instances.push({
-                        id: item.Instanceid,
-                        name: item.Instancename,
-                        status: item.Status.toLowerCase(),
-                        image: 'nodefy/app',
-                        container: `${item.Instancename}-container`
+                        id: item.id,
+                        name: item.instance_name,
+                        status: item.status.toLowerCase()
                     });
                 });
 
@@ -858,7 +846,7 @@
                                 <line x1="6" y1="18" x2="6.01" y2="18"></line>
                             </svg>
                         </div>
-                        <span class="inst-id">${inst.id}</span>
+                        <span class="inst-id">#${inst.id}</span>
                     </div>
                     <div class="card-body">
                         <div class="inst-name">${inst.name}</div>
@@ -867,7 +855,7 @@
                             ${inst.status}
                         </div>
                     </div>
-                    <div class="card-meta"><span>${inst.image}</span></div>
+                    <div class="card-meta"><span>nodefy/app</span></div>
                 `;
                 grid.appendChild(card);
             });
@@ -960,7 +948,7 @@
 
         function handleWorkspace() { showToast('Redirecting', 'Opening secure workspace...', 'info'); }
 
-        /* ── Toast System (exact from build.html) ── */
+        /* ── Toast System ── */
         function showToast(title, message, type = "success") {
             const container = document.getElementById('toast-container');
             if (container.children.length >= 3) { container.removeChild(container.firstChild); }
