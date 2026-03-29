@@ -2,68 +2,117 @@ package postgres
 
 import (
 	"log"
-   pq "github.com/lib/pq"
+
 	"github.com/johngithiyon/Nodefy/internal/models"
+	
 )
 
-func Savedeployinstance(username string , Deploy models.Deploy) error {
+func SaveDeployinstances(username string, deploy models.Deploy) error {
 
-	query := `
-		INSERT INTO deploy_instances (appname, languages, services, username)
-		VALUES ($1, $2, $3, $4)
+
+	var appID int
+	insertQuery := `
+	INSERT INTO deploy_instances (appname, username)
+	VALUES ($1, $2)
+	RETURNING id
 	`
 
-	_,saverr := Database.Db.Exec(query,Deploy.Appname,Deploy.Languages,Deploy.Services,username)
-
-	if saverr != nil {
-		log.Println("Save Err in the deploy_instances table",saverr)
-		return  saverr
+	err := Database.Db.QueryRow(insertQuery, deploy.Appname, username).Scan(&appID)
+	if err != nil {
+		return err
 	}
 
-	return nil 
+
+	serviceQuery := `
+	INSERT INTO deploy_instance_services (app_id, services_name, status)
+	VALUES ($1, $2, $3)
+	`
+
+	for _, service := range deploy.Services {
+		_, err := Database.Db.Exec(serviceQuery, appID, service, "Running")
+		if err != nil {
+			log.Println("Error inserting service:", service, err)
+			return err
+		}
+	}
+
+	return nil
 }
 
-func Getdeployinstance(username string) ([]models.Deployinfo,error) {
+func GetDeployinstances(username string) ([]map[string]interface{}, error) {
 
-     var Deployinfo models.Deployinfo
-	 var deployinfo []models.Deployinfo 
+	var result []map[string]interface{}
 
-     getquery := "select appname,services from deploy_instances where username=$1" 
+	appnamequery := "select id, appname from deploy_instances where username=$1"
 
-	 getrows,geterr :=  Database.Db.Query(getquery,username)
+	approw, appnamerr := Database.Db.Query(appnamequery, username)
+	if appnamerr != nil {
+		log.Println("Appname And Id err from deploy_instances", appnamerr)
+		return nil, appnamerr
+	}
+	defer approw.Close()
 
-	 if geterr != nil {
-		log.Println("Get Err in deploy instances",geterr)
-		return nil,geterr
-	 }
+	for approw.Next() {
+		var appid int
+		var appname string
 
-	 for getrows.Next() {
-		 
-		scanerr := getrows.Scan(&Deployinfo.Appname,pq.Array(&Deployinfo.Services))
-		if scanerr != nil {
-            log.Println("Scan Err in deploy instances",scanerr)
-			return nil,scanerr
+		approw.Scan(&appid, &appname)
+
+		servicesquery := "select services_name, status from deploy_instance_services where app_id=$1"
+
+		servicesrow, serviceserr := Database.Db.Query(servicesquery, appid)
+		if serviceserr != nil {
+			log.Println("Get Err in Services", serviceserr)
+			return nil, serviceserr
 		}
 
-		deployinfo = append(deployinfo, Deployinfo)
-	 }
+		var services []map[string]string
 
-	 return deployinfo,nil 
+		for servicesrow.Next() {
+			var servicename string
+			var servicestatus string
+
+			servicesrow.Scan(&servicename, &servicestatus)
+
+			services = append(services, map[string]string{
+				"name":   servicename,
+				"status": servicestatus,
+			})
+		}
+		servicesrow.Close()
+
+		result = append(result, map[string]interface{}{
+			"appname":  appname,
+			"services": services,
+		})
+	}
+
+	return result, nil
 }
 
-func SaveDeployAddinstances(username string,Deployaddinstances models.Deployaddinstances) error {
-	 
-	    query := `UPDATE deploy_instances
-		SET services = array_append(services,$1)
-		WHERE appname = $2 and username = $3; `
 
-		_,saverr := Database.Db.Exec(query,Deployaddinstances.Imagename,Deployaddinstances.Appname,username)
+func SaveDeployAddinstances(username string, deploy models.Deployaddinstances) error {
 
-		if saverr != nil {
-			log.Println("Save Err in the deploy_instances table for add instances",saverr)
-			return  saverr
-		}
-	
-        return  nil 
+	var appID int
+	query := `
+	SELECT id FROM deploy_instances
+	WHERE appname = $1 AND username = $2
+	`
 
+	err := Database.Db.QueryRow(query, deploy.Appname, username).Scan(&appID)
+	if err != nil {
+		return err
+	}
+
+	insertQuery := `
+	INSERT INTO deploy_instance_services (app_id, services_name, status)
+	VALUES ($1, $2, $3)
+	`
+
+	_, err = Database.Db.Exec(insertQuery, appID, deploy.Imagename, "Running")
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
