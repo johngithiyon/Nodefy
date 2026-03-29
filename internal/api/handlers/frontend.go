@@ -41,3 +41,7 @@ func RenderDeploypage(w http.ResponseWriter, r *http.Request) {
 func RenderExplorepage(w http.ResponseWriter, r *http.Request) {
 	services.Render(w,"explore.html")
 }
+
+func RenderTeachpage(w http.ResponseWriter, r *http.Request) {
+	services.Render(w,"teach.html")
+}
