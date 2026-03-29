@@ -31,6 +31,13 @@
 
                 --font-ui: 'Inter', sans-serif;
                 --font-code: 'JetBrains Mono', monospace;
+
+                --bg-sidebar: rgba(10, 10, 15, 0.6);
+                --bg-terminal: rgba(0, 0, 0, 0.6);
+                --terminal-accent: var(--accent-color);
+                --terminal-error: #ff4d4d;
+                --terminal-info: #60a5fa;
+                --shadow-glow: 0 0 30px rgba(139, 92, 246, 0.15);
             }
 
             * {
@@ -158,7 +165,16 @@
                 100% { transform: translate(5%, 5%) scale(1.1); }
             }
 
-            /* UI Structure */
+            /* ========================================= */
+            /*  VIEW: Instance Manager                   */
+            /* ========================================= */
+
+            #view-instances {
+                display: flex;
+                width: 100%;
+                height: 100vh;
+            }
+
             .sidebar {
                 width: 240px;
                 background: rgba(15, 15, 20, 0.5);
@@ -569,6 +585,393 @@
             ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.08); border-radius: 3px; }
             ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.15); }
 
+            /* ========================================= */
+            /*  VIEW: SSH Terminal                       */
+            /* ========================================= */
+
+            #view-ssh {
+                display: none;
+                width: 100%;
+                height: 100vh;
+            }
+
+            .ssh-aside {
+                width: 300px;
+                background: var(--bg-sidebar);
+                backdrop-filter: var(--glass-blur);
+                border-right: 1px solid var(--border-subtle);
+                display: flex;
+                flex-direction: column;
+                flex-shrink: 0;
+                z-index: 10;
+            }
+
+            .logo-area {
+                padding: 30px;
+                border-bottom: 1px solid var(--border-subtle);
+                display: flex;
+                align-items: center;
+                gap: 16px;
+            }
+
+            .logo-icon {
+                width: 40px;
+                height: 40px;
+                fill: none;
+                stroke: var(--accent-color);
+                stroke-width: 2;
+                filter: drop-shadow(0 0 10px rgba(139, 92, 246, 0.5));
+            }
+
+            .logo-text {
+                font-size: 1.4rem;
+                font-weight: 800;
+                color: white;
+                letter-spacing: -0.5px;
+            }
+
+            .logo-sub {
+                font-size: 0.7rem;
+                color: var(--text-muted);
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                display: block;
+                margin-top: 4px;
+            }
+
+            .ssh-back-btn {
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                width: calc(100% - 40px);
+                margin: 20px 20px 0 20px;
+                padding: 14px 18px;
+                background: rgba(255, 255, 255, 0.03);
+                border: 1px solid var(--border-subtle);
+                color: var(--text-muted);
+                border-radius: 14px;
+                cursor: pointer;
+                font-size: 0.9rem;
+                font-weight: 500;
+                transition: all 0.3s ease;
+                font-family: var(--font-ui);
+            }
+
+            .ssh-back-btn:hover {
+                background: rgba(255, 255, 255, 0.06);
+                border-color: var(--border-hover);
+                color: white;
+                transform: translateX(4px);
+            }
+
+            .ssh-back-btn svg { flex-shrink: 0; opacity: 0.7; }
+            .ssh-back-btn:hover svg { opacity: 1; }
+
+            .ssh-nav {
+                flex: 1;
+                overflow-y: auto;
+                padding: 20px 0;
+            }
+
+            .dropdown { border-bottom: 1px solid rgba(255,255,255,0.03); }
+        
+            .dropdown-header {
+                padding: 16px 24px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                color: var(--text-muted);
+                font-weight: 600;
+                font-size: 0.8rem;
+                letter-spacing: 0.5px;
+                text-transform: uppercase;
+            }
+
+            .dropdown-header:hover { color: var(--text-main); background: rgba(255,255,255,0.02); }
+
+            .dropdown-header.active-group {
+                color: var(--accent-color);
+                background: linear-gradient(90deg, rgba(139, 92, 246, 0.1), transparent);
+                border-left: 3px solid var(--accent-color);
+                padding-left: 21px;
+            }
+
+            .dropdown-arrow { transition: transform 0.3s ease; width: 14px; height: 14px; stroke: currentColor; }
+            .dropdown.open .dropdown-arrow { transform: rotate(90deg); }
+
+            .dropdown-content {
+                max-height: 0;
+                overflow: hidden;
+                background-color: rgba(0, 0, 0, 0.2);
+                transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            .dropdown.open .dropdown-content { max-height: 3000px; }
+
+            .nested-dropdown {
+                border-bottom: 1px solid rgba(255,255,255,0.02);
+                background: rgba(255,255,255,0.01);
+            }
+        
+            .nested-dropdown .dropdown-header {
+                font-size: 0.75rem;
+                padding-left: 30px;
+                text-transform: none;
+                font-weight: 500;
+            }
+
+            .nested-dropdown .dropdown-header.active-group {
+                border-left: 3px solid var(--terminal-info);
+                padding-left: 27px;
+                color: var(--terminal-info);
+            }
+
+            .submenu-item {
+                padding: 10px 24px 10px 36px;
+                display: flex;
+                align-items: center;
+                color: var(--text-muted);
+                font-size: 0.85rem;
+                cursor: pointer;
+                transition: all 0.2s;
+                position: relative;
+                font-family: var(--font-code);
+            }
+        
+            .submenu-item::before {
+                content: '>'; position: absolute; left: 20px;
+                opacity: 0; color: var(--accent-color);
+                transition: all 0.2s; transform: translateX(-5px);
+            }
+
+            .submenu-item:hover { color: #fff; background: rgba(255,255,255,0.02); }
+            .submenu-item:hover::before { opacity: 1; transform: translateX(0); }
+        
+            .submenu-item.active {
+                color: var(--accent-color);
+                background: rgba(139, 92, 246, 0.05);
+                font-weight: 500;
+            }
+
+            .ssh-main {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                position: relative;
+            }
+
+            .ssh-header {
+                padding: 20px 40px;
+                border-bottom: 1px solid var(--border-subtle);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background: rgba(5, 5, 10, 0.6);
+                backdrop-filter: blur(10px);
+                z-index: 5;
+            }
+
+            .ssh-header h1 {
+                font-size: 1.2rem;
+                font-weight: 600;
+                color: #fff;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-family: var(--font-code);
+            }
+
+            .ssh-status-badge {
+                font-family: var(--font-code);
+                font-size: 0.75rem;
+                padding: 6px 14px;
+                border-radius: 20px;
+                background: rgba(139, 92, 246, 0.1);
+                color: var(--accent-color);
+                border: 1px solid rgba(139, 92, 246, 0.2);
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .ssh-status-dot {
+                width: 6px; height: 6px;
+                background: var(--accent-color);
+                border-radius: 50%;
+                box-shadow: 0 0 8px var(--accent-color);
+                animation: pulse 2s infinite;
+            }
+            @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+            .content-container {
+                flex: 1;
+                padding: 40px;
+                overflow-y: auto;
+                display: flex;
+                justify-content: center;
+                align-items: flex-start;
+            }
+
+            .terminal-window {
+                width: 100%;
+                max-width: 900px;
+                background: var(--bg-terminal);
+                backdrop-filter: blur(20px);
+                border-radius: 16px;
+                box-shadow: 0 20px 50px rgba(0,0,0,0.5), var(--shadow-glow);
+                border: 1px solid var(--border-subtle);
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+                font-family: var(--font-code);
+                position: relative;
+                transition: border-color 0.3s;
+            }
+        
+            .terminal-window:hover {
+                border-color: rgba(139, 92, 246, 0.3);
+            }
+
+            .terminal-header {
+                background: rgba(20, 20, 25, 0.8);
+                padding: 14px 20px;
+                display: flex;
+                align-items: center;
+                border-bottom: 1px solid var(--border-subtle);
+            }
+
+            .controls { display: flex; gap: 8px; }
+            .dot { width: 12px; height: 12px; border-radius: 50%; }
+            .dot.red { background-color: #ff5f56; }
+            .dot.yellow { background-color: #ffbd2e; }
+            .dot.green { background-color: #27c93f; }
+
+            .terminal-title {
+                margin-left: auto;
+                font-size: 0.8rem;
+                color: #555;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .terminal-body {
+                padding: 30px;
+                color: #e2e8f0;
+                flex: 1;
+                font-size: 0.95rem;
+                line-height: 1.6;
+                min-height: 450px;
+                position: relative;
+                z-index: 1;
+            }
+
+            .output-line {
+                margin-bottom: 6px;
+                opacity: 0;
+                animation: slideIn 0.3s forwards;
+                color: var(--text-muted);
+                white-space: pre-wrap;
+                word-break: break-word;
+            }
+
+            @keyframes slideIn {
+                from { opacity: 0; transform: translateY(5px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+
+            .prompt-line {
+                display: flex;
+                align-items: center;
+                margin-bottom: 12px;
+                flex-wrap: wrap;
+            }
+
+            .prompt {
+                color: var(--accent-color);
+                font-weight: bold;
+                margin-right: 12px;
+                text-shadow: 0 0 8px rgba(139, 92, 246, 0.4);
+            }
+
+            .command-input { color: #fff; white-space: pre-wrap; flex: 1; }
+
+            .cursor {
+                display: inline-block;
+                width: 10px; height: 1.2em;
+                background-color: var(--accent-color);
+                vertical-align: middle;
+                animation: blink 1s step-end infinite;
+                margin-left: 2px;
+                box-shadow: 0 0 5px var(--accent-color);
+            }
+
+            @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+            .copy-btn {
+                background: rgba(255,255,255,0.05);
+                border: 1px solid var(--border-subtle);
+                color: var(--text-muted);
+                padding: 6px 12px;
+                border-radius: 6px;
+                font-size: 0.75rem;
+                cursor: pointer;
+                transition: all 0.2s;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                font-family: var(--font-ui);
+                margin-left: auto;
+            }
+            .copy-btn:hover { 
+                border-color: var(--accent-color); 
+                color: var(--accent-color); 
+                background: rgba(139, 92, 246, 0.1); 
+            }
+
+            .teaching-panel {
+                margin-top: 25px;
+                padding-top: 20px;
+                border-top: 1px dashed var(--border-subtle);
+                display: none; 
+                animation: fadeIn 0.5s ease;
+            }
+            @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+            .teaching-panel h3 {
+                color: var(--accent-color);
+                margin-bottom: 12px;
+                font-size: 1rem;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-family: var(--font-ui);
+                font-weight: 600;
+            }
+
+            .teach-desc {
+                color: var(--text-muted);
+                margin-bottom: 15px;
+                font-family: var(--font-ui);
+                font-size: 0.95rem;
+                line-height: 1.6;
+                white-space: pre-line;
+            }
+
+            .param-tag {
+                display: inline-block;
+                background: rgba(139, 92, 246, 0.1);
+                color: #d8b4fe;
+                padding: 4px 10px;
+                border-radius: 4px;
+                font-size: 0.85em;
+                margin-right: 8px;
+                margin-bottom: 8px;
+                border: 1px solid rgba(139, 92, 246, 0.2);
+                font-family: var(--font-code);
+            }
+
             @media (max-width: 900px) {
                 body { flex-direction: column; overflow-y: auto; }
                 .sidebar { width: 100%; flex-direction: row; align-items: center; padding: 14px 16px; gap: 10px; border-bottom: 1px solid var(--border-subtle); border-right: none; }
@@ -582,12 +985,17 @@
                 .instance-grid { grid-template-columns: 1fr; }
                 .toast-container { right: 20px; left: 20px; bottom: 20px; }
                 .toast { width: 100%; min-width: auto; max-width: none; }
+
+                .ssh-aside { width: 100%; height: auto; max-height: 250px; border-right: none; border-bottom: 1px solid var(--border-subtle); }
+                .content-container { padding: 20px; }
+                .terminal-body { min-height: 300px; padding: 20px; }
             }
         </style>
     </head>
 
     <body>
 
+        <!-- Background Effects -->
         <div class="ambient-glow" id="ambient-glow"></div>
         <div class="mesh-bg"></div>
         <div class="glow-spot spot1" id="spot1"></div>
@@ -610,63 +1018,149 @@
             <div class="particle" style="top: 15%; left: 70%; width: 3px; height: 3px; animation-duration: 15s; animation-delay: -6s;"></div>
         </div>
 
-        <aside class="sidebar">
-            <a href="/" class="sidebar-logo">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="var(--accent-color)" />
-                    <path d="M2 17L12 22L22 17" stroke="white" />
-                    <path d="M2 12L12 17L22 12" stroke="white" />
-                </svg>
-                <span>Nodefy</span>
-            </a>
+        <!-- ========================================= -->
+        <!--  VIEW: Instance Manager                   -->
+        <!-- ========================================= -->
+        <div id="view-instances">
+            <aside class="sidebar">
+                <a href="/" class="sidebar-logo">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="var(--accent-color)" />
+                        <path d="M2 17L12 22L22 17" stroke="white" />
+                        <path d="M2 12L12 17L22 12" stroke="white" />
+                    </svg>
+                    <span>Nodefy</span>
+                </a>
 
-            <button class="nav-btn primary" onclick="openAddModal()">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                <span>Add Instance</span>
-            </button>
+                <button class="nav-btn primary" onclick="openAddModal()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    <span>Add Instance</span>
+                </button>
 
-            <button class="nav-btn" onclick="showToast('SSH', 'Opening secure gateway...', 'info')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
-                <span>Access SSH</span>
-            </button>
-        </aside>
+                <button class="nav-btn" onclick="showSSHView()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+                    <span>Access SSH</span>
+                </button>
+            </aside>
 
-        <main class="main-content">
-            <header class="top-bar">
-                <div class="page-title">Cloud Command Center</div>
-                <div class="actions-group">
-                    <button class="btn btn-deploy" id="btnStart" onclick="handleAction('start')">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                        Start
-                    </button>
-                    <button class="btn btn-stop" id="btnStop" onclick="handleAction('stop')">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="1"></rect></svg>
-                        Stop
-                    </button>
-                    <button class="btn btn-kill" id="btnKill" onclick="handleAction('kill')">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
-                        Kill
-                    </button>
-                    <button class="btn btn-workspace" id="btnWorkspace" onclick="handleWorkspace()">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg>
-                        Workspace
-                    </button>
+            <main class="main-content">
+                <header class="top-bar">
+                    <div class="page-title">Cloud Command Center</div>
+                    <div class="actions-group">
+                        <button class="btn btn-deploy" id="btnStart" onclick="handleAction('start')">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                            Start
+                        </button>
+                        <button class="btn btn-stop" id="btnStop" onclick="handleAction('stop')">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="1"></rect></svg>
+                            Stop
+                        </button>
+                        <button class="btn btn-kill" id="btnKill" onclick="handleAction('kill')">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                            Kill
+                        </button>
+                        <button class="btn btn-workspace" id="btnWorkspace" onclick="handleWorkspace()">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg>
+                            Workspace
+                        </button>
+                    </div>
+                </header>
+
+                <div class="content-scroll">
+                    <div class="section-header">
+                        <div>
+                            <div class="section-title">Services</div>
+                            <div class="section-subtitle">Click a card to select, then use action buttons above</div>
+                        </div>
+                    </div>
+
+                    <div class="instance-grid" id="instanceGrid"></div>
                 </div>
-            </header>
+            </main>
+        </div>
 
-            <div class="content-scroll">
-                <div class="section-header">
+        <!-- ========================================= -->
+        <!--  VIEW: SSH Terminal                       -->
+        <!-- ========================================= -->
+        <div id="view-ssh">
+            <aside class="ssh-aside">
+                <div class="logo-area">
+                    <svg class="logo-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke-linejoin="round"/>
+                        <path d="M2 17L12 22L22 17" stroke-linejoin="round"/>
+                        <path d="M2 12L12 17L22 12" stroke-linejoin="round"/>
+                    </svg>
                     <div>
-                        <div class="section-title">Services</div>
-                        <div class="section-subtitle">Click a card to select, then use action buttons above</div>
+                        <div class="logo-text">Nodefy</div>
+                        <span class="logo-sub">Command Center</span>
                     </div>
                 </div>
 
-                <div class="instance-grid" id="instanceGrid"></div>
-            </div>
-        </main>
+                <button class="ssh-back-btn" onclick="showInstanceView()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                    <span>Back to Instances</span>
+                </button>
 
-        <!-- Add Instance Modal -->
+                <nav class="ssh-nav" id="sidebar-nav"></nav>
+            </aside>
+
+            <main class="ssh-main">
+                <header class="ssh-header">
+                    <h1 id="page-title">Command Center</h1>
+                    <div class="ssh-status-badge">
+                        <div class="ssh-status-dot"></div>
+                        SESSION_ACTIVE
+                    </div>
+                </header>
+
+                <div class="content-container">
+                    <div class="terminal-window">
+                        <div class="terminal-header">
+                            <div class="controls">
+                                <div class="dot red"></div>
+                                <div class="dot yellow"></div>
+                                <div class="dot green"></div>
+                            </div>
+                            <div class="terminal-title">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                                <span id="terminal-title-text">user@nodefy: ~/</span>
+                            </div>
+                        </div>
+                        
+                        <div class="terminal-body" id="terminal-body">
+                            <div id="welcome-line-1" class="output-line" style="color: var(--accent-color)">System initialized. Welcome to Nodefy Terminal v2.1</div>
+                            <div id="welcome-line-2" class="output-line" style="color: #555">Select a command category from the sidebar to begin.</div>
+                            <br>
+                            
+                            <div class="prompt-line">
+                                <span id="terminal-prompt" class="prompt">guest@nodefy:~$</span>
+                                <span id="command-display" class="command-input"></span><span class="cursor"></span>
+                                <button class="copy-btn" onclick="copyCommand()">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                                    Copy
+                                </button>
+                            </div>
+                            
+                            <div id="terminal-output"></div>
+
+                            <div id="teaching-panel" class="teaching-panel">
+                                <h3>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+                                    <span id="teach-title">Explanation</span>
+                                </h3>
+                                <p id="teach-desc" class="teach-desc"></p>
+                                <div style="margin-top:10px">
+                                    <span style="color: #555; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">Key Parameters:</span>
+                                    <div id="teach-params" style="margin-top:8px"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Modals (shared between views) -->
         <div class="modal-overlay" id="addModal">
             <div class="modal-content">
                 <h3 class="modal-title">Provision Instance</h3>
@@ -689,7 +1183,6 @@
             </div>
         </div>
 
-        <!-- Action Modal (Start / Stop / Kill) -->
         <div class="modal-overlay" id="actionModal">
             <div class="modal-content">
                 <h3 class="modal-title" id="actionTitle">Execute Command</h3>
@@ -711,32 +1204,25 @@
         <div class="toast-container" id="toast-container"></div>
 
         <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                if (!localStorage.getItem('selection_type')) {
-                    localStorage.setItem('selection_type', 'docker'); 
-                }
+            /* ========================================= */
+            /*  View Switching                           */
+            /* ========================================= */
 
-                var ambientGlow = document.getElementById('ambient-glow');
-                var spot1 = document.getElementById('spot1');
-                var spot2 = document.getElementById('spot2');
-                var particles = document.getElementById('particles');
-                var bubblesContainer = document.getElementById('bubbles-container');
+            function showSSHView() {
+                document.getElementById('view-instances').style.display = 'none';
+                document.getElementById('view-ssh').style.display = 'flex';
+                initSSHView();
+            }
 
-                if (ambientGlow || spot1 || spot2 || particles || bubblesContainer) {
-                    document.addEventListener('mousemove', function (e) {
-                        var x = (window.innerWidth - e.pageX * 2) / 100;
-                        var y = (window.innerHeight - e.pageY * 2) / 100;
-                        if (ambientGlow) ambientGlow.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
-                        if (spot1) spot1.style.transform = 'translate(' + (x * 1.5) + 'px, ' + (y * 1.5) + 'px)';
-                        if (spot2) spot2.style.transform = 'translate(' + (x * 0.5) + 'px, ' + (y * 0.5) + 'px)';
-                        if (particles) particles.style.transform = 'translate(' + (x * -0.5) + 'px, ' + (y * -0.5) + 'px)';
-                        if (bubblesContainer) bubblesContainer.style.transform = 'translate(' + (x * -0.2) + 'px, ' + (y * -0.2) + 'px)';
-                    });
-                }
-
+            function showInstanceView() {
+                document.getElementById('view-ssh').style.display = 'none';
+                document.getElementById('view-instances').style.display = 'flex';
                 fetchInstances();
-                setInterval(fetchInstances, 5000);
-            });
+            }
+
+            /* ========================================= */
+            /*  Instance Manager Logic (unchanged)       */
+            /* ========================================= */
 
             var instances = [];
             var selectedInstance = '';
@@ -803,7 +1289,7 @@
                 grid.innerHTML = '';
 
                 if (instances.length === 0) {
-                    grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📦</div><div class="empty-state-text">No instances yet</div><div class="empty-state-hint">Click "Add Instance" to get started</div></div>';
+                    grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">&#128230;</div><div class="empty-state-text">No instances yet</div><div class="empty-state-hint">Click "Add Instance" to get started</div></div>';
                     return;
                 }
 
@@ -885,9 +1371,9 @@
                 document.getElementById('currentAction').value = actionType;
 
                 var labels = {
-                    start: '▶ Start Instance',
-                    stop: '⏹ Stop Instance',
-                    kill: '⛔ Kill Instance'
+                    start: 'Start Instance',
+                    stop: 'Stop Instance',
+                    kill: 'Kill Instance'
                 };
                 document.getElementById('actionTitle').innerText = labels[actionType] || actionType.toUpperCase();
                 
@@ -1134,6 +1620,338 @@
                     });
                 }, 5000);
             }
+
+            /* ========================================= */
+            /*  SSH Terminal Logic                       */
+            /* ========================================= */
+
+            var cloudflaredSection = {
+                label: 'Cloudflared Setup',
+                icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>',
+                items: {
+                    'linux-user': {
+                        label: 'For Linux User',
+                        isFolder: true, 
+                        items: {
+                            'update': { label: '1. Update System', command: 'sudo apt-get update && sudo apt-get upgrade -y', desc: 'Updates the package list and upgrades all installed packages to their latest versions.', params: ['sudo', 'apt-get update', 'apt-get upgrade'], output: ['Hit:1 http://archive.ubuntu.com/ubuntu jammy InRelease', 'Hit:2 http://archive.ubuntu.com/ubuntu jammy-updates InRelease', 'Reading package lists... Done', 'Calculating upgrade... Done', '0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.'] },
+                            'install': { label: '2. Install Cloudflared', command: 'sudo apt install cloudflared', desc: 'Installs the Cloudflare Tunnel daemon (cloudflared) required for SSH tunneling.', params: ['sudo', 'apt install', 'cloudflared'], output: ['Reading package lists... Done', 'Building dependency tree... Done', 'The following NEW packages will be installed:', '  cloudflared', '0 upgraded, 1 newly installed, 0 to remove.', 'Setting up cloudflared (2023.x.x) ...'] },
+                            'ssh': { label: '3. Connect using SSH', command: 'ssh username@serverurl -o ProxyCommand="cloudflared access ssh --hostname %h"', desc: 'Connects to the server via Cloudflare Access. Replace "username" with your actual login username.', params: ['ssh', 'username', 'ProxyCommand', 'cloudflared access ssh'], output: ['Authenticating with Cloudflare Access...', 'Browser window opened for authentication.', 'Success! You are validated.'] },
+                            'prompt-yes': { label: '4. Verify Fingerprint', command: 'yes', desc: 'When the terminal asks "The authenticity of host... can\'t be established", type "yes" to continue.', params: ['yes'], output: ['The authenticity of host \'serverurl\' can\'t be established.', 'ED25519 key fingerprint is SHA256:AbCdEfGhIjKlMnOpQrStUvWxYz.', 'Are you sure you want to continue connecting (yes/no/[fingerprint])? yes', 'Warning: Permanently added \'serverurl\' (ED25519) to the list of known hosts.'] },
+                            'prompt-pass': { label: '5. Enter Password', command: '[Enter Password]', desc: 'When prompted, enter your Signup password associated with your Cloudflare account or server user.', params: ['password'], output: ['username@serverurl\'s password: ', 'Welcome to Ubuntu 22.04 LTS (GNU/Linux 5.15.0-91-generic x86_64)', 'System load: 0.01, 0.03, 0.05', 'Usage of /:   15.2% of 50GB'] }
+                        }
+                    },
+                    'windows-user': {
+                        label: 'For Windows User',
+                        isFolder: true,
+                        items: {
+                            'win-step-1': { label: '1. Download', command: 'https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-amd64.exe', desc: 'Download the latest Windows executable from GitHub.\nFile will be located at: C:\\Users\\s8983\\Downloads', params: ['GitHub', 'Download', 'amd64'], output: ['Initiating download...', 'Source: github.com/cloudflare/cloudflared/releases', 'Destination: C:\\Users\\s8983\\Downloads\\cloudflared-windows-amd64.exe', 'Download Complete.'] },
+                            'win-step-2': { label: '2. Rename File', command: 'ren cloudflared-windows-amd64.exe cloudflared.exe', desc: 'Rename the downloaded file to make it easier to run.', params: ['ren', 'rename'], output: ['C:\\Users\\s8983\\Downloads>ren cloudflared-windows-amd64.exe cloudflared.exe', '1 file(s) renamed.'] },
+                            'win-step-3': { label: '3. Create Folder', command: 'mkdir C:\\Users\\s8983\\cloudflared', desc: 'Create a dedicated folder to hold the cloudflared executable.', params: ['mkdir'], output: ['C:\\Users\\s8983>mkdir C:\\Users\\s8983\\cloudflared', 'Directory created successfully.'] },
+                            'win-step-4': { label: '4. Move File', command: 'move C:\\Users\\s8983\\Downloads\\cloudflared.exe C:\\Users\\s8983\\cloudflared\\', desc: 'Move the renamed executable into the newly created folder.', params: ['move'], output: ['C:\\Users\\s8983>move C:\\Users\\s8983\\Downloads\\cloudflared.exe C:\\Users\\s8983\\cloudflared\\', '        1 file(s) moved.'] },
+                            'win-step-5': { label: '5. Verify', command: 'dir C:\\Users\\s8983\\cloudflared', desc: 'List the contents of the folder to ensure the file is there.', params: ['dir', 'list'], output: [' Volume in drive C has no label.', ' Directory of C:\\Users\\s8983\\cloudflared', '', '11/15/2023  10:00 AM    <DIR>          .', '11/15/2023  10:00 AM    <DIR>          ..', '11/15/2023  10:05 AM        25,000,000 cloudflared.exe', '               1 File(s)   25,000,000 bytes'] },
+                            'win-step-6': { label: '6. Run / Test', command: '"C:\\Users\\s8983\\cloudflared\\cloudflared.exe" --version', desc: 'Run the executable with the version flag to test if it works correctly.', params: ['--version', 'test'], output: ['cloudflared version 2026.x.x', 'Built with go1.21.5', 'Feature flags: None'] },
+                            'win-step-7': { label: '7. Add to PATH', command: '# Environment Variables: C:\\Users\\s8983\\cloudflared', desc: 'Add the folder to System Environment Variables.\n\n1. Search "Environment Variables" in Windows search.\n2. Click "Edit the system environment variables".\n3. Click "Environment Variables" button.\n4. Under "System variables", find "Path" and click "Edit".\n5. Click "New" and paste: C:\\Users\\s8983\\cloudflared\n6. Restart CMD and test: cloudflared --version', params: ['PATH', 'Environment Variables'], output: ['[System Configuration]', 'Adding C:\\Users\\s8983\\cloudflared to PATH...', 'Success. Restart command prompt to apply changes.', '', '> cloudflared --version', 'cloudflared version 2026.x.x', 'Works without full path!'] },
+                            'win-step-8': { label: '8. Verify PATH Setup', command: 'cloudflared --version', desc: 'After restarting CMD, verify that cloudflared is accessible globally without needing the full file path.\n\nIf this works, your PATH configuration was successful. If you get "not recognized", restart CMD as Administrator and try again.', params: ['--version', 'PATH verify'], output: ['C:\\Users\\s8983>cloudflared --version', 'cloudflared version 2026.x.x', 'Built with go1.21.5', 'PATH configuration verified successfully!'] },
+                            'win-step-9': { label: '9. Connect via SSH', command: 'ssh username@serverurl -o ProxyCommand="cloudflared access ssh --hostname %h"', desc: 'Connect to the server using SSH with cloudflared as the ProxyCommand.\n\nReplace "username" with your actual login username and "serverurl" with your server\'s Cloudflare tunnel URL.\n\nThis command routes your SSH connection through Cloudflare\'s secure tunnel, authenticating you via Cloudflare Access.', params: ['ssh', 'username', 'ProxyCommand', 'cloudflared access ssh', '--hostname'], output: ['Authenticating with Cloudflare Access...', 'Opening browser for authentication...', 'Cloudflare Access login page opened in default browser.', 'Please complete login in the browser window...', 'Authentication successful!', 'Connecting to server...'] },
+                            'win-step-10': { label: '10. Accept Fingerprint', command: 'yes', desc: 'When the terminal shows "The authenticity of host can\'t be established", type "yes" to accept and save the server\'s SSH fingerprint.\n\nThis is a one-time step. The fingerprint will be saved in your known_hosts file and won\'t be asked again for this server.', params: ['yes', 'fingerprint', 'ED25519'], output: ['The authenticity of host \'serverurl\' can\'t be established.', 'ED25519 key fingerprint is SHA256:AbCdEfGhIjKlMnOpQrStUvWxYz.', 'Are you sure you want to continue connecting (yes/no/[fingerprint])? yes', 'Warning: Permanently added \'serverurl\' (ED25519) to the list of known hosts.'] },
+                            'win-step-11': { label: '11. Enter Password', command: '[Enter Signup Password]', desc: 'When prompted with "username@serverurl\'s password:", enter your Signup password.\n\nThis is the password you created during signup on the Nodefy platform. Type it carefully \u2014 the terminal will not show any characters as you type (this is normal for security).\n\nAfter entering the correct password, you will be logged into the server and see the welcome screen.', params: ['signup password', 'password'], output: ['username@serverurl\'s password: ********', '', 'Welcome to Ubuntu 22.04 LTS (GNU/Linux 5.15.0-91-generic x86_64)', '', 'System load:  0.01, 0.03, 0.05', 'Usage of /:   15.2% of 50GB', 'Memory usage: 12%', 'CPU usage:    2%', '', 'Last login: Thu Nov 15 10:30:00 2023 from 10.0.0.1'] }
+                        }
+                    }
+                }
+            };
+
+            var currentCommandText = "";
+            var typingTimeout = null;
+            var currentPromptText = "guest@nodefy:~$";
+            var sshInitialized = false;
+
+            function initSSHView() {
+                if (sshInitialized) return;
+                sshInitialized = true;
+
+                var navContainer = document.getElementById('sidebar-nav');
+                var sidebarItems = [cloudflaredSection];
+
+                document.getElementById('welcome-line-1').textContent = 'System initialized. Welcome to Nodefy Terminal v2.1';
+                document.getElementById('welcome-line-1').style.color = 'var(--accent-color)';
+                document.getElementById('welcome-line-2').textContent = 'Cloudflared SSH Setup \u2014 Select a command from the sidebar.';
+                document.getElementById('welcome-line-2').style.color = 'var(--text-muted)';
+
+                document.getElementById('terminal-prompt').textContent = currentPromptText;
+                document.getElementById('terminal-title-text').textContent = ' ' + currentPromptText.replace(':~$', ': ~/');
+
+                renderSSHSidebar(sidebarItems);
+            }
+
+            function renderSSHSidebar(itemsArray) {
+                var navContainer = document.getElementById('sidebar-nav');
+                navContainer.innerHTML = '';
+
+                for (var i = 0; i < itemsArray.length; i++) {
+                    var group = itemsArray[i];
+
+                    var dropdown = document.createElement('div');
+                    dropdown.className = 'dropdown';
+                    dropdown.id = 'dropdown-' + i;
+
+                    var header = document.createElement('div');
+                    header.className = 'dropdown-header';
+                    header.innerHTML = '<span style="display:flex; align-items:center; gap:10px;">' + group.icon + ' ' + group.label + '</span><svg class="dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>';
+                    
+                    (function(dd, hh) {
+                        hh.onclick = function(e) {
+                            e.stopPropagation();
+                            toggleDropdown(dd, hh);
+                        };
+                    })(dropdown, header);
+
+                    var content = document.createElement('div');
+                    content.className = 'dropdown-content';
+
+                    var subKeys = Object.keys(group.items);
+                    for (var s = 0; s < subKeys.length; s++) {
+                        var item = group.items[subKeys[s]];
+
+                        if (item.isFolder) {
+                            var subDropdown = document.createElement('div');
+                            subDropdown.className = 'dropdown nested-dropdown';
+                            subDropdown.id = 'dropdown-' + subKeys[s];
+
+                            var subHeader = document.createElement('div');
+                            subHeader.className = 'dropdown-header';
+                            subHeader.textContent = item.label;
+
+                            (function(sdd, shh) {
+                                shh.onclick = function(e) {
+                                    e.stopPropagation();
+                                    toggleDropdown(sdd, shh);
+                                };
+                            })(subDropdown, subHeader);
+
+                            var subContent = document.createElement('div');
+                            subContent.className = 'dropdown-content';
+
+                            var cmdKeys = Object.keys(item.items);
+                            for (var c = 0; c < cmdKeys.length; c++) {
+                                var cmdItem = item.items[cmdKeys[c]];
+                                var cmdDiv = document.createElement('div');
+                                cmdDiv.className = 'submenu-item';
+                                cmdDiv.textContent = cmdItem.label;
+
+                                (function(cd) {
+                                    cmdDiv.onclick = function(e) {
+                                        e.stopPropagation();
+                                        selectCommand(cd);
+                                        var allItems = document.querySelectorAll('.submenu-item');
+                                        for (var j = 0; j < allItems.length; j++) {
+                                            allItems[j].classList.remove('active');
+                                        }
+                                        cmdDiv.classList.add('active');
+                                    };
+                                })(cmdItem);
+
+                                subContent.appendChild(cmdDiv);
+                            }
+
+                            subDropdown.appendChild(subHeader);
+                            subDropdown.appendChild(subContent);
+                            content.appendChild(subDropdown);
+
+                        } else {
+                            var subItem = document.createElement('div');
+                            subItem.className = 'submenu-item';
+                            subItem.textContent = item.label;
+
+                            (function(si) {
+                                subItem.onclick = function(e) {
+                                    e.stopPropagation();
+                                    selectCommand(si);
+                                    var allItems = document.querySelectorAll('.submenu-item');
+                                    for (var j = 0; j < allItems.length; j++) {
+                                        allItems[j].classList.remove('active');
+                                    }
+                                    subItem.classList.add('active');
+                                };
+                            })(item);
+
+                            content.appendChild(subItem);
+                        }
+                    }
+
+                    dropdown.appendChild(header);
+                    dropdown.appendChild(content);
+                    navContainer.appendChild(dropdown);
+                }
+            }
+
+            function toggleDropdown(dropdownElement, headerElement) {
+                var parentContainer = dropdownElement.parentElement;
+                var siblings = parentContainer.querySelectorAll(':scope > .dropdown');
+
+                for (var i = 0; i < siblings.length; i++) {
+                    var sibling = siblings[i];
+                    if (sibling !== dropdownElement && sibling.classList.contains('open')) {
+                        sibling.classList.remove('open');
+                        var siblingHeader = sibling.querySelector('.dropdown-header');
+                        if (siblingHeader) {
+                            siblingHeader.classList.remove('active-group');
+                        }
+                    }
+                }
+
+                var wasOpen = dropdownElement.classList.contains('open');
+                if (wasOpen) {
+                    dropdownElement.classList.remove('open');
+                    headerElement.classList.remove('active-group');
+                } else {
+                    dropdownElement.classList.add('open');
+                    headerElement.classList.add('active-group');
+                }
+            }
+
+            function selectCommand(data) {
+                document.getElementById('page-title').textContent = data.label;
+                currentCommandText = data.command;
+
+                clearTimeout(typingTimeout);
+                document.getElementById('command-display').textContent = '';
+                document.getElementById('terminal-output').innerHTML = '';
+                document.getElementById('teaching-panel').style.display = 'none';
+
+                var idx = 0;
+                function type() {
+                    if (idx < data.command.length) {
+                        document.getElementById('command-display').textContent += data.command.charAt(idx);
+                        idx++;
+                        typingTimeout = setTimeout(type, 40); 
+                    } else {
+                        typingTimeout = setTimeout(function() {
+                            showTerminalOutput(data.output);
+                            showTeaching(data);
+                        }, 400);
+                    }
+                }
+                type();
+            }
+
+            function showTerminalOutput(lines) {
+                var terminalOutput = document.getElementById('terminal-output');
+                for (var index = 0; index < lines.length; index++) {
+                    (function(line, idx) {
+                        var div = document.createElement('div');
+                        div.className = 'output-line';
+                        div.textContent = line;
+                        div.style.animationDelay = (idx * 0.05) + 's';
+                        
+                        if(line.indexOf('Killed') !== -1 || line.indexOf('error') !== -1 || line.indexOf('ERROR') !== -1) {
+                            div.style.color = 'var(--terminal-error)';
+                        } else if(line.indexOf('OK') !== -1 || line.indexOf('complete') !== -1 || line.indexOf('Success') !== -1 || line.indexOf('Works without') !== -1 || line.indexOf('Complete!') !== -1 || line.indexOf('verified successfully') !== -1 || line.indexOf('Welcome to') !== -1 || line.indexOf('Authentication successful') !== -1) {
+                            div.style.color = 'var(--accent-color)';
+                        } else if(line.indexOf('Proto') !== -1 || line.indexOf('PID') !== -1 || line.indexOf('Filesystem') !== -1 || line.indexOf('USER') !== -1 || line.indexOf('Volume in drive') !== -1 || line.indexOf('Directory of') !== -1) {
+                            div.style.color = 'var(--terminal-info)';
+                        }
+                        
+                        terminalOutput.appendChild(div);
+                        
+                        if (idx === lines.length - 1) {
+                            var prompt = document.createElement('div');
+                            prompt.className = 'output-line';
+                            prompt.style.color = 'var(--accent-color)';
+                            prompt.style.marginTop = '10px';
+                            prompt.textContent = currentPromptText + ' ';
+                            terminalOutput.appendChild(prompt);
+                            terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                        }
+                    })(lines[index], index);
+                }
+            }
+
+            function showTeaching(data) {
+                document.getElementById('teaching-panel').style.display = 'block';
+                document.getElementById('teach-title').textContent = data.label + " Explained";
+                document.getElementById('teach-desc').textContent = data.desc;
+
+                var teachParams = document.getElementById('teach-params');
+                teachParams.innerHTML = '';
+                if (data.params && data.params.length) {
+                    for (var i = 0; i < data.params.length; i++) {
+                        var tag = document.createElement('span');
+                        tag.className = 'param-tag';
+                        tag.textContent = data.params[i];
+                        teachParams.appendChild(tag);
+                    }
+                }
+            }
+
+            function copyCommand() {
+                if (!currentCommandText) return;
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(currentCommandText).then(function() {
+                        updateCopyBtn();
+                    }).catch(function() {
+                        fallbackCopy();
+                    });
+                } else {
+                    fallbackCopy();
+                }
+            }
+
+            function updateCopyBtn() {
+                var btn = document.querySelector('.copy-btn');
+                if (!btn) return;
+                var originalHTML = btn.innerHTML;
+                btn.innerHTML = 'Copied!';
+                btn.style.color = 'var(--accent-color)';
+                btn.style.borderColor = 'var(--accent-color)';
+                setTimeout(function() {
+                    btn.innerHTML = originalHTML;
+                    btn.style.color = '';
+                    btn.style.borderColor = '';
+                }, 1500);
+            }
+
+            function fallbackCopy() {
+                var ta = document.createElement('textarea');
+                ta.value = currentCommandText;
+                ta.style.position = 'fixed';
+                ta.style.left = '-9999px';
+                document.body.appendChild(ta);
+                ta.select();
+                try { document.execCommand('copy'); } catch(e) {}
+                document.body.removeChild(ta);
+                updateCopyBtn();
+            }
+
+            /* ========================================= */
+            /*  Global Init                              */
+            /* ========================================= */
+
+            document.addEventListener('DOMContentLoaded', function () {
+                if (!localStorage.getItem('selection_type')) {
+                    localStorage.setItem('selection_type', 'docker'); 
+                }
+
+                var ambientGlow = document.getElementById('ambient-glow');
+                var spot1 = document.getElementById('spot1');
+                var spot2 = document.getElementById('spot2');
+                var particles = document.getElementById('particles');
+                var bubblesContainer = document.getElementById('bubbles-container');
+
+                if (ambientGlow || spot1 || spot2 || particles || bubblesContainer) {
+                    document.addEventListener('mousemove', function (e) {
+                        var x = (window.innerWidth - e.pageX * 2) / 100;
+                        var y = (window.innerHeight - e.pageY * 2) / 100;
+                        if (ambientGlow) ambientGlow.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
+                        if (spot1) spot1.style.transform = 'translate(' + (x * 1.5) + 'px, ' + (y * 1.5) + 'px)';
+                        if (spot2) spot2.style.transform = 'translate(' + (x * 0.5) + 'px, ' + (y * 0.5) + 'px)';
+                        if (particles) particles.style.transform = 'translate(' + (x * -0.5) + 'px, ' + (y * -0.5) + 'px)';
+                        if (bubblesContainer) bubblesContainer.style.transform = 'translate(' + (x * -0.2) + 'px, ' + (y * -0.2) + 'px)';
+                    });
+                }
+
+                fetchInstances();
+                setInterval(fetchInstances, 5000);
+            });
 
             var overlays = document.querySelectorAll('.modal-overlay');
             for (var i = 0; i < overlays.length; i++) {
