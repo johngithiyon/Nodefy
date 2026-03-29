@@ -19,6 +19,7 @@ func Routes() {
 	  http.HandleFunc("/choosepage",handlers.RenderChoosepage)
 	  http.HandleFunc("/deploypage",handlers.RenderDeploypage)
 	  http.HandleFunc("/explorepage",handlers.RenderExplorepage)
+	  http.HandleFunc("/teachpage",handlers.RenderTeachpage)
 
 	  // Api endpoints
 	 
@@ -33,4 +34,6 @@ func Routes() {
 	  http.HandleFunc("/getbuildinstance",handlers.GetBuildInstancesHandler)
       http.HandleFunc("/getdeployinstance",handlers.GetDeployinstance)
 	  http.HandleFunc("/workspace",handlers.WorkspaceHanlder)
+	  http.HandleFunc("/addinstancesbuild",handlers.Addinstanceshandler)
+	  http.HandleFunc("/addinstancesdeploy",handlers.AddinstancesDeployHandler)
 }
