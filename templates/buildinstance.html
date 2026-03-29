@@ -8,9 +8,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
     <style>
         :root {
@@ -18,27 +16,17 @@
             --bg-gradient-end: #1a0b2e;
             --accent-color: #8b5cf6;
             --accent-hover: #7c3aed;
-            --accent-glow: rgba(139, 92, 246, 0.4);
-
             --text-main: #FFFFFF;
             --text-muted: #A1A1AA;
             --text-dark: #52525B;
-
             --border-subtle: rgba(255, 255, 255, 0.08);
             --border-hover: rgba(255, 255, 255, 0.2);
-            --glass-bg: rgba(255, 255, 255, 0.03);
             --glass-blur: blur(16px);
-
             --font-ui: 'Inter', sans-serif;
             --font-code: 'JetBrains Mono', monospace;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-font-smoothing: antialiased;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
 
         body {
             font-family: var(--font-ui);
@@ -53,638 +41,292 @@
         }
 
         .ambient-glow {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background:
                 radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.15), transparent 35%),
                 radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.12), transparent 35%),
                 radial-gradient(circle at 40% 80%, rgba(139, 92, 246, 0.1), transparent 40%);
-            z-index: -2;
-            pointer-events: none;
+            z-index: -2; pointer-events: none;
             transition: transform 0.1s ease-out;
             animation: pulseGlow 12s ease-in-out infinite alternate;
         }
-
         @keyframes pulseGlow {
-            0% { opacity: 0.4; transform: scale(1); filter: blur(0px); }
-            50% { opacity: 0.8; transform: scale(1.02); filter: blur(2px); }
-            100% { opacity: 0.5; transform: scale(1); filter: blur(0px); }
+            0% { opacity: 0.4; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.02); } 100% { opacity: 0.5; transform: scale(1); }
         }
 
         .mesh-bg {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background-image:
-                linear-gradient(rgba(139, 92, 246, 0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(139, 92, 246, 0.02) 1px, transparent 1px);
-            background-size: 60px 60px;
-            z-index: -2;
-            pointer-events: none;
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-image: linear-gradient(rgba(139,92,246,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(139,92,246,0.02) 1px, transparent 1px);
+            background-size: 60px 60px; z-index: -2; pointer-events: none;
             animation: meshMove 20s linear infinite alternate;
         }
+        @keyframes meshMove { 0% { transform: translate(0,0); } 100% { transform: translate(-10px,-10px); } }
 
-        @keyframes meshMove {
-            0% { transform: translate(0, 0) rotate(0deg); opacity: 0.3; }
-            100% { transform: translate(-10px, -10px) rotate(0.5deg); opacity: 0.7; }
-        }
+        .particles { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -2; pointer-events: none; overflow: hidden; transition: transform 0.1s ease-out; }
+        .particle { position: absolute; width: 4px; height: 4px; background: rgba(139,92,246,0.2); border-radius: 50%; box-shadow: 0 0 15px 2px rgba(139,92,246,0.2); animation: floatP 18s infinite ease-in-out; }
+        @keyframes floatP { 0% { transform: translateY(0) translateX(0); opacity: 0.2; } 50% { transform: translateY(-120px) translateX(40px); opacity: 0.6; } 100% { transform: translateY(0) translateX(0); opacity: 0.2; } }
 
-        .particles {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: -2;
-            pointer-events: none;
-            overflow: hidden;
-            transition: transform 0.1s ease-out;
-        }
+        .bubbles-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -2; pointer-events: none; overflow: hidden; transition: transform 0.2s ease-out; }
+        .bubble { position: absolute; bottom: -100px; background: radial-gradient(circle at 30% 30%, rgba(139,92,246,0.08), transparent 80%); border-radius: 50%; border: 1px solid rgba(139,92,246,0.05); animation: riseB 25s infinite ease-in; filter: blur(2px); }
+        @keyframes riseB { 0% { transform: translateY(0) scale(0.8); opacity: 0; } 20% { opacity: 0.5; } 80% { opacity: 0.5; } 100% { transform: translateY(-120vh) scale(1.2); opacity: 0; } }
 
-        .particle {
-            position: absolute;
-            width: 4px; height: 4px;
-            background: rgba(139, 92, 246, 0.2);
-            border-radius: 50%;
-            box-shadow: 0 0 15px 2px rgba(139, 92, 246, 0.2);
-            animation: floatParticle 18s infinite ease-in-out;
-        }
-
-        @keyframes floatParticle {
-            0% { transform: translateY(0) translateX(0) scale(1); opacity: 0.2; }
-            50% { transform: translateY(-120px) translateX(40px) scale(1.5); opacity: 0.6; }
-            100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.2; }
-        }
-
-        .bubbles-container {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: -2;
-            pointer-events: none;
-            overflow: hidden;
-            transition: transform 0.2s ease-out;
-        }
-
-        .bubble {
-            position: absolute;
-            bottom: -100px;
-            background: radial-gradient(circle at 30% 30%, rgba(139, 92, 246, 0.08), rgba(139, 92, 246, 0.01) 60%, transparent 80%);
-            border-radius: 50%;
-            border: 1px solid rgba(139, 92, 246, 0.05);
-            animation: riseBubble 25s infinite ease-in;
-            filter: blur(2px);
-        }
-
-        @keyframes riseBubble {
-            0% { transform: translateY(0) translateX(0) scale(0.8); opacity: 0; }
-            20% { opacity: 0.5; }
-            80% { opacity: 0.5; }
-            100% { transform: translateY(-120vh) translateX(50px) scale(1.2); opacity: 0; }
-        }
-
-        .glow-spot {
-            position: fixed;
-            width: 60vw; height: 60vw;
-            background: radial-gradient(circle at center, rgba(139, 92, 246, 0.05), transparent 70%);
-            border-radius: 50%;
-            z-index: -2;
-            pointer-events: none;
-            animation: spotMove 25s infinite alternate;
-            transition: transform 0.2s ease-out;
-        }
-
+        .glow-spot { position: fixed; width: 60vw; height: 60vw; background: radial-gradient(circle, rgba(139,92,246,0.05), transparent 70%); border-radius: 50%; z-index: -2; pointer-events: none; animation: spotM 25s infinite alternate; transition: transform 0.2s ease-out; }
         .spot1 { top: -20vh; right: -10vw; }
-        .spot2 { bottom: -30vh; left: -10vw; animation-delay: -5s; width: 80vw; height: 80vw; background: radial-gradient(circle at center, rgba(59, 130, 246, 0.04), transparent 70%); }
-
-        @keyframes spotMove {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(5%, 5%) scale(1.1); }
-        }
+        .spot2 { bottom: -30vh; left: -10vw; animation-delay: -5s; width: 80vw; height: 80vw; background: radial-gradient(circle, rgba(59,130,246,0.04), transparent 70%); }
+        @keyframes spotM { 0% { transform: translate(0,0); } 100% { transform: translate(5%,5%) scale(1.1); } }
 
         /* ── Sidebar ── */
-        .sidebar {
-            width: 240px;
-            background: rgba(15, 15, 20, 0.5);
-            backdrop-filter: var(--glass-blur);
-            border-right: 1px solid var(--border-subtle);
-            display: flex;
-            flex-direction: column;
-            padding: 32px 20px;
-            z-index: 10;
-            flex-shrink: 0;
-            gap: 14px;
-        }
-
-        .sidebar-logo {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: white;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            letter-spacing: -0.03em;
-            margin-bottom: 28px;
-            padding-bottom: 28px;
-            border-bottom: 1px solid var(--border-subtle);
-            text-decoration: none;
-            user-select: none;
-        }
-
+        .sidebar { width: 240px; background: rgba(15,15,20,0.5); backdrop-filter: var(--glass-blur); border-right: 1px solid var(--border-subtle); display: flex; flex-direction: column; padding: 32px 20px; z-index: 10; flex-shrink: 0; gap: 14px; }
+        .sidebar-logo { font-size: 1.5rem; font-weight: 800; color: white; display: flex; align-items: center; gap: 10px; letter-spacing: -0.03em; margin-bottom: 28px; padding-bottom: 28px; border-bottom: 1px solid var(--border-subtle); text-decoration: none; user-select: none; }
         .sidebar-logo span { color: var(--accent-color); }
-
-        .nav-btn {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            width: 100%;
-            padding: 16px 18px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-subtle);
-            color: var(--text-muted);
-            border-radius: 14px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            font-family: var(--font-ui);
-        }
-
-        .nav-btn:hover {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: var(--border-hover);
-            color: white;
-            transform: translateX(4px);
-        }
-
-        .nav-btn.primary {
-            background: var(--accent-color);
-            border-color: var(--accent-color);
-            color: white;
-            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
-        }
-
-        .nav-btn.primary:hover {
-            background: var(--accent-hover);
-            transform: translateX(2px) translateY(-2px);
-            box-shadow: 0 8px 30px rgba(139, 92, 246, 0.45);
-        }
-
+        .nav-btn { display: flex; align-items: center; gap: 14px; width: 100%; padding: 16px 18px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); color: var(--text-muted); border-radius: 14px; cursor: pointer; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease; font-family: var(--font-ui); }
+        .nav-btn:hover { background: rgba(255,255,255,0.06); border-color: var(--border-hover); color: white; transform: translateX(4px); }
+        .nav-btn.primary { background: var(--accent-color); border-color: var(--accent-color); color: white; box-shadow: 0 4px 20px rgba(139,92,246,0.3); }
+        .nav-btn.primary:hover { background: var(--accent-hover); transform: translateX(2px) translateY(-2px); box-shadow: 0 8px 30px rgba(139,92,246,0.45); }
         .nav-btn svg { flex-shrink: 0; opacity: 0.7; }
         .nav-btn:hover svg { opacity: 1; }
         .nav-btn.primary svg { opacity: 1; }
 
         /* ── Main ── */
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            z-index: 5;
-            min-width: 0;
-        }
-
-        .top-bar {
-            padding: 20px 36px;
-            border-bottom: 1px solid var(--border-subtle);
-            background: rgba(5, 5, 10, 0.15);
-            backdrop-filter: blur(10px);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-shrink: 0;
-        }
-
-        .page-title {
-            font-size: 1.35rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #fff 30%, #a78bfa 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -0.02em;
-        }
-
+        .main-content { flex: 1; display: flex; flex-direction: column; position: relative; z-index: 5; min-width: 0; }
+        .top-bar { padding: 20px 36px; border-bottom: 1px solid var(--border-subtle); background: rgba(5,5,10,0.15); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+        .page-title { font-size: 1.35rem; font-weight: 700; background: linear-gradient(135deg, #fff 30%, #a78bfa 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.02em; }
         .actions-group { display: flex; gap: 8px; }
-
-        .btn {
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.78rem;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            border: 1px solid transparent;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-family: var(--font-ui);
-            white-space: nowrap;
-        }
-
+        .btn { padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 0.78rem; cursor: pointer; transition: all 0.3s cubic-bezier(0.25,0.8,0.25,1); border: 1px solid transparent; display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-ui); white-space: nowrap; }
         .btn svg { flex-shrink: 0; }
-
-        .btn-deploy { background: rgba(16, 185, 129, 0.12); color: #10b981; border-color: rgba(16, 185, 129, 0.25); }
-        .btn-deploy:hover { background: rgba(16, 185, 129, 0.22); box-shadow: 0 0 16px rgba(16, 185, 129, 0.15); transform: translateY(-1px); }
-
-        .btn-stop { background: rgba(245, 158, 11, 0.12); color: #f59e0b; border-color: rgba(245, 158, 11, 0.25); }
-        .btn-stop:hover { background: rgba(245, 158, 11, 0.22); box-shadow: 0 0 16px rgba(245, 158, 11, 0.15); transform: translateY(-1px); }
-
-        .btn-kill { background: rgba(239, 68, 68, 0.12); color: #ef4444; border-color: rgba(239, 68, 68, 0.25); }
-        .btn-kill:hover { background: rgba(239, 68, 68, 0.22); box-shadow: 0 0 16px rgba(239, 68, 68, 0.15); transform: translateY(-1px); }
-
-        .btn-workspace { background: rgba(139, 92, 246, 0.12); color: var(--accent-color); border-color: rgba(139, 92, 246, 0.25); }
-        .btn-workspace:hover { background: rgba(139, 92, 246, 0.22); box-shadow: 0 0 16px rgba(139, 92, 246, 0.15); transform: translateY(-1px); }
+        .btn-deploy { background: rgba(16,185,129,0.12); color: #10b981; border-color: rgba(16,185,129,0.25); }
+        .btn-deploy:hover { background: rgba(16,185,129,0.22); box-shadow: 0 0 16px rgba(16,185,129,0.15); transform: translateY(-1px); }
+        .btn-stop { background: rgba(245,158,11,0.12); color: #f59e0b; border-color: rgba(245,158,11,0.25); }
+        .btn-stop:hover { background: rgba(245,158,11,0.22); box-shadow: 0 0 16px rgba(245,158,11,0.15); transform: translateY(-1px); }
+        .btn-kill { background: rgba(239,68,68,0.12); color: #ef4444; border-color: rgba(239,68,68,0.25); }
+        .btn-kill:hover { background: rgba(239,68,68,0.22); box-shadow: 0 0 16px rgba(239,68,68,0.15); transform: translateY(-1px); }
+        .btn-workspace { background: rgba(139,92,246,0.12); color: var(--accent-color); border-color: rgba(139,92,246,0.25); }
+        .btn-workspace:hover { background: rgba(139,92,246,0.22); box-shadow: 0 0 16px rgba(139,92,246,0.15); transform: translateY(-1px); }
 
         .content-scroll { flex: 1; padding: 36px; overflow-y: auto; }
 
-        /* ── Instance Grid ── */
-        .instance-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 16px;
-        }
+        /* ── Service Tiles ── */
+        .tiles { display: flex; flex-direction: column; gap: 12px; }
 
-        /* ── Card ── */
-        .instance-card {
-            background: rgba(255, 255, 255, 0.02);
+        .tile {
+            display: flex; align-items: center; gap: 20px;
+            padding: 20px 24px;
+            background: rgba(255,255,255,0.02);
             border: 1px solid var(--border-subtle);
             border-radius: 16px;
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
             position: relative;
+            overflow: hidden;
         }
 
-        .instance-card:hover {
-            background: rgba(255, 255, 255, 0.04);
+        .tile::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.02), transparent);
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+        }
+        .tile:hover::after { opacity: 1; }
+
+        .tile:hover {
+            background: rgba(255,255,255,0.04);
             border-color: var(--border-hover);
-            transform: translateY(-3px);
-            box-shadow: 0 12px 40px -8px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px -8px rgba(0,0,0,0.4);
         }
 
-        /* top accent line */
-        .card-accent {
-            height: 2px;
-            width: 100%;
-            transition: all 0.4s ease;
+        /* ── Orb ── */
+        .orb-wrap {
+            position: relative;
+            width: 48px; height: 48px;
+            flex-shrink: 0;
         }
 
-        .instance-card.running .card-accent {
-            background: linear-gradient(90deg, #10b981 0%, rgba(16, 185, 129, 0.1) 100%);
+        .orb {
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            position: relative;
+            display: flex; align-items: center; justify-content: center;
         }
 
-        .instance-card.stopped .card-accent {
-            background: linear-gradient(90deg, #ef4444 0%, rgba(239, 68, 68, 0.1) 100%);
+        .orb-bg {
+            position: absolute; inset: 0;
+            border-radius: 50%;
+            opacity: 0.15;
         }
 
-        .instance-card.building .card-accent {
-            background: linear-gradient(90deg, #f59e0b 0%, rgba(245, 158, 11, 0.1) 100%);
-            animation: accentPulse 2s ease-in-out infinite;
+        .tile.running .orb-bg { background: #10b981; }
+        .tile.stopped .orb-bg { background: #ef4444; }
+        .tile.building .orb-bg { background: #f59e0b; }
+
+        .orb-ring {
+            position: absolute; inset: 3px;
+            border-radius: 50%;
+            background: rgba(10,10,15,0.9);
         }
 
-        @keyframes accentPulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
+        .orb-core {
+            position: relative; z-index: 2;
+            width: 12px; height: 12px;
+            border-radius: 50%;
         }
 
-        .card-body {
-            padding: 22px 24px 20px;
+        .tile.running .orb-core { background: #10b981; box-shadow: 0 0 12px #10b981, 0 0 4px #10b981; animation: orbPulse 2.5s ease-in-out infinite; }
+        .tile.stopped .orb-core { background: #ef4444; box-shadow: 0 0 8px rgba(239,68,68,0.4); }
+        .tile.building .orb-core { background: #f59e0b; box-shadow: 0 0 12px #f59e0b, 0 0 4px #f59e0b; animation: orbPulse 1s ease-in-out infinite; }
+
+        @keyframes orbPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.6; }
         }
 
-        .card-header {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 12px;
-        }
+        .tile.running .orb-ring { box-shadow: inset 0 0 12px rgba(16,185,129,0.15); }
+        .tile.building .orb-ring { box-shadow: inset 0 0 12px rgba(245,158,11,0.15); }
 
-        .card-name-wrap {
-            min-width: 0;
-            flex: 1;
-        }
+        /* ── Tile Info ── */
+        .tile-info { flex: 1; min-width: 0; }
 
-        .card-name {
-            font-size: 1.05rem;
+        .tile-name {
+            font-size: 1rem;
             font-weight: 700;
             color: white;
             letter-spacing: -0.02em;
-            line-height: 1.3;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-        .card-id {
+        .tile-meta {
+            display: flex; align-items: center; gap: 12px;
+            margin-top: 4px;
+        }
+
+        .tile-id {
             font-family: var(--font-code);
-            font-size: 0.68rem;
-            color: var(--text-dark);
-            margin-top: 4px;
-        }
-
-        .card-status-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            flex-shrink: 0;
-            margin-top: 4px;
-        }
-
-        .instance-card.running .card-status-dot {
-            background: #10b981;
-            box-shadow: 0 0 10px rgba(16, 185, 129, 0.5), 0 0 3px rgba(16, 185, 129, 0.8);
-            animation: dotPulse 2.5s ease-in-out infinite;
-        }
-
-        .instance-card.stopped .card-status-dot {
-            background: #ef4444;
-            box-shadow: 0 0 6px rgba(239, 68, 68, 0.3);
-        }
-
-        .instance-card.building .card-status-dot {
-            background: #f59e0b;
-            box-shadow: 0 0 10px rgba(245, 158, 11, 0.5), 0 0 3px rgba(245, 158, 11, 0.8);
-            animation: dotPulse 1s ease-in-out infinite;
-        }
-
-        @keyframes dotPulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(0.85); opacity: 0.5; }
-        }
-
-        .card-divider {
-            height: 1px;
-            background: var(--border-subtle);
-            margin: 16px 0;
-        }
-
-        .card-footer {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .status-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 12px;
-            border-radius: 6px;
             font-size: 0.7rem;
-            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .tile-dot-sep {
+            width: 3px; height: 3px;
+            border-radius: 50%;
+            background: var(--text-dark);
+            opacity: 0.4;
+        }
+
+        .tile-type {
+            font-size: 0.7rem;
+            color: var(--text-dark);
             text-transform: uppercase;
             letter-spacing: 0.06em;
+            font-weight: 500;
         }
 
-        .instance-card.running .status-tag {
-            background: rgba(16, 185, 129, 0.08);
-            color: #34d399;
-            border: 1px solid rgba(16, 185, 129, 0.12);
+        /* ── Tile Right ── */
+        .tile-right {
+            display: flex; align-items: center; gap: 16px;
+            flex-shrink: 0;
         }
 
-        .instance-card.stopped .status-tag {
-            background: rgba(239, 68, 68, 0.08);
-            color: #f87171;
-            border: 1px solid rgba(239, 68, 68, 0.12);
-        }
-
-        .instance-card.building .status-tag {
-            background: rgba(245, 158, 11, 0.08);
-            color: #fbbf24;
-            border: 1px solid rgba(245, 158, 11, 0.12);
-        }
-
-        .status-tag-dot {
-            width: 5px;
-            height: 5px;
-            border-radius: 50%;
-        }
-
-        .instance-card.running .status-tag-dot { background: #34d399; }
-        .instance-card.stopped .status-tag-dot { background: #f87171; }
-        .instance-card.building .status-tag-dot { background: #fbbf24; }
-
-        .card-type {
-            font-family: var(--font-code);
-            font-size: 0.68rem;
-            color: var(--text-dark);
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-subtle);
-            padding: 3px 8px;
-            border-radius: 5px;
-        }
-
-        /* hover actions */
-        .card-hover-actions {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            display: flex;
-            gap: 4px;
-            opacity: 0;
-            transform: translateY(-4px);
-            transition: all 0.3s ease;
-            pointer-events: none;
-        }
-
-        .instance-card:hover .card-hover-actions {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: auto;
-        }
-
-        .hover-act {
-            width: 28px;
-            height: 28px;
-            border-radius: 7px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            background: rgba(10, 10, 15, 0.8);
-            backdrop-filter: blur(8px);
-            color: var(--text-dark);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-        }
-
-        .hover-act:hover { color: white; background: rgba(255, 255, 255, 0.1); border-color: var(--border-hover); }
-        .hover-act.act-start:hover { color: #34d399; border-color: rgba(16, 185, 129, 0.3); }
-        .hover-act.act-stop:hover { color: #fbbf24; border-color: rgba(245, 158, 11, 0.3); }
-        .hover-act.act-kill:hover { color: #f87171; border-color: rgba(239, 68, 68, 0.3); }
-
-        /* ── Empty ── */
-        .empty-state {
-            grid-column: 1 / -1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 80px 20px;
+        .status-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 5px 14px;
+            border-radius: 8px;
+            min-width: 100px;
             text-align: center;
         }
 
-        .empty-icon-box {
-            width: 64px;
-            height: 64px;
-            border-radius: 18px;
-            background: rgba(139, 92, 246, 0.06);
-            border: 1px solid rgba(139, 92, 246, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--accent-color);
-            opacity: 0.5;
-            margin-bottom: 20px;
-        }
+        .tile.running .status-label { color: #34d399; background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.12); }
+        .tile.stopped .status-label { color: #f87171; background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.12); }
+        .tile.building .status-label { color: #fbbf24; background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.12); }
 
-        .empty-title { font-size: 1rem; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
-        .empty-hint { font-size: 0.85rem; color: var(--text-dark); }
-
-        .loading-state {
-            grid-column: 1 / -1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 16px;
-            padding: 80px 20px;
-            color: var(--text-muted);
-        }
-
-        .spinner {
-            width: 44px; height: 44px;
-            border-radius: 50%;
-            background: conic-gradient(from 0deg, transparent 0deg, var(--accent-color) 360deg);
-            position: relative;
-            animation: rotateSpinner 1s linear infinite;
-            box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
-        }
-        .spinner::after { content: ''; position: absolute; top: 4px; left: 4px; right: 4px; bottom: 4px; background: #050505; border-radius: 50%; }
-        @keyframes rotateSpinner { 100% { transform: rotate(360deg); } }
-
-        /* ── Modal ── */
-        .modal-overlay {
-            position: fixed; inset: 0;
-            background: rgba(5, 5, 10, 0.85);
-            backdrop-filter: blur(12px);
-            z-index: 2000;
-            display: none; align-items: center; justify-content: center;
-            opacity: 0; transition: opacity 0.3s;
-        }
-        .modal-overlay.open { display: flex; opacity: 1; }
-
-        .modal-content {
-            background: rgba(20, 20, 25, 0.95);
-            border: 1px solid var(--border-subtle);
-            border-top: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 24px;
-            padding: 28px;
-            width: 100%; max-width: 440px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-            transform: scale(0.95);
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .modal-overlay.open .modal-content { transform: scale(1); }
-
-        .modal-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 22px; color: white; letter-spacing: -0.02em; }
-        .form-group { margin-bottom: 16px; }
-        .form-label { display: block; color: var(--text-muted); margin-bottom: 6px; font-size: 0.85rem; font-weight: 500; }
-        .form-hint { color: var(--text-dark); font-size: 0.72rem; margin-top: 5px; line-height: 1.4; }
-
-        .code-editor {
-            width: 100%;
-            background: #0f0f13;
-            border: 1px solid var(--border-subtle);
-            border-radius: 16px;
-            color: #e4e4e7;
-            font-family: var(--font-code);
-            padding: 14px 18px;
-            font-size: 0.9rem;
-            outline: none;
+        .tile-actions {
+            display: flex; gap: 4px;
+            opacity: 0;
+            transform: translateX(6px);
             transition: all 0.3s ease;
-            box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.6);
-        }
-        .code-editor:focus { border-color: var(--accent-color); box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2), inset 0 4px 12px rgba(0, 0, 0, 0.6); }
-        .code-editor.error { border-color: #ef4444; box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.15), inset 0 4px 12px rgba(0, 0, 0, 0.6); }
-
-        .validation-msg { color: #ef4444; font-size: 0.75rem; margin-top: 5px; min-height: 0; }
-
-        .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; }
-
-        .btn-primary { background: var(--accent-color); color: white; border-color: var(--accent-color); box-shadow: 0 4px 15px rgba(139, 92, 246, 0.25); }
-        .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(139, 92, 246, 0.35); }
-
-        .btn-secondary { background: rgba(255, 255, 255, 0.05); color: white; border-color: var(--border-subtle); }
-        .btn-secondary:hover { background: rgba(255, 255, 255, 0.08); border-color: var(--border-hover); transform: translateY(-1px); }
-
-        /* ── Toasts ── */
-        .toast-container {
-            position: fixed;
-            bottom: 40px;
-            right: 40px;
-            z-index: 3000;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
             pointer-events: none;
         }
 
-        .toast {
-            position: relative;
+        .tile:hover .tile-actions {
+            opacity: 1;
+            transform: translateX(0);
             pointer-events: auto;
-            background: rgba(20, 20, 25, 0.85);
-            backdrop-filter: blur(24px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 16px 20px;
-            color: white;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            min-width: 340px;
-            max-width: 420px;
-            overflow: hidden;
-            transform-origin: right center;
-            animation: toastIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .toast-icon-wrapper {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 36px; height: 36px;
-            border-radius: 10px;
-            flex-shrink: 0;
-        }
-
-        .toast.success .toast-icon-wrapper { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.2); }
-        .toast.error .toast-icon-wrapper { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); }
-        .toast.info .toast-icon-wrapper { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.2); }
-
-        .toast-content { flex: 1; display: flex; flex-direction: column; justify-content: center; padding-right: 8px; }
-        .toast-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; color: #f3f4f6; }
-        .toast-message { font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; }
-
-        .toast-close {
-            background: transparent; border: none; color: rgba(255, 255, 255, 0.3);
-            cursor: pointer; padding: 6px; border-radius: 6px;
+        .ta-btn {
+            width: 32px; height: 32px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.06);
+            background: rgba(10,10,15,0.6);
+            color: var(--text-dark);
+            cursor: pointer;
             display: flex; align-items: center; justify-content: center;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
         }
-        .toast-close:hover { background: rgba(255, 255, 255, 0.1); color: white; }
 
-        .toast-progress {
-            position: absolute; bottom: 0; left: 0; height: 3px; width: 100%;
-            background: linear-gradient(90deg, var(--accent-color), var(--accent-hover));
-            transform-origin: left;
-            animation: toastTimer 5s linear forwards;
-        }
+        .ta-btn:hover { color: white; background: rgba(255,255,255,0.08); border-color: var(--border-hover); }
+        .ta-btn.t-start:hover { color: #34d399; border-color: rgba(16,185,129,0.3); background: rgba(16,185,129,0.08); }
+        .ta-btn.t-stop:hover { color: #fbbf24; border-color: rgba(245,158,11,0.3); background: rgba(245,158,11,0.08); }
+        .ta-btn.t-kill:hover { color: #f87171; border-color: rgba(239,68,68,0.3); background: rgba(239,68,68,0.08); }
+
+        /* ── Empty / Loading ── */
+        .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 20px; text-align: center; }
+        .empty-icon-box { width: 64px; height: 64px; border-radius: 18px; background: rgba(139,92,246,0.06); border: 1px solid rgba(139,92,246,0.1); display: flex; align-items: center; justify-content: center; color: var(--accent-color); opacity: 0.5; margin-bottom: 20px; }
+        .empty-title { font-size: 1rem; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
+        .empty-hint { font-size: 0.85rem; color: var(--text-dark); }
+
+        .loading-state { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 80px 20px; color: var(--text-muted); }
+        .spinner { width: 44px; height: 44px; border-radius: 50%; background: conic-gradient(from 0deg, transparent, var(--accent-color) 360deg); position: relative; animation: spin 1s linear infinite; box-shadow: 0 0 20px rgba(139,92,246,0.3); }
+        .spinner::after { content: ''; position: absolute; inset: 4px; background: #050505; border-radius: 50%; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* ── Modal ── */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(5,5,10,0.85); backdrop-filter: blur(12px); z-index: 2000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; }
+        .modal-overlay.open { display: flex; opacity: 1; }
+        .modal-content { background: rgba(20,20,25,0.95); border: 1px solid var(--border-subtle); border-top: 1px solid rgba(255,255,255,0.15); border-radius: 24px; padding: 28px; width: 100%; max-width: 440px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); }
+        .modal-overlay.open .modal-content { transform: scale(1); }
+        .modal-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 22px; color: white; }
+        .form-group { margin-bottom: 16px; }
+        .form-label { display: block; color: var(--text-muted); margin-bottom: 6px; font-size: 0.85rem; font-weight: 500; }
+        .form-hint { color: var(--text-dark); font-size: 0.72rem; margin-top: 5px; }
+        .code-editor { width: 100%; background: #0f0f13; border: 1px solid var(--border-subtle); border-radius: 16px; color: #e4e4e7; font-family: var(--font-code); padding: 14px 18px; font-size: 0.9rem; outline: none; transition: all 0.3s; box-shadow: inset 0 4px 12px rgba(0,0,0,0.6); }
+        .code-editor:focus { border-color: var(--accent-color); box-shadow: 0 0 0 2px rgba(139,92,246,0.2), inset 0 4px 12px rgba(0,0,0,0.6); }
+        .code-editor.error { border-color: #ef4444; box-shadow: 0 0 0 2px rgba(239,68,68,0.15), inset 0 4px 12px rgba(0,0,0,0.6); }
+        .validation-msg { color: #ef4444; font-size: 0.75rem; margin-top: 5px; }
+        .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; }
+        .btn-primary { background: var(--accent-color); color: white; border-color: var(--accent-color); box-shadow: 0 4px 15px rgba(139,92,246,0.25); }
+        .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
+        .btn-secondary { background: rgba(255,255,255,0.05); color: white; border-color: var(--border-subtle); }
+        .btn-secondary:hover { background: rgba(255,255,255,0.08); border-color: var(--border-hover); transform: translateY(-1px); }
+
+        /* ── Toasts ── */
+        .toast-container { position: fixed; bottom: 40px; right: 40px; z-index: 3000; display: flex; flex-direction: column; gap: 12px; pointer-events: none; }
+        .toast { position: relative; pointer-events: auto; background: rgba(20,20,25,0.85); backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 16px 20px; color: white; box-shadow: 0 20px 40px rgba(0,0,0,0.6); display: flex; align-items: center; gap: 16px; min-width: 340px; max-width: 420px; overflow: hidden; animation: toastIn 0.5s cubic-bezier(0.175,0.885,0.32,1.275); }
+        .toast-icon-wrapper { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0; }
+        .toast.success .toast-icon-wrapper { background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.2); }
+        .toast.error .toast-icon-wrapper { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.2); }
+        .toast.info .toast-icon-wrapper { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.2); }
+        .toast-content { flex: 1; }
+        .toast-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; color: #f3f4f6; }
+        .toast-message { font-size: 0.85rem; color: var(--text-muted); }
+        .toast-close { background: transparent; border: none; color: rgba(255,255,255,0.3); cursor: pointer; padding: 6px; border-radius: 6px; display: flex; transition: all 0.2s; }
+        .toast-close:hover { background: rgba(255,255,255,0.1); color: white; }
+        .toast-progress { position: absolute; bottom: 0; left: 0; height: 3px; width: 100%; transform-origin: left; animation: toastT 5s linear forwards; }
         .toast.success .toast-progress { background: #10b981; }
         .toast.error .toast-progress { background: #ef4444; }
         .toast.info .toast-progress { background: #3b82f6; }
-
-        @keyframes toastTimer { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+        @keyframes toastT { from { transform: scaleX(1); } to { transform: scaleX(0); } }
         @keyframes toastIn { from { transform: translateX(100%) skewX(-10deg); opacity: 0; } to { transform: translateX(0) skewX(0); opacity: 1; } }
         @keyframes toastOut { to { transform: translateX(50px) scale(0.9); opacity: 0; } }
 
-        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.08); border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.15); }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.06); border-radius: 3px; }
 
         @media (max-width: 900px) {
             body { flex-direction: column; overflow-y: auto; }
@@ -694,10 +336,11 @@
             .nav-btn span { display: none; }
             .top-bar { padding: 14px 16px; flex-wrap: wrap; gap: 10px; }
             .actions-group { width: 100%; flex-wrap: wrap; }
-            .btn { flex: 1; justify-content: center; font-size: 0.75rem; padding: 7px 10px; min-width: 100px; }
+            .btn { flex: 1; justify-content: center; font-size: 0.75rem; min-width: 90px; }
             .content-scroll { padding: 20px; }
-            .instance-grid { grid-template-columns: 1fr; }
-            .card-hover-actions { opacity: 1; transform: translateY(0); pointer-events: auto; }
+            .tile { padding: 16px; gap: 14px; flex-wrap: wrap; }
+            .tile-right { width: 100%; justify-content: space-between; }
+            .tile-actions { opacity: 1; transform: none; pointer-events: auto; }
             .toast-container { right: 20px; left: 20px; bottom: 20px; }
             .toast { width: 100%; min-width: auto; max-width: none; }
         }
@@ -711,21 +354,21 @@
     <div class="glow-spot spot1" id="spot1"></div>
     <div class="glow-spot spot2" id="spot2"></div>
     <div class="bubbles-container" id="bubbles-container">
-        <div class="bubble" style="left: 10%; width: 150px; height: 150px; animation-duration: 35s; animation-delay: 0s;"></div>
-        <div class="bubble" style="left: 30%; width: 80px; height: 80px; animation-duration: 45s; animation-delay: -5s;"></div>
-        <div class="bubble" style="left: 60%; width: 200px; height: 200px; animation-duration: 55s; animation-delay: -10s;"></div>
-        <div class="bubble" style="left: 85%; width: 120px; height: 120px; animation-duration: 25s; animation-delay: -2s;"></div>
-        <div class="bubble" style="left: 45%; width: 60px; height: 60px; animation-duration: 30s; animation-delay: -15s;"></div>
+        <div class="bubble" style="left:10%;width:150px;height:150px;animation-duration:35s;"></div>
+        <div class="bubble" style="left:30%;width:80px;height:80px;animation-duration:45s;animation-delay:-5s;"></div>
+        <div class="bubble" style="left:60%;width:200px;height:200px;animation-duration:55s;animation-delay:-10s;"></div>
+        <div class="bubble" style="left:85%;width:120px;height:120px;animation-duration:25s;animation-delay:-2s;"></div>
+        <div class="bubble" style="left:45%;width:60px;height:60px;animation-duration:30s;animation-delay:-15s;"></div>
     </div>
     <div class="particles" id="particles">
-        <div class="particle" style="top: 20%; left: 15%; animation-duration: 25s;"></div>
-        <div class="particle" style="top: 70%; left: 80%; width: 6px; height: 6px; animation-duration: 30s; animation-delay: -2s;"></div>
-        <div class="particle" style="top: 40%; left: 40%; width: 3px; height: 3px; animation-duration: 22s; animation-delay: -5s;"></div>
-        <div class="particle" style="top: 10%; left: 90%; animation-duration: 28s;"></div>
-        <div class="particle" style="top: 80%; left: 10%; animation-duration: 32s; animation-delay: -12s;"></div>
-        <div class="particle" style="top: 30%; left: 5%; width: 2px; height: 2px; animation-duration: 12s; animation-delay: -4s;"></div>
-        <div class="particle" style="top: 60%; left: 50%; width: 5px; height: 5px; animation-duration: 20s; animation-delay: -12s;"></div>
-        <div class="particle" style="top: 15%; left: 70%; width: 3px; height: 3px; animation-duration: 15s; animation-delay: -6s;"></div>
+        <div class="particle" style="top:20%;left:15%;animation-duration:25s;"></div>
+        <div class="particle" style="top:70%;left:80%;width:6px;height:6px;animation-duration:30s;animation-delay:-2s;"></div>
+        <div class="particle" style="top:40%;left:40%;width:3px;height:3px;animation-duration:22s;animation-delay:-5s;"></div>
+        <div class="particle" style="top:10%;left:90%;animation-duration:28s;"></div>
+        <div class="particle" style="top:80%;left:10%;animation-duration:32s;animation-delay:-12s;"></div>
+        <div class="particle" style="top:30%;left:5%;width:2px;height:2px;animation-duration:12s;animation-delay:-4s;"></div>
+        <div class="particle" style="top:60%;left:50%;width:5px;height:5px;animation-duration:20s;animation-delay:-12s;"></div>
+        <div class="particle" style="top:15%;left:70%;width:3px;height:3px;animation-duration:15s;animation-delay:-6s;"></div>
     </div>
 
     <aside class="sidebar">
@@ -737,13 +380,11 @@
             </svg>
             <span>Nodefy</span>
         </a>
-
         <button class="nav-btn primary" onclick="openAddModal()">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            <span>Add Instance</span>
+            <span>Add Instances</span>
         </button>
-
-        <button class="nav-btn" onclick="showToast('SSH', 'Opening secure gateway...', 'info')">
+        <button class="nav-btn" onclick="showToast('SSH','Opening secure gateway...','info')">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
             <span>Access SSH</span>
         </button>
@@ -754,47 +395,43 @@
             <div class="page-title">Cloud Command Center</div>
             <div class="actions-group">
                 <button class="btn btn-deploy" onclick="handleAction('start')">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                    Start
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="5 3 19 12 5 21"></polygon></svg>
+                    Deploy
                 </button>
                 <button class="btn btn-stop" onclick="handleAction('stop')">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="1"></rect></svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="6" y="6" width="12" height="12" rx="1"></rect></svg>
                     Stop
                 </button>
                 <button class="btn btn-kill" onclick="handleAction('kill')">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
                     Kill
                 </button>
                 <button class="btn btn-workspace" onclick="handleWorkspace()">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg>
                     Workspace
                 </button>
             </div>
         </header>
 
         <div class="content-scroll">
-            <div class="instance-grid" id="instanceGrid">
-                <div class="loading-state">
-                    <div class="spinner"></div>
-                    <span>Connecting to backend...</span>
-                </div>
+            <div class="tiles" id="tiles">
+                <div class="loading-state"><div class="spinner"></div><span>Connecting to backend...</span></div>
             </div>
         </div>
     </main>
 
-    <!-- Add Instance Modal -->
     <div class="modal-overlay" id="addModal">
         <div class="modal-content">
             <h3 class="modal-title">Provision Instance</h3>
             <div class="form-group">
                 <label class="form-label">Instance Name</label>
-                <input type="text" id="addInstName" class="code-editor" placeholder="e.g. myapp" oninput="validateInstName(this, 'addNameErr')" autocomplete="off" spellcheck="false">
-                <div class="form-hint">Only lowercase letters, numbers, and hyphens allowed.</div>
+                <input type="text" id="addInstName" class="code-editor" placeholder="e.g. myapp" oninput="validateInstName(this,'addNameErr')" autocomplete="off" spellcheck="false">
+                <div class="form-hint">Lowercase letters, numbers, and hyphens only.</div>
                 <div class="validation-msg" id="addNameErr"></div>
             </div>
             <div class="form-group">
                 <label class="form-label">Docker Image</label>
-                <input type="text" id="addImageName" class="code-editor" placeholder="e.g. nginx:alpine" oninput="validateImageName(this, 'addImgErr')" autocomplete="off" spellcheck="false">
+                <input type="text" id="addImageName" class="code-editor" placeholder="e.g. nginx:alpine" oninput="validateImageName(this,'addImgErr')" autocomplete="off" spellcheck="false">
                 <div class="form-hint">Format: <span style="color:var(--text-muted);font-family:var(--font-code);">image:tag</span></div>
                 <div class="validation-msg" id="addImgErr"></div>
             </div>
@@ -805,21 +442,18 @@
         </div>
     </div>
 
-    <!-- Action Modal -->
     <div class="modal-overlay" id="actionModal">
         <div class="modal-content">
             <h3 class="modal-title" id="actionTitle">Execute Command</h3>
             <input type="hidden" id="currentAction">
             <div class="form-group">
                 <label class="form-label">Instance Name</label>
-                <input type="text" id="actionInstName" class="code-editor" placeholder="e.g. myapp" oninput="validateInstName(this, 'actionNameErr')" autocomplete="off" spellcheck="false">
-                <div class="form-hint">Only lowercase letters, numbers, and hyphens allowed.</div>
+                <input type="text" id="actionInstName" class="code-editor" placeholder="e.g. myapp" oninput="validateInstName(this,'actionNameErr')" autocomplete="off" spellcheck="false">
                 <div class="validation-msg" id="actionNameErr"></div>
             </div>
             <div class="form-group">
                 <label class="form-label">Docker Image</label>
-                <input type="text" id="actionImageName" class="code-editor" placeholder="e.g. nginx:alpine" oninput="validateImageName(this, 'actionImgErr')" autocomplete="off" spellcheck="false">
-                <div class="form-hint">Format: <span style="color:var(--text-muted);font-family:var(--font-code);">image:tag</span></div>
+                <input type="text" id="actionImageName" class="code-editor" placeholder="e.g. nginx:alpine" oninput="validateImageName(this,'actionImgErr')" autocomplete="off" spellcheck="false">
                 <div class="validation-msg" id="actionImgErr"></div>
             </div>
             <div class="modal-actions">
@@ -833,224 +467,118 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const ambientGlow = document.getElementById('ambient-glow');
-            const spot1 = document.getElementById('spot1');
-            const spot2 = document.getElementById('spot2');
-            const particles = document.getElementById('particles');
-            const bubblesContainer = document.getElementById('bubbles-container');
-
-            if (ambientGlow || spot1 || spot2 || particles || bubblesContainer) {
-                document.addEventListener('mousemove', (e) => {
-                    const x = (window.innerWidth - e.pageX * 2) / 100;
-                    const y = (window.innerHeight - e.pageY * 2) / 100;
-                    if (ambientGlow) ambientGlow.style.transform = `translate(${x}px, ${y}px)`;
-                    if (spot1) spot1.style.transform = `translate(${x * 1.5}px, ${y * 1.5}px)`;
-                    if (spot2) spot2.style.transform = `translate(${x * 0.5}px, ${y * 0.5}px)`;
-                    if (particles) particles.style.transform = `translate(${x * -0.5}px, ${y * -0.5}px)`;
-                    if (bubblesContainer) bubblesContainer.style.transform = `translate(${x * -0.2}px, ${y * -0.2}px)`;
-                });
-            }
-
-            fetchInstances();
-            setInterval(fetchInstances, 5000);
+            const a=document.getElementById('ambient-glow'),s1=document.getElementById('spot1'),s2=document.getElementById('spot2'),p=document.getElementById('particles'),b=document.getElementById('bubbles-container');
+            if(a||s1||s2||p||b) document.addEventListener('mousemove',e=>{const x=(innerWidth-e.pageX*2)/100,y=(innerHeight-e.pageY*2)/100;if(a)a.style.transform=`translate(${x}px,${y}px)`;if(s1)s1.style.transform=`translate(${x*1.5}px,${y*1.5}px)`;if(s2)s2.style.transform=`translate(${x*.5}px,${y*.5}px)`;if(p)p.style.transform=`translate(${x*-.5}px,${y*-.5}px)`;if(b)b.style.transform=`translate(${x*-.2}px,${y*-.2}px)`;});
+            fetchInstances(); setInterval(fetchInstances,5000);
         });
 
         let instances = [];
 
-        function validateInstName(input, errId) {
-            const val = input.value;
-            const errEl = document.getElementById(errId);
-            const regex = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
-            if (!val) { input.classList.remove('error'); errEl.textContent = ''; return false; }
-            if (/[A-Z]/.test(val)) { input.classList.add('error'); errEl.textContent = 'Uppercase not allowed.'; return false; }
-            if (/\s/.test(val)) { input.classList.add('error'); errEl.textContent = 'Spaces not allowed.'; return false; }
-            if (/[^a-z0-9\-]/.test(val)) { input.classList.add('error'); errEl.textContent = 'Special characters not allowed.'; return false; }
-            if (val.startsWith('-') || val.endsWith('-')) { input.classList.add('error'); errEl.textContent = 'Cannot start/end with hyphen.'; return false; }
-            if (/--/.test(val)) { input.classList.add('error'); errEl.textContent = 'No consecutive hyphens.'; return false; }
-            if (!regex.test(val)) { input.classList.add('error'); errEl.textContent = 'Must start with a lowercase letter.'; return false; }
-            input.classList.remove('error'); errEl.textContent = ''; return true;
-        }
+        function validateInstName(i,e){const v=i.value,d=document.getElementById(e),r=/^[a-z][a-z0-9]*(-[a-z0-9]+)*$/;if(!v){i.classList.remove('error');d.textContent='';return false}if(/[A-Z]/.test(v)){i.classList.add('error');d.textContent='Uppercase not allowed.';return false}if(/\s/.test(v)){i.classList.add('error');d.textContent='Spaces not allowed.';return false}if(/[^a-z0-9\-]/.test(v)){i.classList.add('error');d.textContent='Special chars not allowed.';return false}if(v.startsWith('-')||v.endsWith('-')){i.classList.add('error');d.textContent='Cannot start/end with hyphen.';return false}if(/--/.test(v)){i.classList.add('error');d.textContent='No consecutive hyphens.';return false}if(!r.test(v)){i.classList.add('error');d.textContent='Start with lowercase letter.';return false}i.classList.remove('error');d.textContent='';return true}
 
-        function validateImageName(input, errId) {
-            const val = input.value.trim();
-            const errEl = document.getElementById(errId);
-            if (!val) { input.classList.remove('error'); errEl.textContent = ''; return false; }
-            if (/\s/.test(val)) { input.classList.add('error'); errEl.textContent = 'No spaces allowed.'; return false; }
-            const pattern = /^(?:[a-z0-9.\-]+(?:\/[a-z0-9._\-]+)*\/)?[a-z0-9._\-]+(?::[a-zA-Z0-9._\-]+)?$/;
-            if (!pattern.test(val)) { input.classList.add('error'); errEl.textContent = 'Invalid format. Use image:tag'; return false; }
-            if (val.includes(':')) { const tag = val.split(':').pop(); if (tag.length > 128) { input.classList.add('error'); errEl.textContent = 'Tag too long.'; return false; } }
-            input.classList.remove('error'); errEl.textContent = ''; return true;
-        }
+        function validateImageName(i,e){const v=i.value.trim(),d=document.getElementById(e);if(!v){i.classList.remove('error');d.textContent='';return false}if(/\s/.test(v)){i.classList.add('error');d.textContent='No spaces.';return false}if(!/^(?:[a-z0-9.\-]+(?:\/[a-z0-9._\-]+)*\/)?[a-z0-9._\-]+(?::[a-zA-Z0-9._\-]+)?$/.test(v)){i.classList.add('error');d.textContent='Invalid format.';return false}i.classList.remove('error');d.textContent='';return true}
 
-        async function fetchInstances() {
-            const grid = document.getElementById('instanceGrid');
-            if (instances.length === 0) {
-                grid.innerHTML = `<div class="loading-state"><div class="spinner"></div><span>Connecting to backend...</span></div>`;
-            }
-            try {
-                const response = await fetch('/getbuildinstance', { method: 'GET', credentials: 'include' });
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const data = await response.json();
-                instances.length = 0;
-                data.forEach(item => {
-                    instances.push({ id: item.id, name: item.instance_name, status: item.status.toLowerCase() });
-                });
-                renderInstances();
-            } catch (error) {
-                console.error('Fetch Error:', error);
-                if (instances.length === 0) {
-                    grid.innerHTML = `<div class="empty-state"><div class="empty-icon-box"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div><div class="empty-title">Failed to connect</div><div class="empty-hint">${error.message}</div></div>`;
-                }
+        async function fetchInstances(){
+            const t=document.getElementById('tiles');
+            if(!instances.length) t.innerHTML='<div class="loading-state"><div class="spinner"></div><span>Connecting to backend...</span></div>';
+            try{
+                const r=await fetch('/getbuildinstance',{method:'GET',credentials:'include'});
+                if(!r.ok) throw new Error(`HTTP ${r.status}`);
+                const d=await r.json(); instances.length=0;
+                d.forEach(i=>instances.push({id:i.id,name:i.instance_name,status:i.status.toLowerCase()}));
+                render();
+            }catch(e){
+                console.error(e);
+                if(!instances.length) t.innerHTML=`<div class="empty-state"><div class="empty-icon-box"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div><div class="empty-title">Failed to connect</div><div class="empty-hint">${e.message}</div></div>`;
             }
         }
 
-        function renderInstances() {
-            const grid = document.getElementById('instanceGrid');
-            grid.innerHTML = '';
+        function render(){
+            const t=document.getElementById('tiles'); t.innerHTML='';
+            if(!instances.length){t.innerHTML='<div class="empty-state"><div class="empty-icon-box"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"></rect><rect x="2" y="14" width="20" height="8" rx="2"></rect></svg></div><div class="empty-title">No instances yet</div><div class="empty-hint">Click "Add Instances" to get started</div></div>';return}
 
-            if (instances.length === 0) {
-                grid.innerHTML = `<div class="empty-state"><div class="empty-icon-box"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg></div><div class="empty-title">No instances yet</div><div class="empty-hint">Click "Add Instance" to get started</div></div>`;
-                return;
-            }
+            instances.forEach(inst=>{
+                let c='building';
+                if(inst.status==='running') c='running';
+                else if(inst.status==='stopped') c='stopped';
 
-            instances.forEach(inst => {
-                let cls = 'building';
-                if (inst.status === 'running') cls = 'running';
-                else if (inst.status === 'stopped') cls = 'stopped';
+                let acts='';
+                if(inst.status==='stopped') acts=`<button class="ta-btn t-start" title="Start" onclick="quickAction('${inst.name}','start')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polygon points="5 3 19 12 5 21"></polygon></svg></button>`;
+                else if(inst.status==='running') acts=`<button class="ta-btn t-stop" title="Stop" onclick="quickAction('${inst.name}','stop')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><rect x="6" y="6" width="12" height="12" rx="1"></rect></svg></button>`;
+                acts+=`<button class="ta-btn t-kill" title="Kill" onclick="quickAction('${inst.name}','kill')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>`;
 
-                let hoverBtns = '';
-                if (inst.status === 'stopped') {
-                    hoverBtns = `<button class="hover-act act-start" title="Start" onclick="quickAction('${inst.name}','start')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg></button>`;
-                } else if (inst.status === 'running') {
-                    hoverBtns = `<button class="hover-act act-stop" title="Stop" onclick="quickAction('${inst.name}','stop')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="1"></rect></svg></button>`;
-                }
-                hoverBtns += `<button class="hover-act act-kill" title="Kill" onclick="quickAction('${inst.name}','kill')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>`;
-
-                const card = document.createElement('div');
-                card.className = `instance-card ${cls}`;
-                card.innerHTML = `
-                    <div class="card-accent"></div>
-                    <div class="card-hover-actions">${hoverBtns}</div>
-                    <div class="card-body">
-                        <div class="card-header">
-                            <div class="card-name-wrap">
-                                <div class="card-name">${inst.name}</div>
-                                <div class="card-id">#${inst.id}</div>
-                            </div>
-                            <div class="card-status-dot"></div>
-                        </div>
-                        <div class="card-divider"></div>
-                        <div class="card-footer">
-                            <div class="status-tag"><div class="status-tag-dot"></div>${inst.status}</div>
-                            <div class="card-type">docker</div>
+                const el=document.createElement('div');
+                el.className=`tile ${c}`;
+                el.innerHTML=`
+                    <div class="orb-wrap">
+                        <div class="orb">
+                            <div class="orb-bg"></div>
+                            <div class="orb-ring"></div>
+                            <div class="orb-core"></div>
                         </div>
                     </div>
+                    <div class="tile-info">
+                        <div class="tile-name">${inst.name}</div>
+                        <div class="tile-meta">
+                            <span class="tile-id">#${inst.id}</span>
+                            <span class="tile-dot-sep"></span>
+                            <span class="tile-type">Docker</span>
+                        </div>
+                    </div>
+                    <div class="tile-right">
+                        <div class="status-label">${inst.status}</div>
+                        <div class="tile-actions">${acts}</div>
+                    </div>
                 `;
-                grid.appendChild(card);
+                t.appendChild(el);
             });
         }
 
-        function quickAction(name, type) {
-            if (type === 'kill') {
-                const idx = instances.findIndex(i => i.name === name);
-                if (idx > -1) instances.splice(idx, 1);
-                renderInstances();
-                showToast('Terminated', `"${name}" has been killed.`, 'error');
-            } else if (type === 'stop') {
-                const inst = instances.find(i => i.name === name);
-                if (inst) inst.status = 'stopped';
-                renderInstances();
-                showToast('Stopped', `"${name}" halted.`, 'info');
-            } else if (type === 'start') {
-                const inst = instances.find(i => i.name === name);
-                if (inst) inst.status = 'building';
-                renderInstances();
-                showToast('Starting', `Starting "${name}"...`, 'success');
-            }
+        function quickAction(n,t){
+            if(t==='kill'){const i=instances.findIndex(x=>x.name===n);if(i>-1)instances.splice(i,1);render();showToast('Terminated',`"${n}" killed.`,'error')}
+            else if(t==='stop'){const i=instances.find(x=>x.name===n);if(i)i.status='stopped';render();showToast('Stopped',`"${n}" halted.`,'info')}
+            else if(t==='start'){const i=instances.find(x=>x.name===n);if(i)i.status='building';render();showToast('Starting',`Starting "${n}"...`,'success')}
         }
 
-        function closeModals() {
-            document.querySelectorAll('.modal-overlay').forEach(el => el.classList.remove('open'));
-            document.querySelectorAll('.code-editor').forEach(el => { el.value = ''; el.classList.remove('error'); });
-            document.querySelectorAll('.validation-msg').forEach(el => el.textContent = '');
-        }
+        function closeModals(){document.querySelectorAll('.modal-overlay').forEach(e=>e.classList.remove('open'));document.querySelectorAll('.code-editor').forEach(e=>{e.value='';e.classList.remove('error')});document.querySelectorAll('.validation-msg').forEach(e=>e.textContent='')}
+        function openAddModal(){document.getElementById('addModal').classList.add('open');setTimeout(()=>document.getElementById('addInstName').focus(),100)}
+        function handleAction(t){document.getElementById('currentAction').value=t;document.getElementById('actionTitle').innerText={start:'▶ Start Instance',stop:'⏹ Stop Instance',kill:'⛔ Kill Instance'}[t];document.getElementById('actionModal').classList.add('open');setTimeout(()=>document.getElementById('actionInstName').focus(),100)}
 
-        function openAddModal() {
-            document.getElementById('addModal').classList.add('open');
-            setTimeout(() => document.getElementById('addInstName').focus(), 100);
-        }
-
-        function handleAction(actionType) {
-            document.getElementById('currentAction').value = actionType;
-            const labels = { start: '▶ Start Instance', stop: '⏹ Stop Instance', kill: '⛔ Kill Instance' };
-            document.getElementById('actionTitle').innerText = labels[actionType] || actionType.toUpperCase();
-            document.getElementById('actionModal').classList.add('open');
-            setTimeout(() => document.getElementById('actionInstName').focus(), 100);
-        }
-
-        async function submitAddInstance() {
-            const nameInput = document.getElementById('addInstName');
-            const imageInput = document.getElementById('addImageName');
-            const name = nameInput.value.trim();
-            const image = imageInput.value.trim();
-            if (!name) { nameInput.classList.add('error'); document.getElementById('addNameErr').textContent = 'Required.'; nameInput.focus(); return; }
-            if (!validateInstName(nameInput, 'addNameErr')) { nameInput.focus(); return; }
-            if (!image) { imageInput.classList.add('error'); document.getElementById('addImgErr').textContent = 'Required.'; imageInput.focus(); return; }
-            if (!validateImageName(imageInput, 'addImgErr')) { imageInput.focus(); return; }
+        async function submitAddInstance(){
+            const n=document.getElementById('addInstName'),im=document.getElementById('addImageName'),name=n.value.trim(),img=im.value.trim();
+            if(!name){n.classList.add('error');document.getElementById('addNameErr').textContent='Required.';n.focus();return}
+            if(!validateInstName(n,'addNameErr')){n.focus();return}
+            if(!img){im.classList.add('error');document.getElementById('addImgErr').textContent='Required.';im.focus();return}
+            if(!validateImageName(im,'addImgErr')){im.focus();return}
             closeModals();
-            try {
-                const response = await fetch('/addinstancesbuild', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include',
-                    body: JSON.stringify({ instancename: name, imagename: image })
-                });
-                if (!response.ok) { const e = await response.json().catch(() => ({})); throw new Error(e.error || e.message || 'Server Error'); }
-                await fetchInstances();
-                showToast('Success', `Instance "${name}" created.`, 'success');
-            } catch (error) {
-                console.error(error);
-                showToast('Error', error.message, 'error');
-            }
+            try{const r=await fetch('/addinstancesbuild',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({instancename:name,imagename:img})});if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error||e.message||'Server Error')}await fetchInstances();showToast('Success',`"${name}" created.`,'success')}catch(e){console.error(e);showToast('Error',e.message,'error')}
         }
 
-        async function submitAction() {
-            const type = document.getElementById('currentAction').value;
-            const nameInput = document.getElementById('actionInstName');
-            const imageInput = document.getElementById('actionImageName');
-            const name = nameInput.value.trim();
-            const image = imageInput.value.trim();
-            if (!name) { nameInput.classList.add('error'); document.getElementById('actionNameErr').textContent = 'Required.'; nameInput.focus(); return; }
-            if (!validateInstName(nameInput, 'actionNameErr')) { nameInput.focus(); return; }
-            if (!image) { imageInput.classList.add('error'); document.getElementById('actionImgErr').textContent = 'Required.'; imageInput.focus(); return; }
-            if (!validateImageName(imageInput, 'actionImgErr')) { imageInput.focus(); return; }
-            closeModals();
-            quickAction(name, type);
+        async function submitAction(){
+            const t=document.getElementById('currentAction').value,n=document.getElementById('actionInstName'),im=document.getElementById('actionImageName'),name=n.value.trim(),img=im.value.trim();
+            if(!name){n.classList.add('error');document.getElementById('actionNameErr').textContent='Required.';n.focus();return}
+            if(!validateInstName(n,'actionNameErr')){n.focus();return}
+            if(!img){im.classList.add('error');document.getElementById('actionImgErr').textContent='Required.';im.focus();return}
+            if(!validateImageName(im,'actionImgErr')){im.focus();return}
+            closeModals();quickAction(name,t);
         }
 
-        function handleWorkspace() { showToast('Redirecting', 'Opening secure workspace...', 'info'); }
+        function handleWorkspace(){showToast('Redirecting','Opening workspace...','info')}
 
-        function showToast(title, message, type = "success") {
-            const container = document.getElementById('toast-container');
-            if (container.children.length >= 3) container.removeChild(container.firstChild);
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            let iconSvg = '';
-            if (type === 'success') iconSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
-            else if (type === 'error') iconSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`;
-            else iconSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`;
-            toast.innerHTML = `<div class="toast-icon-wrapper">${iconSvg}</div><div class="toast-content"><div class="toast-title">${title}</div><div class="toast-message">${message}</div></div><button class="toast-close" onclick="this.parentElement.remove()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button><div class="toast-progress"></div>`;
-            container.appendChild(toast);
-            setTimeout(() => {
-                toast.style.animation = 'toastOut 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
-                toast.addEventListener('animationend', () => { if (toast.parentElement) toast.remove(); });
-            }, 5000);
+        function showToast(title,message,type="success"){
+            const c=document.getElementById('toast-container');if(c.children.length>=3)c.removeChild(c.firstChild);
+            const t=document.createElement('div');t.className=`toast ${type}`;
+            let ico='';
+            if(type==='success')ico='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+            else if(type==='error')ico='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>';
+            else ico='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>';
+            t.innerHTML=`<div class="toast-icon-wrapper">${ico}</div><div class="toast-content"><div class="toast-title">${title}</div><div class="toast-message">${message}</div></div><button class="toast-close" onclick="this.parentElement.remove()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button><div class="toast-progress"></div>`;
+            c.appendChild(t);
+            setTimeout(()=>{t.style.animation='toastOut 0.4s cubic-bezier(0.175,0.885,0.32,1.275) forwards';t.addEventListener('animationend',()=>{if(t.parentElement)t.remove()})},5000);
         }
 
-        document.querySelectorAll('.modal-overlay').forEach(overlay => {
-            overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModals(); });
-        });
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModals(); });
+        document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeModals()}));
+        document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModals()});
     </script>
 </body>
 </html>
