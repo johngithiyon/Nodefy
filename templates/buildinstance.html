@@ -184,7 +184,6 @@
             border-bottom: 1px solid var(--border-subtle);
             text-decoration: none;
             user-select: none;
-            -webkit-user-select: none;
         }
 
         .sidebar-logo span { color: var(--accent-color); }
@@ -279,281 +278,221 @@
 
         .btn svg { flex-shrink: 0; }
 
-        .btn-deploy { background: rgba(16, 185, 129, 0.12); color: var(--green); border-color: rgba(16, 185, 129, 0.25); }
+        .btn-deploy { background: rgba(16, 185, 129, 0.12); color: #10b981; border-color: rgba(16, 185, 129, 0.25); }
         .btn-deploy:hover { background: rgba(16, 185, 129, 0.22); box-shadow: 0 0 16px rgba(16, 185, 129, 0.15); transform: translateY(-1px); }
 
-        .btn-stop { background: rgba(245, 158, 11, 0.12); color: var(--yellow); border-color: rgba(245, 158, 11, 0.25); }
+        .btn-stop { background: rgba(245, 158, 11, 0.12); color: #f59e0b; border-color: rgba(245, 158, 11, 0.25); }
         .btn-stop:hover { background: rgba(245, 158, 11, 0.22); box-shadow: 0 0 16px rgba(245, 158, 11, 0.15); transform: translateY(-1px); }
 
-        .btn-kill { background: rgba(239, 68, 68, 0.12); color: var(--red); border-color: rgba(239, 68, 68, 0.25); }
+        .btn-kill { background: rgba(239, 68, 68, 0.12); color: #ef4444; border-color: rgba(239, 68, 68, 0.25); }
         .btn-kill:hover { background: rgba(239, 68, 68, 0.22); box-shadow: 0 0 16px rgba(239, 68, 68, 0.15); transform: translateY(-1px); }
 
         .btn-workspace { background: rgba(139, 92, 246, 0.12); color: var(--accent-color); border-color: rgba(139, 92, 246, 0.25); }
         .btn-workspace:hover { background: rgba(139, 92, 246, 0.22); box-shadow: 0 0 16px rgba(139, 92, 246, 0.15); transform: translateY(-1px); }
 
-        /* ── Content ── */
         .content-scroll { flex: 1; padding: 36px; overflow-y: auto; }
 
-        /* ── Stats Bar ── */
-        .stats-bar {
-            display: flex;
-            gap: 16px;
-            margin-bottom: 32px;
-        }
-
-        .stat-chip {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 18px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-subtle);
-            border-radius: 12px;
-            font-size: 0.82rem;
-            font-weight: 500;
-            color: var(--text-muted);
-            transition: all 0.3s ease;
-        }
-
-        .stat-chip:hover {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: var(--border-hover);
-        }
-
-        .stat-dot {
-            width: 8px; height: 8px;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-
-        .stat-dot.total { background: var(--accent-color); box-shadow: 0 0 8px rgba(139, 92, 246, 0.4); }
-        .stat-dot.running { background: #10b981; box-shadow: 0 0 8px rgba(16, 185, 129, 0.4); }
-        .stat-dot.stopped { background: #ef4444; box-shadow: 0 0 8px rgba(239, 68, 68, 0.4); }
-
-        .stat-num {
-            font-weight: 700;
-            color: white;
-            font-family: var(--font-code);
-            font-size: 0.9rem;
-            min-width: 16px;
-            text-align: center;
-        }
-
-        .stat-divider {
-            width: 1px;
-            height: 20px;
-            background: var(--border-subtle);
-            align-self: center;
-        }
-
-        /* ── Section ── */
-        .section-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-
-        .section-title {
-            color: white;
-            font-weight: 600;
-            font-size: 1rem;
-            letter-spacing: -0.01em;
-        }
-
-        .section-subtitle {
-            color: var(--text-dark);
-            font-size: 0.78rem;
-            margin-top: 3px;
-        }
-
-        .instance-list {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        /* ── Instance Row ── */
-        .instance-row {
+        /* ── Instance Grid ── */
+        .instance-grid {
             display: grid;
-            grid-template-columns: 1fr auto auto auto;
-            align-items: center;
-            gap: 20px;
-            padding: 18px 22px;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 16px;
+        }
+
+        /* ── Card ── */
+        .instance-card {
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--border-subtle);
-            border-radius: 14px;
-            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
+            border-radius: 16px;
             overflow: hidden;
-            cursor: default;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
         }
 
-        .instance-row::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 3px;
-            background: var(--border-subtle);
-            transition: all 0.35s ease;
-            border-radius: 0 3px 3px 0;
-        }
-
-        .instance-row:hover {
+        .instance-card:hover {
             background: rgba(255, 255, 255, 0.04);
             border-color: var(--border-hover);
-            transform: translateX(4px);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px -8px rgba(0, 0, 0, 0.5);
         }
 
-        .instance-row.running::before { background: #10b981; box-shadow: 0 0 12px rgba(16, 185, 129, 0.3); }
-        .instance-row.running:hover { border-color: rgba(16, 185, 129, 0.15); }
+        /* top accent line */
+        .card-accent {
+            height: 2px;
+            width: 100%;
+            transition: all 0.4s ease;
+        }
 
-        .instance-row.stopped::before { background: #ef4444; box-shadow: 0 0 12px rgba(239, 68, 68, 0.2); }
-        .instance-row.stopped:hover { border-color: rgba(239, 68, 68, 0.15); }
+        .instance-card.running .card-accent {
+            background: linear-gradient(90deg, #10b981 0%, rgba(16, 185, 129, 0.1) 100%);
+        }
 
-        .instance-row.building::before { background: #f59e0b; box-shadow: 0 0 12px rgba(245, 158, 11, 0.2); animation: barPulse 1.5s ease-in-out infinite; }
-        .instance-row.building:hover { border-color: rgba(245, 158, 11, 0.15); }
+        .instance-card.stopped .card-accent {
+            background: linear-gradient(90deg, #ef4444 0%, rgba(239, 68, 68, 0.1) 100%);
+        }
 
-        @keyframes barPulse {
+        .instance-card.building .card-accent {
+            background: linear-gradient(90deg, #f59e0b 0%, rgba(245, 158, 11, 0.1) 100%);
+            animation: accentPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes accentPulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.4; }
         }
 
-        /* ── Name Area ── */
-        .inst-name-area {
+        .card-body {
+            padding: 22px 24px 20px;
+        }
+
+        .card-header {
             display: flex;
-            align-items: center;
-            gap: 14px;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .card-name-wrap {
             min-width: 0;
+            flex: 1;
         }
 
-        .inst-icon-sm {
-            width: 38px; height: 38px;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--border-subtle);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .instance-row.running .inst-icon-sm { color: #10b981; background: rgba(16, 185, 129, 0.06); border-color: rgba(16, 185, 129, 0.12); }
-        .instance-row.stopped .inst-icon-sm { color: #ef4444; background: rgba(239, 68, 68, 0.06); border-color: rgba(239, 68, 68, 0.12); }
-        .instance-row.building .inst-icon-sm { color: #f59e0b; background: rgba(245, 158, 11, 0.06); border-color: rgba(245, 158, 11, 0.12); }
-
-        .instance-row:hover .inst-icon-sm {
-            transform: scale(1.08);
-        }
-
-        .inst-text-group {
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
-        }
-
-        .inst-name-text {
-            font-size: 0.95rem;
-            font-weight: 600;
+        .card-name {
+            font-size: 1.05rem;
+            font-weight: 700;
             color: white;
-            letter-spacing: -0.01em;
+            letter-spacing: -0.02em;
+            line-height: 1.3;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-        .inst-id-text {
+        .card-id {
             font-family: var(--font-code);
             font-size: 0.68rem;
             color: var(--text-dark);
-            margin-top: 2px;
+            margin-top: 4px;
         }
 
-        /* ── Status Pill ── */
-        .status-pill {
+        .card-status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            margin-top: 4px;
+        }
+
+        .instance-card.running .card-status-dot {
+            background: #10b981;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.5), 0 0 3px rgba(16, 185, 129, 0.8);
+            animation: dotPulse 2.5s ease-in-out infinite;
+        }
+
+        .instance-card.stopped .card-status-dot {
+            background: #ef4444;
+            box-shadow: 0 0 6px rgba(239, 68, 68, 0.3);
+        }
+
+        .instance-card.building .card-status-dot {
+            background: #f59e0b;
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.5), 0 0 3px rgba(245, 158, 11, 0.8);
+            animation: dotPulse 1s ease-in-out infinite;
+        }
+
+        @keyframes dotPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(0.85); opacity: 0.5; }
+        }
+
+        .card-divider {
+            height: 1px;
+            background: var(--border-subtle);
+            margin: 16px 0;
+        }
+
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .status-tag {
             display: inline-flex;
             align-items: center;
-            gap: 7px;
-            padding: 6px 14px;
-            border-radius: 20px;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 6px;
             font-size: 0.7rem;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
-            white-space: nowrap;
+            letter-spacing: 0.06em;
         }
 
-        .status-pill-dot {
-            width: 6px; height: 6px;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-
-        .status-pill.running {
-            background: rgba(16, 185, 129, 0.1);
+        .instance-card.running .status-tag {
+            background: rgba(16, 185, 129, 0.08);
             color: #34d399;
-            border: 1px solid rgba(16, 185, 129, 0.15);
-        }
-        .status-pill.running .status-pill-dot {
-            background: #34d399;
-            box-shadow: 0 0 8px #34d399;
-            animation: pulseStatus 2s infinite;
+            border: 1px solid rgba(16, 185, 129, 0.12);
         }
 
-        .status-pill.stopped {
-            background: rgba(239, 68, 68, 0.1);
+        .instance-card.stopped .status-tag {
+            background: rgba(239, 68, 68, 0.08);
             color: #f87171;
-            border: 1px solid rgba(239, 68, 68, 0.15);
-        }
-        .status-pill.stopped .status-pill-dot {
-            background: #f87171;
-            box-shadow: 0 0 6px rgba(239, 68, 68, 0.4);
+            border: 1px solid rgba(239, 68, 68, 0.12);
         }
 
-        .status-pill.building {
-            background: rgba(245, 158, 11, 0.1);
+        .instance-card.building .status-tag {
+            background: rgba(245, 158, 11, 0.08);
             color: #fbbf24;
-            border: 1px solid rgba(245, 158, 11, 0.15);
-        }
-        .status-pill.building .status-pill-dot {
-            background: #fbbf24;
-            box-shadow: 0 0 8px #fbbf24;
-            animation: pulseStatus 1s infinite;
+            border: 1px solid rgba(245, 158, 11, 0.12);
         }
 
-        @keyframes pulseStatus { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+        .status-tag-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+        }
 
-        /* ── Type Badge ── */
-        .type-badge {
+        .instance-card.running .status-tag-dot { background: #34d399; }
+        .instance-card.stopped .status-tag-dot { background: #f87171; }
+        .instance-card.building .status-tag-dot { background: #fbbf24; }
+
+        .card-type {
             font-family: var(--font-code);
             font-size: 0.68rem;
-            font-weight: 500;
             color: var(--text-dark);
-            padding: 4px 10px;
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border-subtle);
-            border-radius: 6px;
-            white-space: nowrap;
+            padding: 3px 8px;
+            border-radius: 5px;
         }
 
-        /* ── Row Actions ── */
-        .row-actions {
+        /* hover actions */
+        .card-hover-actions {
+            position: absolute;
+            top: 12px;
+            right: 12px;
             display: flex;
             gap: 4px;
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transform: translateY(-4px);
+            transition: all 0.3s ease;
+            pointer-events: none;
         }
 
-        .instance-row:hover .row-actions { opacity: 1; }
+        .instance-card:hover .card-hover-actions {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
 
-        .row-action-btn {
-            width: 32px; height: 32px;
-            border-radius: 8px;
-            border: 1px solid transparent;
-            background: rgba(255, 255, 255, 0.04);
+        .hover-act {
+            width: 28px;
+            height: 28px;
+            border-radius: 7px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(8px);
             color: var(--text-dark);
             cursor: pointer;
             display: flex;
@@ -562,18 +501,14 @@
             transition: all 0.2s ease;
         }
 
-        .row-action-btn:hover {
-            background: rgba(255, 255, 255, 0.08);
-            color: white;
-            border-color: var(--border-hover);
-        }
+        .hover-act:hover { color: white; background: rgba(255, 255, 255, 0.1); border-color: var(--border-hover); }
+        .hover-act.act-start:hover { color: #34d399; border-color: rgba(16, 185, 129, 0.3); }
+        .hover-act.act-stop:hover { color: #fbbf24; border-color: rgba(245, 158, 11, 0.3); }
+        .hover-act.act-kill:hover { color: #f87171; border-color: rgba(239, 68, 68, 0.3); }
 
-        .row-action-btn.start-btn:hover { color: #34d399; background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2); }
-        .row-action-btn.stop-btn:hover { color: #fbbf24; background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.2); }
-        .row-action-btn.kill-btn:hover { color: #f87171; background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2); }
-
-        /* ── Empty / Loading ── */
+        /* ── Empty ── */
         .empty-state {
+            grid-column: 1 / -1;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -582,32 +517,25 @@
             text-align: center;
         }
 
-        .empty-icon-wrap {
-            width: 72px; height: 72px;
-            border-radius: 20px;
+        .empty-icon-box {
+            width: 64px;
+            height: 64px;
+            border-radius: 18px;
             background: rgba(139, 92, 246, 0.06);
             border: 1px solid rgba(139, 92, 246, 0.1);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 20px;
             color: var(--accent-color);
-            opacity: 0.6;
+            opacity: 0.5;
+            margin-bottom: 20px;
         }
 
-        .empty-state-text {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            margin-bottom: 6px;
-        }
-
-        .empty-state-hint {
-            font-size: 0.85rem;
-            color: var(--text-dark);
-        }
+        .empty-title { font-size: 1rem; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
+        .empty-hint { font-size: 0.85rem; color: var(--text-dark); }
 
         .loading-state {
+            grid-column: 1 / -1;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -617,7 +545,7 @@
         }
 
         .spinner {
-            width: 48px; height: 48px;
+            width: 44px; height: 44px;
             border-radius: 50%;
             background: conic-gradient(from 0deg, transparent 0deg, var(--accent-color) 360deg);
             position: relative;
@@ -626,19 +554,6 @@
         }
         .spinner::after { content: ''; position: absolute; top: 4px; left: 4px; right: 4px; bottom: 4px; background: #050505; border-radius: 50%; }
         @keyframes rotateSpinner { 100% { transform: rotate(360deg); } }
-
-        /* ── List Header ── */
-        .list-header {
-            display: grid;
-            grid-template-columns: 1fr auto auto auto;
-            gap: 20px;
-            padding: 0 22px 10px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            color: var(--text-dark);
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-        }
 
         /* ── Modal ── */
         .modal-overlay {
@@ -712,7 +627,6 @@
             pointer-events: auto;
             background: rgba(20, 20, 25, 0.85);
             backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 16px;
             padding: 16px 20px;
@@ -735,7 +649,6 @@
             width: 36px; height: 36px;
             border-radius: 10px;
             flex-shrink: 0;
-            font-size: 18px;
         }
 
         .toast.success .toast-icon-wrapper { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.2); }
@@ -743,7 +656,7 @@
         .toast.info .toast-icon-wrapper { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.2); }
 
         .toast-content { flex: 1; display: flex; flex-direction: column; justify-content: center; padding-right: 8px; }
-        .toast-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; color: #f3f4f6; letter-spacing: 0.01em; }
+        .toast-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; color: #f3f4f6; }
         .toast-message { font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; }
 
         .toast-close {
@@ -783,11 +696,8 @@
             .actions-group { width: 100%; flex-wrap: wrap; }
             .btn { flex: 1; justify-content: center; font-size: 0.75rem; padding: 7px 10px; min-width: 100px; }
             .content-scroll { padding: 20px; }
-            .stats-bar { flex-wrap: wrap; gap: 8px; }
-            .instance-row { grid-template-columns: 1fr auto; gap: 12px; padding: 14px 16px; }
-            .type-badge { display: none; }
-            .row-actions { opacity: 1; }
-            .list-header { display: none; }
+            .instance-grid { grid-template-columns: 1fr; }
+            .card-hover-actions { opacity: 1; transform: translateY(0); pointer-events: auto; }
             .toast-container { right: 20px; left: 20px; bottom: 20px; }
             .toast { width: 100%; min-width: auto; max-width: none; }
         }
@@ -818,7 +728,6 @@
         <div class="particle" style="top: 15%; left: 70%; width: 3px; height: 3px; animation-duration: 15s; animation-delay: -6s;"></div>
     </div>
 
-    <!-- Sidebar -->
     <aside class="sidebar">
         <a href="/" class="sidebar-logo">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -840,7 +749,6 @@
         </button>
     </aside>
 
-    <!-- Main -->
     <main class="main-content">
         <header class="top-bar">
             <div class="page-title">Cloud Command Center</div>
@@ -865,45 +773,7 @@
         </header>
 
         <div class="content-scroll">
-            <!-- Stats Bar -->
-            <div class="stats-bar" id="statsBar">
-                <div class="stat-chip">
-                    <div class="stat-dot total"></div>
-                    <span>Total</span>
-                    <span class="stat-num" id="statTotal">0</span>
-                </div>
-                <div class="stat-divider"></div>
-                <div class="stat-chip">
-                    <div class="stat-dot running"></div>
-                    <span>Running</span>
-                    <span class="stat-num" id="statRunning">0</span>
-                </div>
-                <div class="stat-divider"></div>
-                <div class="stat-chip">
-                    <div class="stat-dot stopped"></div>
-                    <span>Stopped</span>
-                    <span class="stat-num" id="statStopped">0</span>
-                </div>
-            </div>
-
-            <!-- Section Header -->
-            <div class="section-header">
-                <div>
-                    <div class="section-title">Instances</div>
-                    <div class="section-subtitle">Manage your cloud services</div>
-                </div>
-            </div>
-
-            <!-- Column Headers -->
-            <div class="list-header" id="listHeader" style="display:none;">
-                <span>Name</span>
-                <span>Status</span>
-                <span>Type</span>
-                <span></span>
-            </div>
-
-            <!-- Instance List -->
-            <div class="instance-list" id="instanceList">
+            <div class="instance-grid" id="instanceGrid">
                 <div class="loading-state">
                     <div class="spinner"></div>
                     <span>Connecting to backend...</span>
@@ -919,13 +789,13 @@
             <div class="form-group">
                 <label class="form-label">Instance Name</label>
                 <input type="text" id="addInstName" class="code-editor" placeholder="e.g. myapp" oninput="validateInstName(this, 'addNameErr')" autocomplete="off" spellcheck="false">
-                <div class="form-hint">Only lowercase letters, numbers, and hyphens allowed. No spaces, uppercase, or special characters.</div>
+                <div class="form-hint">Only lowercase letters, numbers, and hyphens allowed.</div>
                 <div class="validation-msg" id="addNameErr"></div>
             </div>
             <div class="form-group">
                 <label class="form-label">Docker Image</label>
                 <input type="text" id="addImageName" class="code-editor" placeholder="e.g. nginx:alpine" oninput="validateImageName(this, 'addImgErr')" autocomplete="off" spellcheck="false">
-                <div class="form-hint">Enter a correct Docker image name. Format: <span style="color:var(--text-muted);font-family:var(--font-code);">image:tag</span> or <span style="color:var(--text-muted);font-family:var(--font-code);">registry/image:tag</span></div>
+                <div class="form-hint">Format: <span style="color:var(--text-muted);font-family:var(--font-code);">image:tag</span></div>
                 <div class="validation-msg" id="addImgErr"></div>
             </div>
             <div class="modal-actions">
@@ -943,13 +813,13 @@
             <div class="form-group">
                 <label class="form-label">Instance Name</label>
                 <input type="text" id="actionInstName" class="code-editor" placeholder="e.g. myapp" oninput="validateInstName(this, 'actionNameErr')" autocomplete="off" spellcheck="false">
-                <div class="form-hint">Only lowercase letters, numbers, and hyphens allowed. No spaces, uppercase, or special characters.</div>
+                <div class="form-hint">Only lowercase letters, numbers, and hyphens allowed.</div>
                 <div class="validation-msg" id="actionNameErr"></div>
             </div>
             <div class="form-group">
                 <label class="form-label">Docker Image</label>
                 <input type="text" id="actionImageName" class="code-editor" placeholder="e.g. nginx:alpine" oninput="validateImageName(this, 'actionImgErr')" autocomplete="off" spellcheck="false">
-                <div class="form-hint">Enter a correct Docker image name. Format: <span style="color:var(--text-muted);font-family:var(--font-code);">image:tag</span> or <span style="color:var(--text-muted);font-family:var(--font-code);">registry/image:tag</span></div>
+                <div class="form-hint">Format: <span style="color:var(--text-muted);font-family:var(--font-code);">image:tag</span></div>
                 <div class="validation-msg" id="actionImgErr"></div>
             </div>
             <div class="modal-actions">
@@ -987,167 +857,99 @@
 
         let instances = [];
 
-        /* ── Validation ── */
         function validateInstName(input, errId) {
             const val = input.value;
             const errEl = document.getElementById(errId);
             const regex = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
-
             if (!val) { input.classList.remove('error'); errEl.textContent = ''; return false; }
-            if (/[A-Z]/.test(val)) { input.classList.add('error'); errEl.textContent = 'Uppercase letters are not allowed.'; return false; }
-            if (/\s/.test(val)) { input.classList.add('error'); errEl.textContent = 'Spaces are not allowed.'; return false; }
-            if (/[^a-z0-9\-]/.test(val)) { input.classList.add('error'); errEl.textContent = 'Special characters are not allowed. Use only a-z, 0-9, and hyphens.'; return false; }
-            if (val.startsWith('-') || val.endsWith('-')) { input.classList.add('error'); errEl.textContent = 'Cannot start or end with a hyphen.'; return false; }
-            if (/--/.test(val)) { input.classList.add('error'); errEl.textContent = 'Consecutive hyphens are not allowed.'; return false; }
+            if (/[A-Z]/.test(val)) { input.classList.add('error'); errEl.textContent = 'Uppercase not allowed.'; return false; }
+            if (/\s/.test(val)) { input.classList.add('error'); errEl.textContent = 'Spaces not allowed.'; return false; }
+            if (/[^a-z0-9\-]/.test(val)) { input.classList.add('error'); errEl.textContent = 'Special characters not allowed.'; return false; }
+            if (val.startsWith('-') || val.endsWith('-')) { input.classList.add('error'); errEl.textContent = 'Cannot start/end with hyphen.'; return false; }
+            if (/--/.test(val)) { input.classList.add('error'); errEl.textContent = 'No consecutive hyphens.'; return false; }
             if (!regex.test(val)) { input.classList.add('error'); errEl.textContent = 'Must start with a lowercase letter.'; return false; }
-
-            input.classList.remove('error');
-            errEl.textContent = '';
-            return true;
+            input.classList.remove('error'); errEl.textContent = ''; return true;
         }
 
         function validateImageName(input, errId) {
             const val = input.value.trim();
             const errEl = document.getElementById(errId);
-
             if (!val) { input.classList.remove('error'); errEl.textContent = ''; return false; }
-            if (/\s/.test(val)) { input.classList.add('error'); errEl.textContent = 'Spaces are not allowed in image names.'; return false; }
-
+            if (/\s/.test(val)) { input.classList.add('error'); errEl.textContent = 'No spaces allowed.'; return false; }
             const pattern = /^(?:[a-z0-9.\-]+(?:\/[a-z0-9._\-]+)*\/)?[a-z0-9._\-]+(?::[a-zA-Z0-9._\-]+)?$/;
-            if (!pattern.test(val)) { input.classList.add('error'); errEl.textContent = 'Invalid image format. Use: image:tag or registry/image:tag'; return false; }
-            if (val.includes(':')) { const tag = val.split(':').pop(); if (tag.length > 128) { input.classList.add('error'); errEl.textContent = 'Tag is too long.'; return false; } }
-
-            input.classList.remove('error');
-            errEl.textContent = '';
-            return true;
+            if (!pattern.test(val)) { input.classList.add('error'); errEl.textContent = 'Invalid format. Use image:tag'; return false; }
+            if (val.includes(':')) { const tag = val.split(':').pop(); if (tag.length > 128) { input.classList.add('error'); errEl.textContent = 'Tag too long.'; return false; } }
+            input.classList.remove('error'); errEl.textContent = ''; return true;
         }
 
-        /* ── Fetch ── */
         async function fetchInstances() {
-            const list = document.getElementById('instanceList');
-
+            const grid = document.getElementById('instanceGrid');
             if (instances.length === 0) {
-                list.innerHTML = `<div class="loading-state"><div class="spinner"></div><span>Connecting to backend...</span></div>`;
+                grid.innerHTML = `<div class="loading-state"><div class="spinner"></div><span>Connecting to backend...</span></div>`;
             }
-
             try {
                 const response = await fetch('/getbuildinstance', { method: 'GET', credentials: 'include' });
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
                 const data = await response.json();
                 instances.length = 0;
-
                 data.forEach(item => {
-                    instances.push({
-                        id: item.id,
-                        name: item.instance_name,
-                        status: item.status.toLowerCase()
-                    });
+                    instances.push({ id: item.id, name: item.instance_name, status: item.status.toLowerCase() });
                 });
-
                 renderInstances();
             } catch (error) {
                 console.error('Fetch Error:', error);
                 if (instances.length === 0) {
-                    list.innerHTML = `
-                        <div class="empty-state">
-                            <div class="empty-icon-wrap">
-                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                            </div>
-                            <div class="empty-state-text">Failed to connect</div>
-                            <div class="empty-state-hint">${error.message}</div>
-                        </div>`;
+                    grid.innerHTML = `<div class="empty-state"><div class="empty-icon-box"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div><div class="empty-title">Failed to connect</div><div class="empty-hint">${error.message}</div></div>`;
                 }
             }
         }
 
-        /* ── Update Stats ── */
-        function updateStats() {
-            const total = instances.length;
-            const running = instances.filter(i => i.status === 'running').length;
-            const stopped = instances.filter(i => i.status === 'stopped').length;
-
-            document.getElementById('statTotal').textContent = total;
-            document.getElementById('statRunning').textContent = running;
-            document.getElementById('statStopped').textContent = stopped;
-        }
-
-        /* ── Render ── */
         function renderInstances() {
-            const list = document.getElementById('instanceList');
-            const header = document.getElementById('listHeader');
-            list.innerHTML = '';
-
-            updateStats();
+            const grid = document.getElementById('instanceGrid');
+            grid.innerHTML = '';
 
             if (instances.length === 0) {
-                header.style.display = 'none';
-                list.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-icon-wrap">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
-                        </div>
-                        <div class="empty-state-text">No instances yet</div>
-                        <div class="empty-state-hint">Click "Add Instance" to provision your first service</div>
-                    </div>`;
+                grid.innerHTML = `<div class="empty-state"><div class="empty-icon-box"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg></div><div class="empty-title">No instances yet</div><div class="empty-hint">Click "Add Instance" to get started</div></div>`;
                 return;
             }
 
-            header.style.display = '';
-
             instances.forEach(inst => {
-                let rowClass = 'building';
-                if (inst.status === 'running') rowClass = 'running';
-                else if (inst.status === 'stopped') rowClass = 'stopped';
+                let cls = 'building';
+                if (inst.status === 'running') cls = 'running';
+                else if (inst.status === 'stopped') cls = 'stopped';
 
-                const row = document.createElement('div');
-                row.className = `instance-row ${rowClass}`;
-
-                /* Determine which quick actions to show */
-                let actionBtns = '';
+                let hoverBtns = '';
                 if (inst.status === 'stopped') {
-                    actionBtns = `
-                        <button class="row-action-btn start-btn" title="Start" onclick="quickAction('${inst.name}','start')">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                        </button>`;
+                    hoverBtns = `<button class="hover-act act-start" title="Start" onclick="quickAction('${inst.name}','start')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg></button>`;
                 } else if (inst.status === 'running') {
-                    actionBtns = `
-                        <button class="row-action-btn stop-btn" title="Stop" onclick="quickAction('${inst.name}','stop')">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="1"></rect></svg>
-                        </button>`;
+                    hoverBtns = `<button class="hover-act act-stop" title="Stop" onclick="quickAction('${inst.name}','stop')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="1"></rect></svg></button>`;
                 }
-                actionBtns += `
-                    <button class="row-action-btn kill-btn" title="Kill" onclick="quickAction('${inst.name}','kill')">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
-                    </button>`;
+                hoverBtns += `<button class="hover-act act-kill" title="Kill" onclick="quickAction('${inst.name}','kill')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>`;
 
-                row.innerHTML = `
-                    <div class="inst-name-area">
-                        <div class="inst-icon-sm">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
-                                <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
-                                <line x1="6" y1="6" x2="6.01" y2="6"></line>
-                                <line x1="6" y1="18" x2="6.01" y2="18"></line>
-                            </svg>
+                const card = document.createElement('div');
+                card.className = `instance-card ${cls}`;
+                card.innerHTML = `
+                    <div class="card-accent"></div>
+                    <div class="card-hover-actions">${hoverBtns}</div>
+                    <div class="card-body">
+                        <div class="card-header">
+                            <div class="card-name-wrap">
+                                <div class="card-name">${inst.name}</div>
+                                <div class="card-id">#${inst.id}</div>
+                            </div>
+                            <div class="card-status-dot"></div>
                         </div>
-                        <div class="inst-text-group">
-                            <div class="inst-name-text">${inst.name}</div>
-                            <div class="inst-id-text">#${inst.id}</div>
+                        <div class="card-divider"></div>
+                        <div class="card-footer">
+                            <div class="status-tag"><div class="status-tag-dot"></div>${inst.status}</div>
+                            <div class="card-type">docker</div>
                         </div>
                     </div>
-                    <div class="status-pill ${rowClass}">
-                        <div class="status-pill-dot"></div>
-                        ${inst.status}
-                    </div>
-                    <div class="type-badge">docker</div>
-                    <div class="row-actions">${actionBtns}</div>
                 `;
-                list.appendChild(row);
+                grid.appendChild(card);
             });
         }
 
-        /* ── Quick Action from row buttons ── */
         function quickAction(name, type) {
             if (type === 'kill') {
                 const idx = instances.findIndex(i => i.name === name);
@@ -1167,7 +969,6 @@
             }
         }
 
-        /* ── Modals ── */
         function closeModals() {
             document.querySelectorAll('.modal-overlay').forEach(el => el.classList.remove('open'));
             document.querySelectorAll('.code-editor').forEach(el => { el.value = ''; el.classList.remove('error'); });
@@ -1187,20 +988,16 @@
             setTimeout(() => document.getElementById('actionInstName').focus(), 100);
         }
 
-        /* ── Add Instance → POST /addinstancesbuild ── */
         async function submitAddInstance() {
             const nameInput = document.getElementById('addInstName');
             const imageInput = document.getElementById('addImageName');
             const name = nameInput.value.trim();
             const image = imageInput.value.trim();
-
-            if (!name) { nameInput.classList.add('error'); document.getElementById('addNameErr').textContent = 'Instance name is required.'; nameInput.focus(); return; }
+            if (!name) { nameInput.classList.add('error'); document.getElementById('addNameErr').textContent = 'Required.'; nameInput.focus(); return; }
             if (!validateInstName(nameInput, 'addNameErr')) { nameInput.focus(); return; }
-            if (!image) { imageInput.classList.add('error'); document.getElementById('addImgErr').textContent = 'Docker image name is required.'; imageInput.focus(); return; }
+            if (!image) { imageInput.classList.add('error'); document.getElementById('addImgErr').textContent = 'Required.'; imageInput.focus(); return; }
             if (!validateImageName(imageInput, 'addImgErr')) { imageInput.focus(); return; }
-
             closeModals();
-
             try {
                 const response = await fetch('/addinstancesbuild', {
                     method: 'POST',
@@ -1208,10 +1005,7 @@
                     credentials: 'include',
                     body: JSON.stringify({ instancename: name, imagename: image })
                 });
-                if (!response.ok) {
-                    const errData = await response.json().catch(() => ({}));
-                    throw new Error(errData.error || errData.message || 'Server Error');
-                }
+                if (!response.ok) { const e = await response.json().catch(() => ({})); throw new Error(e.error || e.message || 'Server Error'); }
                 await fetchInstances();
                 showToast('Success', `Instance "${name}" created.`, 'success');
             } catch (error) {
@@ -1226,44 +1020,27 @@
             const imageInput = document.getElementById('actionImageName');
             const name = nameInput.value.trim();
             const image = imageInput.value.trim();
-
-            if (!name) { nameInput.classList.add('error'); document.getElementById('actionNameErr').textContent = 'Instance name is required.'; nameInput.focus(); return; }
+            if (!name) { nameInput.classList.add('error'); document.getElementById('actionNameErr').textContent = 'Required.'; nameInput.focus(); return; }
             if (!validateInstName(nameInput, 'actionNameErr')) { nameInput.focus(); return; }
-            if (!image) { imageInput.classList.add('error'); document.getElementById('actionImgErr').textContent = 'Docker image name is required.'; imageInput.focus(); return; }
+            if (!image) { imageInput.classList.add('error'); document.getElementById('actionImgErr').textContent = 'Required.'; imageInput.focus(); return; }
             if (!validateImageName(imageInput, 'actionImgErr')) { imageInput.focus(); return; }
-
             closeModals();
             quickAction(name, type);
         }
 
         function handleWorkspace() { showToast('Redirecting', 'Opening secure workspace...', 'info'); }
 
-        /* ── Toast System ── */
         function showToast(title, message, type = "success") {
             const container = document.getElementById('toast-container');
-            if (container.children.length >= 3) { container.removeChild(container.firstChild); }
-
+            if (container.children.length >= 3) container.removeChild(container.firstChild);
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
-
             let iconSvg = '';
             if (type === 'success') iconSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
             else if (type === 'error') iconSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`;
             else iconSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`;
-
-            toast.innerHTML = `
-                <div class="toast-icon-wrapper">${iconSvg}</div>
-                <div class="toast-content">
-                    <div class="toast-title">${title}</div>
-                    <div class="toast-message">${message}</div>
-                </div>
-                <button class="toast-close" onclick="this.parentElement.remove()">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
-                <div class="toast-progress"></div>
-            `;
+            toast.innerHTML = `<div class="toast-icon-wrapper">${iconSvg}</div><div class="toast-content"><div class="toast-title">${title}</div><div class="toast-message">${message}</div></div><button class="toast-close" onclick="this.parentElement.remove()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button><div class="toast-progress"></div>`;
             container.appendChild(toast);
-
             setTimeout(() => {
                 toast.style.animation = 'toastOut 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
                 toast.addEventListener('animationend', () => { if (toast.parentElement) toast.remove(); });
