@@ -11,14 +11,13 @@ import (
 )
 
 func AddinstancesDeployHandler(w http.ResponseWriter, r *http.Request) {
- 
+	
 	    var Deployaddinstances models.Deployaddinstances
 
 		if r.Method != http.MethodPost {
 			response.Response(w,405,"Invalid Metheod")
 			return
 	   }
-	
 	   //get the username to find the deploy user 
 	 
 		sessionid,getsessionerr :=  utils.Getsessionid(r,"session-id")
@@ -44,7 +43,7 @@ func AddinstancesDeployHandler(w http.ResponseWriter, r *http.Request) {
 			response.Response(w,500,"Internal Server Error")
 			return
 		}
-	
+
 		response.Response(w,200,"Added Instances Successfully")
 	
              
