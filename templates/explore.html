@@ -248,7 +248,7 @@
 
         .wizard-container {
             width: 90%;
-            max-width: 1000px; /* Slightly narrower for the new layout */
+            max-width: 1000px;
             position: relative;
         }
 
@@ -386,149 +386,6 @@
             box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
         }
 
-        /* --- PRO DROPDOWN CENTERED --- */
-        .dropdown-wrapper {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 40px;
-            animation: expandFade 0.6s ease-out;
-        }
-
-        .pro-select {
-            appearance: none;
-            width: 300px;
-            background-color: rgba(10, 10, 15, 0.8);
-            border: 1px solid var(--accent-color); /* Theme color border */
-            color: var(--text-main);
-            padding: 14px 20px;
-            border-radius: 50px; /* Pill shape */
-            font-family: var(--font-ui);
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-            /* Custom Arrow */
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238b5cf6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 20px center;
-            background-size: 1.2em;
-            box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
-        }
-
-        .pro-select:focus {
-            outline: none;
-            box-shadow: 0 0 25px rgba(139, 92, 246, 0.4);
-            border-color: #a78bfa;
-        }
-        
-        .pro-select:hover {
-            transform: scale(1.02);
-        }
-
-        /* --- NEW COMMAND LIST LAYOUT (Terminal Style) --- */
-        #command-library {
-            display: none;
-            width: 100%;
-            animation: expandFade 0.6s ease-out;
-        }
-
-        #step-3.active #command-library {
-            display: block;
-        }
-
-        .command-list-container {
-            background: rgba(15, 15, 20, 0.7); /* Darker, theme-matched box */
-            border: 1px solid rgba(139, 92, 246, 0.2); /* Subtle purple border */
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 20px 50px -10px rgba(0,0,0,0.5);
-            max-height: 600px;
-            overflow-y: auto;
-            /* Custom Scrollbar */
-            scrollbar-width: thin;
-            scrollbar-color: var(--accent-color) rgba(15, 15, 20, 0.5);
-        }
-        
-        .command-list-container::-webkit-scrollbar {
-            width: 6px;
-        }
-        .command-list-container::-webkit-scrollbar-track {
-            background: rgba(15, 15, 20, 0.5);
-        }
-        .command-list-container::-webkit-scrollbar-thumb {
-            background-color: var(--accent-color);
-            border-radius: 20px;
-        }
-
-        .command-row {
-            padding: 20px 30px;
-            border-bottom: 1px solid var(--border-subtle);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .command-row:last-child {
-            border-bottom: none;
-        }
-
-        .command-row:hover {
-            background: rgba(139, 92, 246, 0.1); /* Purple tint on hover */
-            padding-left: 35px; /* Slight shift effect */
-        }
-
-        .cmd-top {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .cmd-icon {
-            color: var(--accent-color);
-            opacity: 0.5;
-        }
-
-        .cmd-text {
-            font-family: var(--font-code);
-            color: #e4e4e7;
-            font-size: 1.1rem;
-            font-weight: 500;
-        }
-
-        .cmd-desc {
-            margin-top: 8px;
-            padding-left: 28px; /* Align with text */
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            opacity: 0;
-            max-height: 0;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        /* Hover Effect: Reveal Description */
-        .command-row:hover .cmd-desc {
-            opacity: 1;
-            max-height: 100px; /* Approximate max height */
-            margin-top: 12px;
-        }
-        
-        .command-row:hover .cmd-text {
-            color: var(--accent-color);
-        }
-        
-        .command-row:hover .cmd-icon {
-            opacity: 1;
-        }
-
-        .empty-state {
-            padding: 60px;
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 1.1rem;
-        }
-
         /* --- BUTTONS --- */
         .actions {
             margin-top: 30px;
@@ -637,7 +494,6 @@
         @media (max-width: 768px) {
             .step-header h2 { font-size: 2rem; }
             .nav-links a { display: none; }
-            .pro-select { width: 100%; }
         }
     </style>
 </head>
@@ -661,7 +517,7 @@
 
     <!-- Navigation -->
     <nav>
-        <a href="home.html" class="nav-logo">
+        <a href="/" class="nav-logo">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="var(--accent-color)"/>
                 <path d="M2 17L12 22L22 17" stroke="white"/>
@@ -670,8 +526,8 @@
             Nodefy
         </a>
         <div class="nav-links">
-            <a href="home.html">Home</a>
-            <a href="#about">About</a>
+            <a href="/">Home</a>
+            <a href="/aboutpage">About</a>
         </div>
     </nav>
 
@@ -689,7 +545,7 @@
                     <!-- Ubuntu -->
                     <div class="os-card" onclick="selectOS('ubuntu')">
                         <div class="os-icon-box">
-                            <img src="../static/images/ubantu.png" alt="Ubuntu">
+                            <img src="/static/images/ubuntu.png" alt="Ubuntu">
                         </div>
                         <div class="os-name">Ubuntu</div>
                     </div>
@@ -697,7 +553,7 @@
                     <!-- Alpine -->
                     <div class="os-card" onclick="selectOS('alpine')">
                         <div class="os-icon-box">
-                            <img src="../static/images/alpine.webp" alt="Alpine">
+                            <img src="static/images/alpine.webp" alt="Alpine">
                         </div>
                         <div class="os-name">Alpine</div>
                     </div>
@@ -705,7 +561,7 @@
                     <!-- Fedora -->
                     <div class="os-card" onclick="selectOS('fedora')">
                         <div class="os-icon-box">
-                            <img src="../static/images/fedora.webp" alt="Fedora">
+                            <img src="static/images/fedora.webp" alt="Fedora">
                         </div>
                         <div class="os-name">Fedora</div>
                     </div>
@@ -713,7 +569,7 @@
                     <!-- CentOS -->
                     <div class="os-card" onclick="selectOS('quay.io/centos/centos:stream9')">
                         <div class="os-icon-box">
-                            <img src="../static/images/CentOS.png" alt="CentOS">
+                            <img src="static/images/CentOS.png" alt="CentOS">
                         </div>
                         <div class="os-name">CentOS</div>
                     </div>
@@ -721,7 +577,7 @@
                     <!-- Kali -->
                     <div class="os-card" onclick="selectOS('kalilinux/kali-rolling')">
                         <div class="os-icon-box">
-                            <img src="../static/images/Kali.png" alt="Kali Linux">
+                            <img src="static/images/Kali.png" alt="Kali Linux">
                         </div>
                         <div class="os-name">Kali Linux</div>
                     </div>
@@ -744,33 +600,6 @@
                         <button class="btn btn-secondary" onclick="goToStep(1)">Back</button>
                         <button class="btn btn-primary" onclick="initiateExploration()">Start Exploration</button>
                     </div>
-                </div>
-            </div>
-
-            <!-- STEP 3: COMMAND LIBRARY WITH NEW LAYOUT -->
-            <div id="step-3" class="wizard-step">
-                <div class="step-header">
-                    <h2>Command Library</h2>
-                    <p>Select a module below to view commands.</p>
-                </div>
-
-                <!-- Centered Dropdown -->
-                <div class="dropdown-wrapper">
-                    <select id="module-selector" class="pro-select" onchange="handleModuleChange()">
-                        <option value="" disabled selected>Select a Module</option>
-                        <!-- Options injected via JS -->
-                    </select>
-                </div>
-
-                <!-- New List Layout -->
-                <div id="command-library">
-                    <div class="command-list-container" id="command-list-container">
-                        <div class="empty-state">Select a module to see commands here.</div>
-                    </div>
-                </div>
-                
-                <div class="actions">
-                    <button class="btn btn-secondary" onclick="window.location.href='home.html'">Back to Home</button>
                 </div>
             </div>
 
@@ -811,11 +640,11 @@
         });
 
         let selectedOS = "";
-        let allCommandsData = [];
 
         /* --- OS SELECTION --- */
         function selectOS(osName) {
             selectedOS = osName;
+            localStorage.setItem('selectedOS', osName);
             
             // Visual feedback
             document.querySelectorAll('.os-card').forEach(card => {
@@ -856,19 +685,18 @@
                 return;
             }
 
-            // --- VALIDATION LOGIC ADDED HERE ---
-            // Check for spaces
-            if (/\s/.test(instancename)) {
-                showToast("Instance name cannot contain spaces.", "error");
+            // --- VALIDATION LOGIC ---
+            // Regex: Allows only lowercase letters (a-z) and numbers (0-9).
+            // Blocks spaces, underscores, special characters, and uppercase letters.
+            const validNameRegex = /^[a-z0-9]+$/;
+
+            if (!validNameRegex.test(instancename)) {
+                showToast("Instance name can only contain lowercase letters and numbers (no spaces, underscores, or special characters).", "error");
                 return;
             }
 
-            // Check for capital letters
-            if (instancename !== instancename.toLowerCase()) {
-                showToast("Only lowercase letters are allowed.", "error");
-                return;
-            }
-            // ------------------------------------
+            localStorage.setItem('selectedOS', selectedOS);
+            localStorage.setItem('instanceName', instancename);
 
             const payload = {
                 osname: selectedOS,
@@ -892,13 +720,8 @@
                 if (response.ok) {
                     showToast(data.message || "Environment Ready!", "success");
                     
-                    // Load Data
-                    loadCommands(selectedOS);
-                    
-                    // Setup Dropdown
-                    setupDropdown();
-
-                    goToStep(3);
+                    // Redirect to teaching page
+                    window.location.href = 'teach.html';
                 } else {
                     if (response.status === 400 && data.message === "Cookie not found") {
                         showToast("Session expired. Please login.", "error");
@@ -913,187 +736,6 @@
             } finally {
                 overlay.style.display = 'none';
             }
-        }
-
-        /* --- SETUP DROPDOWN OPTIONS --- */
-        function setupDropdown() {
-            const select = document.getElementById('module-selector');
-            select.innerHTML = '<option value="" disabled selected>Select a Module</option>';
-            
-            const capitalOS = selectedOS.charAt(0).toUpperCase() + selectedOS.slice(1);
-            
-            // Add Options
-            const options = [
-                { val: 'wireguard', text: 'WireGuard Configuration' },
-                { val: 'ssh', text: 'SSH Access' },
-                { val: 'os', text: `${capitalOS} Commands` }
-            ];
-
-            options.forEach(opt => {
-                const el = document.createElement('option');
-                el.value = opt.val;
-                el.textContent = opt.text;
-                select.appendChild(el);
-            });
-        }
-
-        /* --- HANDLE DROPDOWN CHANGE --- */
-        function handleModuleChange() {
-            const select = document.getElementById('module-selector');
-            const category = select.value;
-            
-            if (!category) return;
-
-            const filtered = allCommandsData.filter(cmd => cmd.category === category);
-            renderList(filtered);
-        }
-
-        /* --- COMMAND LIBRARY DATA & RENDERER --- */
-        function loadCommands(os) {
-            let commands = [];
-
-            // 1. Common Linux Commands (Category: 'os')
-            const commonLinux = [
-                { cmd: "ls -la", desc: "Lists all files in long format, including hidden files.", category: "os" },
-                { cmd: "pwd", desc: "Print Working Directory. Shows where you are.", category: "os" },
-                { cmd: "cd /home", desc: "Change Directory to /home.", category: "os" },
-                { cmd: "mkdir new_folder", desc: "Make a new directory named 'new_folder'.", category: "os" },
-                { cmd: "rm file.txt", desc: "Remove a file permanently.", category: "os" },
-                { cmd: "rm -rf folder", desc: "Force remove a folder and its contents recursively.", category: "os" },
-                { cmd: "cp file1 file2", desc: "Copy file1 to file2.", category: "os" },
-                { cmd: "mv old_name new_name", desc: "Move or Rename a file/directory.", category: "os" },
-                { cmd: "cat filename", desc: "Concatenate and display file content.", category: "os" },
-                { cmd: "tail -f log.txt", desc: "Follow the end of a file as it grows (good for logs).", category: "os" },
-                { cmd: "grep 'pattern' file", desc: "Search for a text pattern inside a file.", category: "os" },
-                { cmd: "chmod 755 script.sh", desc: "Change file permissions to read/execute for owner/group.", category: "os" },
-                { cmd: "chown user:group file", desc: "Change owner and group of a file.", category: "os" },
-                { cmd: "ps aux", desc: "Report a snapshot of current processes.", category: "os" },
-                { cmd: "kill PID", desc: "Terminate a process by its ID.", category: "os" },
-                { cmd: "top", desc: "Display real-time system processes and resource usage.", category: "os" },
-                { cmd: "df -h", desc: "Report file system disk space usage (human readable).", category: "os" },
-                { cmd: "du -sh folder", desc: "Estimate file and directory space usage.", category: "os" },
-                { cmd: "tar -czvf archive.tar.gz /path", desc: "Create a compressed tar archive.", category: "os" },
-                { cmd: "tar -xzvf archive.tar.gz", desc: "Extract a compressed tar archive.", category: "os" },
-                { cmd: "history", desc: "Shows the command line history.", category: "os" },
-                { cmd: "man command", desc: "Displays the manual page for a command.", category: "os" },
-                { cmd: "systemctl status nginx", desc: "Check if a service (like nginx) is running.", category: "os" },
-                { cmd: "journalctl -u service", desc: "View logs for a specific systemd service.", category: "os" },
-                { cmd: "wget url", desc: "Download files from the web.", category: "os" },
-                { cmd: "curl url", desc: "Transfer data from or to a server.", category: "os" },
-                { cmd: "find . -name '*.txt'", desc: "Search for files in a directory hierarchy.", category: "os" },
-                { cmd: "ln -s target link", desc: "Create a symbolic link to a target.", category: "os" },
-                { cmd: "head -n 5 file", desc: "Output the first part of files (first 5 lines).", category: "os" }
-            ];
-
-            // 2. SSH Commands (Category: 'ssh')
-            const sshCommands = [
-                { cmd: "ssh user@remote_ip", desc: "Connect to a remote server securely via SSH.", category: "ssh" },
-                { cmd: "ssh-keygen -t ed25519", desc: "Generate a new SSH key pair for secure authentication.", category: "ssh" },
-                { cmd: "ssh-copy-id user@host", desc: "Copy your SSH public key to a remote server for passwordless login.", category: "ssh" },
-                { cmd: "scp file.txt user@remote:/path", desc: "Securely copy a file from local to remote machine over SSH.", category: "ssh" },
-                { cmd: "scp user@remote:/path/file.txt .", desc: "Download a file from remote server to current local directory.", category: "ssh" },
-                { cmd: "ssh -L 8080:localhost:80 user@host", desc: "Create an SSH tunnel to forward a local port to a remote server.", category: "ssh" },
-                { cmd: "ssh -i /path/to/key user@host", desc: "Connect using a specific private key file.", category: "ssh" },
-                { cmd: "ssh -p 2222 user@host", desc: "Connect to a remote server on a specific port (2222).", category: "ssh" }
-            ];
-
-            // 3. WireGuard Commands (Category: 'wireguard')
-            const wireguardLogic = [
-                { cmd: "wg genkey | tee privatekey | wg pubkey > publickey", desc: "Generate a WireGuard private key and derive the public key.", category: "wireguard" },
-                { cmd: "sudo ip link add wg0 type wireguard", desc: "Create a new virtual network interface named wg0.", category: "wireguard" },
-                { cmd: "sudo ip address add dev wg0 10.0.0.1/24", desc: "Assign an IP address to the WireGuard interface.", category: "wireguard" },
-                { cmd: "sudo wg-quick up wg0", desc: "Bring up the WireGuard interface using a configuration file.", category: "wireguard" },
-                { cmd: "sudo wg-quick down wg0", desc: "Bring down the WireGuard interface.", category: "wireguard" },
-                { cmd: "sudo wg show", desc: "Display the current status of the WireGuard interface and connected peers.", category: "wireguard" },
-                { cmd: "sudo wg showconf wg0", desc: "Show the current configuration of the WireGuard interface.", category: "wireguard" }
-            ];
-
-            // --- OS SPECIFIC CONFIGURATIONS (Category: 'os') ---
-
-            // Alpine Specific
-            const alpineCmds = [
-                { cmd: "apk update", desc: "Update repository indexes.", category: "os" },
-                { cmd: "apk add nginx", desc: "Install a package (e.g., nginx).", category: "os" },
-                { cmd: "apk del nginx", desc: "Remove a package.", category: "os" },
-                { cmd: "apk search git", desc: "Search for a package in repositories.", category: "os" },
-                { cmd: "rc-service nginx start", desc: "OpenRC command to start a service.", category: "os" },
-                { cmd: "apk add wireguard-tools", desc: "Install WireGuard tools on Alpine Linux.", category: "os" },
-                { cmd: "apk add openssh", desc: "Install OpenSSH server on Alpine.", category: "os" }
-            ];
-
-            // Kali Specific
-            const kaliCmds = [
-                { cmd: "nmap -sV target", desc: "Scan target and detect service versions.", category: "os" },
-                { cmd: "hydra -l user -P pass.txt ssh://target", desc: "Brute force SSH login.", category: "os" },
-                { cmd: "sqlmap -u url", desc: "Automated SQL injection tool.", category: "os" },
-                { cmd: "airmon-ng start wlan0", desc: "Start monitor mode on wireless card.", category: "os" },
-                { cmd: "airodump-ng wlan0mon", desc: "Capture wireless packets.", category: "os" },
-                { cmd: "sudo apt install wireguard", desc: "Install WireGuard on Kali (Debian based).", category: "os" }
-            ];
-
-            // Ubuntu/Debian Specific
-            const ubuntuCmds = [
-                { cmd: "sudo apt update", desc: "Update package list for Ubuntu.", category: "os" },
-                { cmd: "sudo apt install package", desc: "Install a package on Ubuntu.", category: "os" },
-                { cmd: "sudo apt install wireguard", desc: "Install WireGuard on Ubuntu.", category: "os" }
-            ];
-
-            // Fedora Specific
-            const fedoraCmds = [
-                { cmd: "sudo dnf install package", desc: "Install a package on Fedora.", category: "os" },
-                { cmd: "sudo dnf install wireguard-tools", desc: "Install WireGuard tools on Fedora.", category: "os" }
-            ];
-
-            // CentOS Specific
-            const centosCmds = [
-                { cmd: "sudo yum install package", desc: "Install a package on CentOS.", category: "os" },
-                { cmd: "sudo yum install wireguard-tools", desc: "Install WireGuard tools on CentOS (requires EPEL).", category: "os" }
-            ];
-
-            // --- MERGE LOGIC ---
-            commands = [...commonLinux, ...sshCommands, ...wireguardLogic];
-
-            if (os === 'alphine') {
-                commands = [...commands, ...alpineCmds];
-            } else if (os === 'kali') {
-                commands = [...commands, ...kaliCmds];
-            } else if (os === 'ubuntu') {
-                commands = [...commands, ...ubuntuCmds];
-            } else if (os === 'fedora') {
-                commands = [...commands, ...fedoraCmds];
-            } else if (os === 'centos') {
-                commands = [...commands, ...centosCmds];
-            }
-
-            // Save to global variable
-            allCommandsData = commands;
-            
-            // Reset Display
-            document.getElementById('command-list-container').innerHTML = '<div class="empty-state">Select a module to see commands here.</div>';
-        }
-
-        /* --- RENDER NEW LIST LAYOUT --- */
-        function renderList(commands) {
-            const container = document.getElementById('command-list-container');
-            container.innerHTML = '';
-
-            if (commands.length === 0) {
-                container.innerHTML = '<div class="empty-state">No commands found.</div>';
-                return;
-            }
-
-            commands.forEach(item => {
-                const row = document.createElement('div');
-                row.className = 'command-row';
-                row.innerHTML = `
-                    <div class="cmd-top">
-                        <span class="cmd-icon">>></span>
-                        <div class="cmd-text">${item.cmd}</div>
-                    </div>
-                    <div class="cmd-desc">${item.desc}</div>
-                `;
-                container.appendChild(row);
-            });
         }
 
         /* --- TOAST NOTIFICATIONS --- */
