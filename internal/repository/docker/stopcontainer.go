@@ -3,6 +3,7 @@ package docker
 import (
 	"log"
 	"os/exec"
+	"strings"
 
 	"github.com/johngithiyon/Nodefy/internal/models"
 )
@@ -24,8 +25,13 @@ func Stopcontainer(username string ,Stopcontainer models.Containermanage) error 
 		return outputerr
 	}
 
+	id := strings.TrimSpace(string(output))
+
+
+	log.Println("Docker ps output",string(output),id)
+
 	
-	stopcmd := exec.Command("docker","stop",string(output))
+	stopcmd := exec.Command("docker","stop",id)
 
 	stopoutput,stoperr := stopcmd.CombinedOutput()
 
