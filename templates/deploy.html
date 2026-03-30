@@ -872,7 +872,7 @@
 
                 <div class="custom-input-area" style="display: block; margin-bottom: 30px; max-width: 550px; margin-left: auto; margin-right: auto;">
                     <p style="margin-bottom: 12px; color: var(--accent-color); font-size: 0.9rem; font-weight: 500;">Application Name:</p>
-                    <input type="text" id="app-name" class="code-editor" placeholder="e.g., my-cool-app" style="min-height: 50px; height: 50px;">
+                    <input type="text" id="app-name" class="code-editor" placeholder="e.g nodefy" style="min-height: 50px; height: 50px;">
                 </div>
 
                 <div class="actions">
@@ -1192,7 +1192,7 @@
 
                 if (response.ok) {
                     showToast("Success", "Project deployed successfully!", "success");
-                    setTimeout(() => { window.location.href = '/'; }, 2000);
+                    setTimeout(() => { window.location.href = '/deployinfopage'; }, 2000);
                 } else {
                     showToast("Deployment Failed", message, "error");
                 }
