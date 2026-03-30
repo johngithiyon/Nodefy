@@ -28,6 +28,13 @@ func Killcontainerhandler(w http.ResponseWriter, r *http.Request) {
 			 return
 		}
 
+		decoderr := utils.Jstost(r.Body,&killinstance)
+
+		if decoderr != nil {
+		response.Response(w,500,"Internal Server Error")
+		return 
+		}
+
 
         killerr := services.Killcontainerservices(&killinstance,sessionid)
 
