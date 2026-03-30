@@ -11,8 +11,16 @@ func Addinstances(username string,Addinstances models.Addinstancesbuild) error {
 
 	// start the container by the user given image name 
 	
-	  cmd :=  exec.Command("docker","run","--name",Addinstances.Instancename,"-d",Addinstances.Imagename,"sleep", "infinity",)
-
+	cmd := exec.Command(
+		"docker", "run",
+		"--name", Addinstances.Instancename,
+		"--label", "owner="+username,
+		"--label", "instance="+Addinstances.Instancename,
+		"-d",
+		Addinstances.Imagename,
+		"sleep", "infinity",
+	)
+	 
       output,outputerr :=  cmd.CombinedOutput()
 
 	  if outputerr != nil {
