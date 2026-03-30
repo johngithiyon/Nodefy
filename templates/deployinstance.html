@@ -424,85 +424,78 @@
         }
 
         .ssh-sidebar {
-            width: 300px;
-            background: rgba(10, 10, 15, 0.6);
+            width: 240px;
+            background: rgba(15, 15, 20, 0.5);
             backdrop-filter: var(--glass-blur);
             border-right: 1px solid var(--border-subtle);
             display: flex;
             flex-direction: column;
+            padding: 32px 20px;
             flex-shrink: 0;
             z-index: 10;
-            overflow: hidden;
+            gap: 14px;
         }
 
         .ssh-logo-area {
-            padding: 28px 24px;
-            border-bottom: 1px solid var(--border-subtle);
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-
-        .ssh-logo-row {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 10px;
+            margin-bottom: 28px;
+            padding-bottom: 28px;
+            border-bottom: 1px solid var(--border-subtle);
+            flex-shrink: 0;
         }
 
         .ssh-logo-icon {
-            width: 38px; height: 38px;
-            fill: none; stroke: var(--accent-color);
-            stroke-width: 2;
-            filter: drop-shadow(0 0 10px rgba(139, 92, 246, 0.5));
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
         }
 
         .ssh-logo-text {
-            font-size: 1.3rem;
+            font-size: 1.5rem;
             font-weight: 800;
             color: white;
-            letter-spacing: -0.5px;
+            letter-spacing: -0.03em;
+            user-select: none;
         }
         .ssh-logo-text span { color: var(--accent-color); }
-
-        .ssh-logo-sub {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
 
         .ssh-back-btn {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 10px 14px;
-            background: rgba(255,255,255,0.04);
+            gap: 10px;
+            width: 100%;
+            padding: 16px 18px;
+            background: rgba(255,255,255,0.03);
             border: 1px solid var(--border-subtle);
-            border-radius: 10px;
             color: var(--text-muted);
-            font-size: 0.82rem;
-            font-weight: 500;
+            border-radius: 14px;
             cursor: pointer;
-            transition: all 0.2s;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
             font-family: var(--font-ui);
         }
         .ssh-back-btn:hover {
-            background: rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.06);
             border-color: var(--border-hover);
             color: white;
+            transform: translateX(4px);
         }
-        .ssh-back-btn svg { flex-shrink: 0; }
+        .ssh-back-btn svg { flex-shrink: 0; opacity: 0.7; }
+        .ssh-back-btn:hover svg { opacity: 1; }
 
         .ssh-nav {
             flex: 1;
             overflow-y: auto;
-            padding: 16px 0;
+            padding: 0;
         }
 
         .ssh-dropdown { border-bottom: 1px solid rgba(255,255,255,0.03); }
 
         .ssh-dropdown-header {
-            padding: 14px 22px;
+            padding: 14px 18px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -519,7 +512,7 @@
             color: var(--accent-color);
             background: linear-gradient(90deg, rgba(139, 92, 246, 0.1), transparent);
             border-left: 3px solid var(--accent-color);
-            padding-left: 19px;
+            padding-left: 15px;
         }
 
         .ssh-dropdown-arrow { transition: transform 0.3s ease; width: 14px; height: 14px; stroke: currentColor; }
@@ -550,7 +543,7 @@
         }
 
         .ssh-submenu-item {
-            padding: 10px 22px 10px 40px;
+            padding: 10px 18px 10px 40px;
             display: flex;
             align-items: center;
             color: var(--text-muted);
@@ -592,25 +585,29 @@
         }
 
         .ssh-header {
-            padding: 20px 40px;
+            padding: 20px 36px;
             border-bottom: 1px solid var(--border-subtle);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(5, 5, 10, 0.6);
+            background: rgba(5, 5, 10, 0.15);
             backdrop-filter: blur(10px);
             z-index: 5;
             flex-shrink: 0;
         }
 
         .ssh-header h1 {
-            font-size: 1.15rem;
-            font-weight: 600;
+            font-size: 1.35rem;
+            font-weight: 700;
             color: #fff;
             display: flex;
             align-items: center;
             gap: 10px;
-            font-family: var(--font-code);
+            background: linear-gradient(135deg, #fff 30%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.02em;
+            font-family: var(--font-ui);
         }
 
         .ssh-status-badge {
@@ -637,7 +634,7 @@
 
         .ssh-content-container {
             flex: 1;
-            padding: 40px;
+            padding: 36px;
             overflow-y: auto;
             display: flex;
             justify-content: center;
@@ -824,12 +821,13 @@
             .toast { width: 100%; min-width: auto; max-width: none; }
 
             .ssh-overlay { flex-direction: column; }
-            .ssh-sidebar { width: 100%; max-height: 220px; border-right: none; border-bottom: 1px solid var(--border-subtle); }
-            .ssh-logo-area { padding: 16px; flex-direction: row; align-items: center; }
-            .ssh-logo-row { gap: 10px; }
-            .ssh-logo-text { font-size: 1.1rem; }
-            .ssh-logo-sub { display: none; }
-            .ssh-back-btn { padding: 8px 12px; font-size: 0.78rem; }
+            .ssh-sidebar { width: 100%; max-height: 220px; border-right: none; border-bottom: 1px solid var(--border-subtle); flex-direction: row; align-items: center; padding: 14px 16px; gap: 10px; }
+            .ssh-logo-area { margin-bottom: 0; margin-right: auto; padding-bottom: 0; border-bottom: none; }
+            .ssh-logo-text { font-size: 1.2rem; }
+            .ssh-back-btn { width: auto; padding: 10px 14px; }
+            .ssh-back-btn span { display: none; }
+            .ssh-nav { display: none; }
+            .ssh-header { padding: 14px 16px; }
             .ssh-content-container { padding: 20px; }
             .ssh-terminal-body { min-height: 300px; padding: 20px; }
         }
@@ -868,7 +866,7 @@
                 <path d="M2 17L12 22L22 17" stroke="white" />
                 <path d="M2 12L12 17L22 12" stroke="white" />
             </svg>
-            <span>Nodefy</span>
+            <div class="ssh-logo-text">Nodefy<span></span></div>
         </a>
 
         <button class="nav-btn primary" onclick="openAddModal()">
@@ -884,7 +882,7 @@
 
     <main class="main-content">
         <header class="top-bar">
-            <div class="page-title">Deploy Command Center</div>
+            <div class="page-title">Deploy Instance</div>
             <div class="actions-group">
                 <button class="btn btn-deploy" id="btnStart" onclick="handleAction('start')">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
@@ -968,22 +966,19 @@
     <div class="ssh-overlay" id="sshOverlay">
         <aside class="ssh-sidebar">
             <div class="ssh-logo-area">
-                <div class="ssh-logo-row">
-                    <svg class="ssh-logo-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke-linejoin="round"/>
-                        <path d="M2 17L12 22L22 17" stroke-linejoin="round"/>
-                        <path d="M2 12L12 17L22 12" stroke-linejoin="round"/>
-                    </svg>
-                    <div>
-                        <div class="ssh-logo-text">Node<span>fy</span></div>
-                        <span class="ssh-logo-sub">SSH Access</span>
-                    </div>
-                </div>
-                <button class="ssh-back-btn" onclick="closeSSHOverlay()">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-                    Back to Deploy
-                </button>
+                <svg class="ssh-logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="var(--accent-color)" stroke-linejoin="round"/>
+                    <path d="M2 17L12 22L22 17" stroke="white" stroke-linejoin="round"/>
+                    <path d="M2 12L12 17L22 12" stroke="white" stroke-linejoin="round"/>
+                </svg>
+                <div class="ssh-logo-text">Nodefy<span></span></div>
             </div>
+
+            <button class="ssh-back-btn" onclick="closeSSHOverlay()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                <span>Back to Deploy</span>
+            </button>
+
             <nav class="ssh-nav" id="sshSidebarNav"></nav>
         </aside>
 
@@ -1047,7 +1042,7 @@
 
     <script>
         /* =============================================
-           DEPLOY PAGE LOGIC (unchanged)
+           DEPLOY PAGE LOGIC
            ============================================= */
         document.addEventListener('DOMContentLoaded', function () {
             if (!localStorage.getItem('selection_type')) {
@@ -1267,7 +1262,6 @@
             setTimeout(function () { toast.style.animation = 'toastOut 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards'; toast.addEventListener('animationend', function () { if (toast.parentElement) toast.remove(); }); }, 5000);
         }
 
-        // Modal close on overlay click / Escape
         (function () {
             var overlays = document.querySelectorAll('.modal-overlay');
             for (var i = 0; i < overlays.length; i++) { (function (overlay) { overlay.addEventListener('click', function (e) { if (e.target === overlay) closeModals(); }); })(overlays[i]); }
@@ -1279,7 +1273,6 @@
            SSH COMMAND CENTER LOGIC
            ============================================= */
 
-        // Command data — only cloudflared + server start + deploy
         var sshCommandData = {
             'cloudflared-setup': {
                 label: 'Cloudflared Setup',
@@ -1318,14 +1311,80 @@
                 label: 'Start Your Server',
                 icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>',
                 items: {
-                    'go-run': { label: 'go run main.go', command: 'go run main.go', desc: 'Starts your Go application server by compiling and running main.go in a single step.\n\nThis command:\n  1. Compiles the Go source code in main.go\n  2. Runs the resulting binary immediately\n  3. Outputs server logs directly to the terminal\n\nMake sure your main.go file contains an HTTP server listening on a port (e.g., :8080).', params: ['go run', 'main.go', ':8080'], output: ['Compiling main.go...', '', '  ┌──────────────────────────────────────┐', '  │  Server started successfully          │', '  │  Listening on http://localhost:8080   │', '  │  PID: 12345                           │', '  └──────────────────────────────────────┘', '', 'Ready to accept connections.'] }
+                    'go-run': {
+                        label: 'Go Project ',
+                        command: 'go run main.go',
+                        desc: 'Starts your Go application server by compiling and running main.go in a single step.\n\nThis command:\n  1. Compiles the Go source code in main.go\n  2. Runs the resulting binary immediately\n  3. Outputs server logs directly to the terminal\n\nMake sure your main.go file contains an HTTP server listening on a port (e.g., :8080).',
+                        params: ['go run', 'main.go', ':8080'],
+                        output: [
+                            'Compiling main.go...',
+                            '',
+                            '  ',
+                            '    Server started successfully           ',
+                            '    Listening on http://localhost:8080    ',
+                            '    PID: 12345                            ',
+                            '  ',
+                            '',
+                            'Ready to accept connections.'
+                        ]
+                    },
+                    'node-run': {
+                        label: 'Node.js project',
+                        command: 'node index.js',
+                        desc: 'Starts your Node.js application by running the entry file directly.\n\nThis command:\n  1. Loads the V8 JavaScript engine\n  2. Executes index.js as the entry point\n  3. Starts the HTTP server defined in your code\n\nAlternatively, you can use "npm start" if your package.json has a start script configured.',
+                        params: ['node', 'index.js', 'npm start', ':3000'],
+                        output: [
+                            '> node index.js',
+                            '',
+                            '  ',
+                            '    Node.js v20.11.0                    ',
+                            '    Server started successfully         ',
+                            '    Listening on http://localhost:3000  ',
+                            '    PID: 24680                          ',
+                            '  ',
+                            '',
+                            'Ready to accept connections.'
+                        ]
+                    },
+                    'python-run': {
+                        label: 'Python Project',
+                        command: 'python3 main.py',
+                        desc: 'Starts your Python application server by running main.py with Python 3.\n\nThis command:\n  1. Launches the Python 3 interpreter\n  2. Executes main.py as the entry point\n  3. Starts the server (Flask, FastAPI, Django, etc.)\n\nMake sure you have installed the required dependencies first:\n  pip3 install -r requirements.txt',
+                        params: ['python3', 'main.py', 'pip3 install', ':5000'],
+                        output: [
+                            '> python3 main.py',
+                            '',
+                            '  ',
+                            '    Python 3.12.0                            ',
+                            '    Server started successfully              ',
+                            '    Listening on http://localhost:5000       ',
+                            '    PID: 36912                               ',
+                            '  ',
+                            '',
+                            'Ready to accept connections.'
+                        ]
+                    }
                 }
             },
             'deploy-commands': {
                 label: 'Deploy Commands',
                 icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>',
                 items: {
-                    'tunnel-deploy': { label: 'cloudflared tunnel --url', command: 'cloudflared tunnel --url http://localhost:8080', desc: 'Creates a public Cloudflare Tunnel that routes traffic to your local application server.\n\nThis command:\n  1. Connects to Cloudflare\'s edge network\n  2. Maps a public URL to your local http://localhost:8080\n  3. Returns a publicly accessible URL (e.g., https://xxx.trycloudflare.com)\n\nMake sure your server is already running (go run main.go) before executing this.\n\nThe tunnel remains active as long as this command is running. Press Ctrl+C to stop it.', params: ['cloudflared tunnel', '--url', 'http://localhost:8080', 'trycloudflare.com'], output: ['2024/11/15 10:30:00 INF Starting tunnel tunnelID=xxx', '2024/11/15 10:30:01 INF +----------------------------+', '2024/11/15 10:30:01 INF |  Your quick Tunnel has been created! Visit it at (it may take some time to be reachable):  |', '2024/11/15 10:30:01 INF |  https://abc-def-ghi-jkl.trycloudflare.com  |', '2024/11/15 10:30:01 INF +----------------------------+', '', '2024/11/15 10:30:02 INF Connection registered connIndex=0'] }
+                    'tunnel-deploy': {
+                        label: 'cloudflared tunnel --url',
+                        command: 'cloudflared tunnel --url http://localhost:8080',
+                        desc: 'Creates a public Cloudflare Tunnel that routes traffic to your local application server.\n\nThis command:\n  1. Connects to Cloudflare\'s edge network\n  2. Maps a public URL to your local http://localhost:8080\n  3. Returns a publicly accessible URL (e.g., https://xxx.trycloudflare.com)\n\nMake sure your server is already running (go run main.go / node index.js / python3 main.py) before executing this.\n\nChange the port (8080) to match whichever port your server is listening on (Go:8080, Node:3000, Python:5000).\n\nThe tunnel remains active as long as this command is running. Press Ctrl+C to stop it.',
+                        params: ['cloudflared tunnel', '--url', 'http://localhost:8080', 'trycloudflare.com'],
+                        output: [
+                            '2024/11/15 10:30:00 INF Starting tunnel tunnelID=xxx',
+                            '2024/11/15 10:30:01 INF ',
+                            '2024/11/15 10:30:01 INF   Your quick Tunnel has been created! Visit it at (it may take some time to be reachable):  ',
+                            '2024/11/15 10:30:01 INF   https://abc-def-ghi-jkl.trycloudflare.com  ',
+                            '2024/11/15 10:30:01 INF ',
+                            '',
+                            '2024/11/15 10:30:02 INF Connection registered connIndex=0'
+                        ]
+                    }
                 }
             }
         };
@@ -1354,12 +1413,10 @@
             document.getElementById('sshTermTitleText').textContent = ' ' + sshPromptText.replace(':~$', ': ~/');
             sshCurrentCmdText = '';
 
-            // Reset welcome
             var body = document.getElementById('sshTerminalBody');
             var welcomeLines = body.querySelectorAll('.ssh-output-line');
             for (var w = 0; w < welcomeLines.length; w++) welcomeLines[w].remove();
 
-            // Re-add welcome
             var br = body.querySelector('br');
             var line1 = document.createElement('div');
             line1.className = 'ssh-output-line';
@@ -1373,7 +1430,6 @@
             line2.textContent = 'Select a command from the sidebar to begin.';
             body.insertBefore(line2, br);
 
-            // Clear active states
             var activeItems = document.querySelectorAll('.ssh-submenu-item.active');
             for (var a = 0; a < activeItems.length; a++) activeItems[a].classList.remove('active');
         }
@@ -1440,7 +1496,6 @@
                         subDd.appendChild(subC);
                         content.appendChild(subDd);
                     } else {
-                        // Direct item (like go run main.go)
                         var isHighlight = (sectionKey === 'start-server' || sectionKey === 'deploy-commands');
                         var directDiv = document.createElement('div');
                         directDiv.className = 'ssh-submenu-item' + (isHighlight ? ' highlight-item' : '');
@@ -1493,7 +1548,6 @@
             document.getElementById('sshTerminalOutput').innerHTML = '';
             document.getElementById('sshTeachingPanel').style.display = 'none';
 
-            // Remove old welcome lines
             var body = document.getElementById('sshTerminalBody');
             var oldLines = body.querySelectorAll('.ssh-output-line');
             for (var o = 0; o < oldLines.length; o++) oldLines[o].remove();
@@ -1525,7 +1579,6 @@
                     div.textContent = line;
                     div.style.animationDelay = (idx * 0.05) + 's';
 
-                    // Color coding
                     if (line.indexOf('error') !== -1 || line.indexOf('ERROR') !== -1 || line.indexOf('Killed') !== -1) {
                         div.classList.add('ssh-term-error');
                     } else if (line.indexOf('Success') !== -1 || line.indexOf('successfully') !== -1 || line.indexOf('Complete!') !== -1 || line.indexOf('verified successfully') !== -1 || line.indexOf('Welcome to') !== -1 || line.indexOf('Authentication successful') !== -1 || line.indexOf('Ready to accept') !== -1 || line.indexOf('started successfully') !== -1 || line.indexOf('Connection registered') !== -1 || line.indexOf('Works without') !== -1) {
@@ -1534,8 +1587,7 @@
                         div.classList.add('ssh-term-info');
                     }
 
-                    // Special green for tunnel URLs
-                    if (line.indexOf('trycloudflare.com') !== -1 || line.indexOf('localhost:8080') !== -1) {
+                    if (line.indexOf('trycloudflare.com') !== -1 || line.indexOf('localhost:') !== -1) {
                         div.classList.add('ssh-term-green');
                     }
 
