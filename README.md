@@ -32,12 +32,12 @@ Nodefy bridges the gap between theoretical learning and real-world cloud experie
 
 | Feature | Description |
 |---|---|
-| 🐧 **Linux OS Exploration** | Run Linux environments like Ubuntu with hands-on terminal access |
-| 🏗 **Instance Management** | Create, start, stop, and delete containers; manage multiple instances |
-| 🌐 **Multi-Node Development** | Build distributed systems (backend, database, cache) with Docker network integration |
-| 🚀 **GitHub Deployment** | Deploy apps directly from repository links with automatic build and execution |
-| 🔐 **Secure Access** | SSH access to containers with public access via tunneling |
-| 📊 **Dashboard** | Monitor and control instances from a unified interface |
+|  **Linux OS Exploration** | Run Linux environments like Ubuntu with hands-on terminal access |
+|  **Instance Management** | Create, start, stop, and delete containers; manage multiple instances |
+|  **Multi-Node Development** | Build distributed systems (backend, database, cache) with Docker network integration |
+|  **GitHub Deployment** | Deploy apps directly from repository links with automatic build and execution |
+|  **Secure Access** | SSH access to containers with public access via tunneling |
+|  **Dashboard** | Monitor and control instances from a unified interface |
 
 ---
 
