@@ -3,6 +3,7 @@ package docker
 import (
 	"log"
 	"os/exec"
+	"strings"
 
 	"github.com/johngithiyon/Nodefy/internal/models"
 )
@@ -24,7 +25,9 @@ func Startcontainer(username string,startcontainer models.Containermanage) error
 			return outputerr
 		}
 
-		startcmd := exec.Command("docker","start",string(output))
+		id := strings.TrimSpace(string(output))
+
+		startcmd := exec.Command("docker","start",id)
 
 	    startoutput,starterr := startcmd.CombinedOutput()
 
