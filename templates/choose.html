@@ -747,12 +747,13 @@
             selectedPath = path;
 
             // ---------------------------------------------------------
-            // NEW FEATURE: Store type in localStorage
+            // UPDATED FEATURE: Store selection in 'selection_type' key
             // ---------------------------------------------------------
-            // Stores 'build' or 'deploy' (or 'explore') based on user selection
+            // This will automatically overwrite the existing value 
+            // if the key 'selection_type' already exists in local storage.
             try {
-                localStorage.setItem('type', path);
-                console.log(`Selection stored: ${path}`); 
+                localStorage.setItem('selection_type', path);
+                console.log(`Selection stored in 'selection_type': ${path}`); 
             } catch (e) {
                 console.warn("LocalStorage access denied or unavailable", e);
             }
