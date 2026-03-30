@@ -1,6 +1,8 @@
 package services
 
 import (
+	"log"
+
 	"github.com/johngithiyon/Nodefy/internal/errors"
 	"github.com/johngithiyon/Nodefy/internal/models"
 	"github.com/johngithiyon/Nodefy/internal/repository/docker"
@@ -21,12 +23,14 @@ func DeployAddinstanceservices(sessionid string,DeployAddinstances *models.Deplo
 	addinstancerr := docker.DeployAddinstances(username,*DeployAddinstances)
 
     if addinstancerr != nil {
+		log.Println(addinstancerr)
 		 return  errors.ErrInternalserver
 	}
 
 	saverr := postgres.SaveDeployAddinstances(username,*DeployAddinstances)
 
 	if saverr != nil {
+		log.Println("save err",saverr)
 		return  errors.ErrInternalserver
 	}
  
