@@ -113,6 +113,6 @@ Make sure you have installed:
 ### 1️⃣ Clone the Repository
 
 ```bash
-git clone 
+git clone https://github.com/johngithiyon/Nodefy.git
 cd nodefy
 
