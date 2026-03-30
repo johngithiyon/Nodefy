@@ -109,7 +109,7 @@ func SaveDeployAddinstances(username string, deploy models.Deployaddinstances) e
 	VALUES ($1, $2, $3)
 	`
 
-	_, err = Database.Db.Exec(insertQuery, appID, deploy.Imagename, "Running")
+	_, err = Database.Db.Exec(insertQuery, appID, deploy.Appname+deploy.Imagename, "Running")
 	if err != nil {
 		return err
 	}
