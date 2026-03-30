@@ -51,33 +51,34 @@ Frontend → Backend → Docker Engine → Network → Database → User Access
 
 ---
 
+
 ## Workflow
 
 ### 1️⃣ Choose Stack
 Select the required technology stack and environment for development.
 
-![Choose Stack](/assets/choose.png)
+![Choose Stack](/assests/choose.png)
 
 ---
 
 ### 2️⃣ Explore OS
 Interact with Linux environments and explore system-level operations.
 
-![Explore OS](/assets/exploreos.png)
+![Explore OS](/assests/exploreos.png)
 
 ---
 
 ### 3️⃣ Build Instances
 Create and configure containerized instances for development.
 
-![Build Instances](/assets/build.png)
+![Build Instances](/assests/build.png)
 
 ---
 
 ### 4️⃣ Deploy Using GitHub Repositories
 Provide your GitHub repository link to automatically build and deploy your application.
 
-![Deploy](/assets/deploy.png)
+![Deploy](/assests/deploy.png)
 
 ---
 
