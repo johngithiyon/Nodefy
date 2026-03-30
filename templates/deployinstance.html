@@ -52,6 +52,7 @@
             width: 100vw;
         }
 
+        /* --- Ambient Backgrounds --- */
         .ambient-glow {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
@@ -88,193 +89,99 @@
             100% { transform: translate(-10px, -10px) rotate(0.5deg); opacity: 0.7; }
         }
 
-        .particles {
+        .particles, .bubbles-container, .glow-spot {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: -2;
             pointer-events: none;
             overflow: hidden;
-            transition: transform 0.1s ease-out;
         }
-
-        .particle {
-            position: absolute;
-            width: 4px; height: 4px;
-            background: rgba(139, 92, 246, 0.2);
-            border-radius: 50%;
-            box-shadow: 0 0 15px 2px rgba(139, 92, 246, 0.2);
-            animation: floatParticle 18s infinite ease-in-out;
-        }
-
-        @keyframes floatParticle {
-            0% { transform: translateY(0) translateX(0) scale(1); opacity: 0.2; }
-            50% { transform: translateY(-120px) translateX(40px) scale(1.5); opacity: 0.6; }
-            100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.2; }
-        }
-
-        .bubbles-container {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: -2;
-            pointer-events: none;
-            overflow: hidden;
-            transition: transform 0.2s ease-out;
-        }
-
-        .bubble {
-            position: absolute;
-            bottom: -100px;
-            background: radial-gradient(circle at 30% 30%, rgba(139, 92, 246, 0.08), rgba(139, 92, 246, 0.01) 60%, transparent 80%);
-            border-radius: 50%;
-            border: 1px solid rgba(139, 92, 246, 0.05);
-            animation: riseBubble 25s infinite ease-in;
-            filter: blur(2px);
-        }
-
-        @keyframes riseBubble {
-            0% { transform: translateY(0) translateX(0) scale(0.8); opacity: 0; }
-            20% { opacity: 0.5; }
-            80% { opacity: 0.5; }
-            100% { transform: translateY(-120vh) translateX(50px) scale(1.2); opacity: 0; }
-        }
-
+        
         .glow-spot {
-            position: fixed;
             width: 60vw; height: 60vw;
             background: radial-gradient(circle at center, rgba(139, 92, 246, 0.05), transparent 70%);
             border-radius: 50%;
-            z-index: -2;
-            pointer-events: none;
             animation: spotMove 25s infinite alternate;
-            transition: transform 0.2s ease-out;
         }
-
         .spot1 { top: -20vh; right: -10vw; }
         .spot2 { bottom: -30vh; left: -10vw; animation-delay: -5s; width: 80vw; height: 80vw; background: radial-gradient(circle at center, rgba(59, 130, 246, 0.04), transparent 70%); }
 
-        @keyframes spotMove {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(5%, 5%) scale(1.1); }
-        }
+        @keyframes spotMove { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(5%, 5%) scale(1.1); } }
 
+        .particle {
+            position: absolute; width: 4px; height: 4px;
+            background: rgba(139, 92, 246, 0.2); border-radius: 50%;
+            box-shadow: 0 0 15px 2px rgba(139, 92, 246, 0.2);
+            animation: floatParticle 18s infinite ease-in-out;
+        }
+        @keyframes floatParticle { 0% { transform: translateY(0) translateX(0) scale(1); opacity: 0.2; } 50% { transform: translateY(-120px) translateX(40px) scale(1.5); opacity: 0.6; } 100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.2; } }
+
+        .bubble {
+            position: absolute; bottom: -100px;
+            background: radial-gradient(circle at 30% 30%, rgba(139, 92, 246, 0.08), rgba(139, 92, 246, 0.01) 60%, transparent 80%);
+            border-radius: 50%; border: 1px solid rgba(139, 92, 246, 0.05);
+            animation: riseBubble 25s infinite ease-in; filter: blur(2px);
+        }
+        @keyframes riseBubble { 0% { transform: translateY(0) translateX(0) scale(0.8); opacity: 0; } 20% { opacity: 0.5; } 80% { opacity: 0.5; } 100% { transform: translateY(-120vh) translateX(50px) scale(1.2); opacity: 0; } }
+
+        /* --- UI Components --- */
         .sidebar {
             width: 240px;
             background: rgba(15, 15, 20, 0.5);
             backdrop-filter: var(--glass-blur);
             border-right: 1px solid var(--border-subtle);
-            display: flex;
-            flex-direction: column;
-            padding: 32px 20px;
-            z-index: 10;
-            flex-shrink: 0;
-            gap: 14px;
+            display: flex; flex-direction: column;
+            padding: 32px 20px; z-index: 10; flex-shrink: 0; gap: 14px;
         }
 
         .sidebar-logo {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: white;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            letter-spacing: -0.03em;
-            margin-bottom: 28px;
-            padding-bottom: 28px;
-            border-bottom: 1px solid var(--border-subtle);
-            text-decoration: none;
-            user-select: none;
-            -webkit-user-select: none;
+            font-size: 1.5rem; font-weight: 800; color: white;
+            display: flex; align-items: center; gap: 10px;
+            letter-spacing: -0.03em; margin-bottom: 28px;
+            padding-bottom: 28px; border-bottom: 1px solid var(--border-subtle);
+            text-decoration: none; user-select: none;
         }
-
         .sidebar-logo span { color: var(--accent-color); }
 
         .nav-btn {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            width: 100%;
-            padding: 16px 18px;
+            display: flex; align-items: center; gap: 14px;
+            width: 100%; padding: 16px 18px;
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border-subtle);
-            color: var(--text-muted);
-            border-radius: 14px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            font-family: var(--font-ui);
+            color: var(--text-muted); border-radius: 14px;
+            cursor: pointer; font-size: 0.9rem; font-weight: 500;
+            transition: all 0.3s ease; font-family: var(--font-ui);
         }
 
-        .nav-btn:hover {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: var(--border-hover);
-            color: white;
-            transform: translateX(4px);
-        }
-
-        .nav-btn.primary {
-            background: var(--accent-color);
-            border-color: var(--accent-color);
-            color: white;
-            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
-        }
-
-        .nav-btn.primary:hover {
-            background: var(--accent-hover);
-            transform: translateX(2px) translateY(-2px);
-            box-shadow: 0 8px 30px rgba(139, 92, 246, 0.45);
-        }
-
+        .nav-btn:hover { background: rgba(255, 255, 255, 0.06); border-color: var(--border-hover); color: white; transform: translateX(4px); }
+        .nav-btn.primary { background: var(--accent-color); border-color: var(--accent-color); color: white; box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3); }
+        .nav-btn.primary:hover { background: var(--accent-hover); transform: translateX(2px) translateY(-2px); box-shadow: 0 8px 30px rgba(139, 92, 246, 0.45); }
         .nav-btn svg { flex-shrink: 0; opacity: 0.7; }
         .nav-btn:hover svg { opacity: 1; }
         .nav-btn.primary svg { opacity: 1; }
 
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            z-index: 5;
-            min-width: 0;
-        }
+        .main-content { flex: 1; display: flex; flex-direction: column; position: relative; z-index: 5; min-width: 0; }
 
         .top-bar {
-            padding: 20px 36px;
-            border-bottom: 1px solid var(--border-subtle);
-            background: rgba(5, 5, 10, 0.15);
-            backdrop-filter: blur(10px);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-shrink: 0;
+            padding: 20px 36px; border-bottom: 1px solid var(--border-subtle);
+            background: rgba(5, 5, 10, 0.15); backdrop-filter: blur(10px);
+            display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
         }
 
         .page-title {
-            font-size: 1.35rem;
-            font-weight: 700;
+            font-size: 1.35rem; font-weight: 700;
             background: linear-gradient(135deg, #fff 30%, #a78bfa 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -0.02em;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.02em;
         }
 
         .actions-group { display: flex; gap: 8px; }
 
         .btn {
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.78rem;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            border: 1px solid transparent;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-family: var(--font-ui);
-            white-space: nowrap;
+            padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 0.78rem;
+            cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border: 1px solid transparent; display: inline-flex; align-items: center; gap: 6px;
+            font-family: var(--font-ui); white-space: nowrap;
         }
-
         .btn svg { flex-shrink: 0; }
 
         .btn-deploy { background: rgba(16, 185, 129, 0.12); color: #10b981; border-color: rgba(16, 185, 129, 0.25); }
@@ -295,141 +202,104 @@
         .section-title { color: white; font-weight: 600; font-size: 1.1rem; }
         .section-subtitle { color: var(--text-muted); font-size: 0.82rem; margin-top: 2px; }
 
-        .instance-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .instance-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
 
-        .instance-card {
+        /* --- App Card --- */
+        .app-card {
             background: rgba(20, 20, 25, 0.6);
             border: 1px solid var(--border-subtle);
             border-top: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 24px;
-            padding: 24px;
-            cursor: pointer;
+            padding: 0;
+            cursor: default;
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
             overflow: hidden;
-            min-height: 180px;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            display: flex; flex-direction: column;
+            backdrop-filter: blur(20px); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         }
 
-        .instance-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.04), transparent);
-            transition: 0.6s;
-            pointer-events: none;
-        }
-        .instance-card:hover::before { left: 100%; }
-
-        .instance-card::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 3px;
-            background: transparent;
-            transition: background 0.4s ease;
-        }
-
-        .instance-card:hover {
+        .app-card:hover {
             border-color: rgba(139, 92, 246, 0.3);
             background: rgba(30, 30, 40, 0.7);
             transform: translateY(-5px);
             box-shadow: 0 15px 40px -10px rgba(0, 0, 0, 0.6), 0 0 20px rgba(139, 92, 246, 0.15);
         }
 
-        .instance-card.running::after { background: linear-gradient(90deg, #10b981, transparent); }
-        .instance-card.running:hover { border-color: rgba(16, 185, 129, 0.3); box-shadow: 0 15px 40px -10px rgba(0, 0, 0, 0.6), 0 0 25px rgba(16, 185, 129, 0.12); }
-
-        .instance-card.stopped::after { background: linear-gradient(90deg, #ef4444, transparent); }
-        .instance-card.stopped:hover { border-color: rgba(239, 68, 68, 0.3); box-shadow: 0 15px 40px -10px rgba(0, 0, 0, 0.6), 0 0 25px rgba(239, 68, 68, 0.12); }
-
-        .instance-card.building::after { background: linear-gradient(90deg, #f59e0b, transparent); }
-        .instance-card.building:hover { border-color: rgba(245, 158, 11, 0.3); box-shadow: 0 15px 40px -10px rgba(0, 0, 0, 0.6), 0 0 25px rgba(245, 158, 11, 0.12); }
-
-        .instance-card.selected {
-            border-color: rgba(139, 92, 246, 0.5) !important;
-            box-shadow: 0 15px 40px -10px rgba(0, 0, 0, 0.6), 0 0 30px rgba(139, 92, 246, 0.2) !important;
+        .app-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex; justify-content: space-between; align-items: center;
         }
 
-        .card-top { display: flex; justify-content: space-between; align-items: flex-start; }
+        .app-title {
+            font-size: 1.1rem; font-weight: 700; color: white; letter-spacing: -0.01em;
+        }
 
-        .inst-icon {
-            width: 48px; height: 48px;
-            background: rgba(255, 255, 255, 0.03);
+        .app-count {
+            font-size: 0.75rem; color: var(--text-muted); background: rgba(255,255,255,0.05);
+            padding: 4px 8px; border-radius: 12px; font-weight: 500;
+        }
+
+        .service-list {
+            padding: 8px 12px;
+        }
+
+        .service-item {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 10px 14px;
+            margin-bottom: 4px;
             border-radius: 12px;
-            border: 1px solid var(--border-subtle);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            background: transparent;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
 
-        .instance-card.running .inst-icon { color: #10b981; }
-        .instance-card.stopped .inst-icon { color: #ef4444; }
-        .instance-card.building .inst-icon { color: #f59e0b; }
+        .service-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+            border-color: var(--border-hover);
+        }
 
-        .instance-card:hover .inst-icon {
+        .service-item.selected {
             background: rgba(139, 92, 246, 0.1);
-            border-color: rgba(139, 92, 246, 0.3);
-        }
-        .instance-card:hover .inst-icon svg { transform: scale(1.15); }
-        .instance-card .inst-icon svg { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-
-        .inst-id {
-            font-family: var(--font-code);
-            font-size: 0.7rem;
-            color: var(--text-dark);
-            background: rgba(0, 0, 0, 0.3);
-            padding: 3px 8px;
-            border-radius: 6px;
+            border-color: rgba(139, 92, 246, 0.4);
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.1);
         }
 
-        .card-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        .service-info { display: flex; align-items: center; gap: 12px; }
 
-        .inst-name {
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: white;
-            margin-bottom: 12px;
-            letter-spacing: -0.01em;
+        .service-icon {
+            width: 32px; height: 32px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.03);
+            color: var(--text-muted);
+        }
+
+        .service-name {
+            font-family: var(--font-code); font-size: 0.85rem; color: #e4e4e7; font-weight: 500;
         }
 
         .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            font-size: 0.72rem;
-            font-weight: 600;
-            padding: 5px 12px;
-            border-radius: 20px;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            width: fit-content;
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 0.7rem; font-weight: 600; padding: 3px 8px;
+            border-radius: 20px; text-transform: uppercase; letter-spacing: 0.04em;
         }
-
-        .status-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+        
+        .status-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
 
         .status-running { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.2); }
-        .status-running .status-dot { background: #34d399; box-shadow: 0 0 8px #34d399; animation: pulseStatus 2s infinite; }
+        .status-running .status-dot { background: #34d399; box-shadow: 0 0 6px #34d399; }
 
         .status-stopped { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); }
         .status-stopped .status-dot { background: #f87171; box-shadow: 0 0 6px rgba(239, 68, 68, 0.4); }
 
         .status-building { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.2); }
-        .status-building .status-dot { background: #fbbf24; box-shadow: 0 0 8px #fbbf24; animation: pulseStatus 1s infinite; }
+        .status-building .status-dot { background: #fbbf24; animation: pulseStatus 1s infinite; }
 
         @keyframes pulseStatus { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
 
-        .card-meta {
-            display: flex; align-items: center; gap: 16px;
-            margin-top: 14px; font-size: 0.75rem;
-            color: var(--text-dark); font-family: var(--font-code);
-        }
-
+        /* --- Empty & Loading States --- */
         .empty-state { grid-column: 1 / -1; text-align: center; padding: 80px 20px; color: var(--text-dark); }
         .empty-state-icon { font-size: 3rem; margin-bottom: 16px; opacity: 0.4; }
         .empty-state-text { font-size: 1rem; margin-bottom: 6px; color: var(--text-muted); }
@@ -438,36 +308,28 @@
         .loading-state { grid-column: 1 / -1; display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 80px 20px; color: var(--text-muted); }
 
         .spinner {
-            width: 60px; height: 60px;
-            border-radius: 50%;
+            width: 60px; height: 60px; border-radius: 50%;
             background: conic-gradient(from 0deg, transparent 0deg, var(--accent-color) 360deg);
-            position: relative;
-            animation: rotateSpinner 1s linear infinite;
+            position: relative; animation: rotateSpinner 1s linear infinite;
             box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
         }
         .spinner::after { content: ''; position: absolute; top: 4px; left: 4px; right: 4px; bottom: 4px; background: #050505; border-radius: 50%; }
         @keyframes rotateSpinner { 100% { transform: rotate(360deg); } }
 
+        /* --- Modals & Toasts --- */
         .modal-overlay {
-            position: fixed; inset: 0;
-            background: rgba(5, 5, 10, 0.85);
-            backdrop-filter: blur(12px);
-            z-index: 2000;
-            display: none; align-items: center; justify-content: center;
+            position: fixed; inset: 0; background: rgba(5, 5, 10, 0.85); backdrop-filter: blur(12px);
+            z-index: 2000; display: none; align-items: center; justify-content: center;
             opacity: 0; transition: opacity 0.3s;
         }
         .modal-overlay.open { display: flex; opacity: 1; }
 
         .modal-content {
-            background: rgba(20, 20, 25, 0.95);
-            border: 1px solid var(--border-subtle);
-            border-top: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 24px;
-            padding: 28px;
-            width: 100%; max-width: 440px;
+            background: rgba(20, 20, 25, 0.95); border: 1px solid var(--border-subtle);
+            border-top: 1px solid rgba(255, 255, 255, 0.15); border-radius: 24px;
+            padding: 28px; width: 100%; max-width: 440px;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-            transform: scale(0.95);
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         .modal-overlay.open .modal-content { transform: scale(1); }
 
@@ -477,16 +339,9 @@
         .form-hint { color: var(--text-dark); font-size: 0.72rem; margin-top: 5px; line-height: 1.4; }
 
         .code-editor {
-            width: 100%;
-            background: #0f0f13;
-            border: 1px solid var(--border-subtle);
-            border-radius: 16px;
-            color: #e4e4e7;
-            font-family: var(--font-code);
-            padding: 14px 18px;
-            font-size: 0.9rem;
-            outline: none;
-            transition: all 0.3s ease;
+            width: 100%; background: #0f0f13; border: 1px solid var(--border-subtle);
+            border-radius: 16px; color: #e4e4e7; font-family: var(--font-code);
+            padding: 14px 18px; font-size: 0.9rem; outline: none; transition: all 0.3s ease;
             box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.6);
         }
         .code-editor:focus { border-color: var(--accent-color); box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2), inset 0 4px 12px rgba(0, 0, 0, 0.6); }
@@ -504,47 +359,24 @@
 
         .btn-loading { pointer-events: none; opacity: 0.7; }
 
+        /* Toast Notifications */
         .toast-container {
-            position: fixed;
-            bottom: 40px;
-            right: 40px;
-            z-index: 3000;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            pointer-events: none;
+            position: fixed; bottom: 40px; right: 40px; z-index: 3000;
+            display: flex; flex-direction: column; gap: 12px; pointer-events: none;
         }
 
         .toast {
-            position: relative;
-            pointer-events: auto;
-            background: rgba(20, 20, 25, 0.85);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 16px 20px;
-            color: white;
+            position: relative; pointer-events: auto; background: rgba(20, 20, 25, 0.85);
+            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px;
+            padding: 16px 20px; color: white;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            min-width: 340px;
-            max-width: 420px;
-            overflow: hidden;
-            transform-origin: right center;
+            display: flex; align-items: center; gap: 16px; min-width: 340px; max-width: 420px;
+            overflow: hidden; transform-origin: right center;
             animation: toastIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .toast-icon-wrapper {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 36px; height: 36px;
-            border-radius: 10px;
-            flex-shrink: 0;
-        }
-
+        .toast-icon-wrapper { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0; }
         .toast.success .toast-icon-wrapper { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.2); }
         .toast.error .toast-icon-wrapper { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); }
         .toast.info .toast-icon-wrapper { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.2); }
@@ -554,18 +386,15 @@
         .toast-message { font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; }
 
         .toast-close {
-            background: transparent; border: none; color: rgba(255, 255, 255, 0.3);
-            cursor: pointer; padding: 6px; border-radius: 6px;
-            display: flex; align-items: center; justify-content: center;
-            transition: all 0.2s;
+            background: transparent; border: none; color: rgba(255, 255, 255, 0.3); cursor: pointer;
+            padding: 6px; border-radius: 6px; display: flex; align-items: center; justify-content: center; transition: all 0.2s;
         }
         .toast-close:hover { background: rgba(255, 255, 255, 0.1); color: white; }
 
         .toast-progress {
             position: absolute; bottom: 0; left: 0; height: 3px; width: 100%;
             background: linear-gradient(90deg, var(--accent-color), var(--accent-hover));
-            transform-origin: left;
-            animation: toastTimer 5s linear forwards;
+            transform-origin: left; animation: toastTimer 5s linear forwards;
         }
         .toast.success .toast-progress { background: #10b981; }
         .toast.error .toast-progress { background: #ef4444; }
@@ -574,6 +403,406 @@
         @keyframes toastTimer { from { transform: scaleX(1); } to { transform: scaleX(0); } }
         @keyframes toastIn { from { transform: translateX(100%) skewX(-10deg); opacity: 0; } to { transform: translateX(0) skewX(0); opacity: 1; } }
         @keyframes toastOut { to { transform: translateX(50px) scale(0.9); opacity: 0; } }
+
+        /* ======================================
+           SSH COMMAND CENTER OVERLAY
+           ====================================== */
+        .ssh-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 1500;
+            display: flex;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+            background-attachment: fixed;
+        }
+        .ssh-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .ssh-sidebar {
+            width: 300px;
+            background: rgba(10, 10, 15, 0.6);
+            backdrop-filter: var(--glass-blur);
+            border-right: 1px solid var(--border-subtle);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            z-index: 10;
+            overflow: hidden;
+        }
+
+        .ssh-logo-area {
+            padding: 28px 24px;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .ssh-logo-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .ssh-logo-icon {
+            width: 38px; height: 38px;
+            fill: none; stroke: var(--accent-color);
+            stroke-width: 2;
+            filter: drop-shadow(0 0 10px rgba(139, 92, 246, 0.5));
+        }
+
+        .ssh-logo-text {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: white;
+            letter-spacing: -0.5px;
+        }
+        .ssh-logo-text span { color: var(--accent-color); }
+
+        .ssh-logo-sub {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .ssh-back-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: var(--font-ui);
+        }
+        .ssh-back-btn:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: var(--border-hover);
+            color: white;
+        }
+        .ssh-back-btn svg { flex-shrink: 0; }
+
+        .ssh-nav {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 0;
+        }
+
+        .ssh-dropdown { border-bottom: 1px solid rgba(255,255,255,0.03); }
+
+        .ssh-dropdown-header {
+            padding: 14px 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.78rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .ssh-dropdown-header:hover { color: var(--text-main); background: rgba(255,255,255,0.02); }
+        .ssh-dropdown-header.active-group {
+            color: var(--accent-color);
+            background: linear-gradient(90deg, rgba(139, 92, 246, 0.1), transparent);
+            border-left: 3px solid var(--accent-color);
+            padding-left: 19px;
+        }
+
+        .ssh-dropdown-arrow { transition: transform 0.3s ease; width: 14px; height: 14px; stroke: currentColor; }
+        .ssh-dropdown.open .ssh-dropdown-arrow { transform: rotate(90deg); }
+
+        .ssh-dropdown-content {
+            max-height: 0;
+            overflow: hidden;
+            background-color: rgba(0, 0, 0, 0.2);
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .ssh-dropdown.open .ssh-dropdown-content { max-height: 3000px; }
+
+        .ssh-nested-dropdown {
+            border-bottom: 1px solid rgba(255,255,255,0.02);
+            background: rgba(255,255,255,0.01);
+        }
+        .ssh-nested-dropdown .ssh-dropdown-header {
+            font-size: 0.75rem;
+            padding-left: 28px;
+            text-transform: none;
+            font-weight: 500;
+        }
+        .ssh-nested-dropdown .ssh-dropdown-header.active-group {
+            border-left: 3px solid #60a5fa;
+            padding-left: 25px;
+            color: #60a5fa;
+        }
+
+        .ssh-submenu-item {
+            padding: 10px 22px 10px 40px;
+            display: flex;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            font-family: var(--font-code);
+        }
+        .ssh-submenu-item::before {
+            content: '>'; position: absolute; left: 24px;
+            opacity: 0; color: var(--accent-color);
+            transition: all 0.2s; transform: translateX(-5px);
+        }
+        .ssh-submenu-item:hover { color: #fff; background: rgba(255,255,255,0.02); }
+        .ssh-submenu-item:hover::before { opacity: 1; transform: translateX(0); }
+        .ssh-submenu-item.active {
+            color: var(--accent-color);
+            background: rgba(139, 92, 246, 0.05);
+            font-weight: 500;
+        }
+
+        /* Special highlight for server/deploy items */
+        .ssh-submenu-item.highlight-item::before {
+            content: '>' !important;
+            color: #10b981 !important;
+        }
+        .ssh-submenu-item.highlight-item.active {
+            color: #10b981;
+            background: rgba(16, 185, 129, 0.06);
+        }
+
+        .ssh-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            min-width: 0;
+        }
+
+        .ssh-header {
+            padding: 20px 40px;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(5, 5, 10, 0.6);
+            backdrop-filter: blur(10px);
+            z-index: 5;
+            flex-shrink: 0;
+        }
+
+        .ssh-header h1 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: var(--font-code);
+        }
+
+        .ssh-status-badge {
+            font-family: var(--font-code);
+            font-size: 0.72rem;
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--accent-color);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ssh-status-dot {
+            width: 6px; height: 6px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent-color);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        .ssh-content-container {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .ssh-terminal-window {
+            width: 100%;
+            max-width: 900px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 30px rgba(139, 92, 246, 0.15);
+            border: 1px solid var(--border-subtle);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            font-family: var(--font-code);
+            position: relative;
+            transition: border-color 0.3s;
+        }
+        .ssh-terminal-window:hover { border-color: rgba(139, 92, 246, 0.3); }
+
+        .ssh-terminal-header {
+            background: rgba(20, 20, 25, 0.8);
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .ssh-controls { display: flex; gap: 8px; }
+        .ssh-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .ssh-dot.red { background-color: #ff5f56; }
+        .ssh-dot.yellow { background-color: #ffbd2e; }
+        .ssh-dot.green { background-color: #27c93f; }
+
+        .ssh-terminal-title {
+            margin-left: auto;
+            font-size: 0.8rem;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ssh-terminal-body {
+            padding: 30px;
+            color: #e2e8f0;
+            flex: 1;
+            font-size: 0.92rem;
+            line-height: 1.6;
+            min-height: 400px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .ssh-output-line {
+            margin-bottom: 6px;
+            opacity: 0;
+            animation: sshSlideIn 0.3s forwards;
+            color: var(--text-muted);
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        @keyframes sshSlideIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .ssh-prompt-line {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .ssh-prompt {
+            color: var(--accent-color);
+            font-weight: bold;
+            margin-right: 12px;
+            text-shadow: 0 0 8px rgba(139, 92, 246, 0.4);
+        }
+
+        .ssh-command-input { color: #fff; white-space: pre-wrap; flex: 1; }
+
+        .ssh-cursor {
+            display: inline-block;
+            width: 10px; height: 1.2em;
+            background-color: var(--accent-color);
+            vertical-align: middle;
+            animation: sshBlink 1s step-end infinite;
+            margin-left: 2px;
+            box-shadow: 0 0 5px var(--accent-color);
+        }
+        @keyframes sshBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        .ssh-copy-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font-ui);
+            margin-left: auto;
+        }
+        .ssh-copy-btn:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+            background: rgba(139, 92, 246, 0.1);
+        }
+
+        .ssh-teaching-panel {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px dashed var(--border-subtle);
+            display: none;
+            animation: sshFadeIn 0.5s ease;
+        }
+        @keyframes sshFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .ssh-teaching-panel h3 {
+            color: var(--accent-color);
+            margin-bottom: 12px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-ui);
+            font-weight: 600;
+        }
+
+        .ssh-teach-desc {
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            font-family: var(--font-ui);
+            font-size: 0.92rem;
+            line-height: 1.6;
+            white-space: pre-line;
+        }
+
+        .ssh-param-tag {
+            display: inline-block;
+            background: rgba(139, 92, 246, 0.1);
+            color: #d8b4fe;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            font-family: var(--font-code);
+        }
+
+        .ssh-term-error { color: #ff4d4d !important; }
+        .ssh-term-accent { color: var(--accent-color) !important; }
+        .ssh-term-info { color: #60a5fa !important; }
+        .ssh-term-green { color: #10b981 !important; }
 
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -593,12 +822,23 @@
             .instance-grid { grid-template-columns: 1fr; }
             .toast-container { right: 20px; left: 20px; bottom: 20px; }
             .toast { width: 100%; min-width: auto; max-width: none; }
+
+            .ssh-overlay { flex-direction: column; }
+            .ssh-sidebar { width: 100%; max-height: 220px; border-right: none; border-bottom: 1px solid var(--border-subtle); }
+            .ssh-logo-area { padding: 16px; flex-direction: row; align-items: center; }
+            .ssh-logo-row { gap: 10px; }
+            .ssh-logo-text { font-size: 1.1rem; }
+            .ssh-logo-sub { display: none; }
+            .ssh-back-btn { padding: 8px 12px; font-size: 0.78rem; }
+            .ssh-content-container { padding: 20px; }
+            .ssh-terminal-body { min-height: 300px; padding: 20px; }
         }
     </style>
 </head>
 
 <body>
 
+    <!-- Ambient Backgrounds -->
     <div class="ambient-glow" id="ambient-glow"></div>
     <div class="mesh-bg"></div>
     <div class="glow-spot spot1" id="spot1"></div>
@@ -636,7 +876,7 @@
             <span>Deploy App</span>
         </button>
 
-        <button class="nav-btn" onclick="showToast('SSH', 'Opening secure gateway...', 'info')">
+        <button class="nav-btn" onclick="openSSHOverlay()">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
             <span>Access SSH</span>
         </button>
@@ -669,7 +909,7 @@
             <div class="section-header">
                 <div>
                     <div class="section-title">Deployments</div>
-                    <div class="section-subtitle">Click a card to select, then use action buttons above</div>
+                    <div class="section-subtitle">Click a service row to select, then use action buttons above</div>
                 </div>
             </div>
 
@@ -689,13 +929,13 @@
             <div class="form-group">
                 <label class="form-label">App Name</label>
                 <input type="text" id="addAppName" class="code-editor" placeholder="e.g. myapp" oninput="validateAppName(this, 'addNameErr')" autocomplete="off" spellcheck="false">
-                <div class="form-hint">Only lowercase letters, numbers, and hyphens allowed. No spaces, uppercase, or special characters.</div>
+                <div class="form-hint">Only lowercase letters, numbers, and hyphens allowed.</div>
                 <div class="validation-msg" id="addNameErr"></div>
             </div>
             <div class="form-group">
                 <label class="form-label">Docker Image</label>
                 <input type="text" id="addImageName" class="code-editor" placeholder="e.g. nginx:alpine" oninput="validateImageName(this, 'addImgErr')" autocomplete="off" spellcheck="false">
-                <div class="form-hint">Enter a correct Docker image name. Format: <span style="color:var(--text-muted);font-family:var(--font-code);">image:tag</span> or <span style="color:var(--text-muted);font-family:var(--font-code);">registry/image:tag</span></div>
+                <div class="form-hint">Enter a correct Docker image name.</div>
                 <div class="validation-msg" id="addImgErr"></div>
             </div>
             <div class="modal-actions">
@@ -711,9 +951,8 @@
             <h3 class="modal-title" id="actionTitle">Execute Command</h3>
             <input type="hidden" id="currentAction">
             <div class="form-group">
-                <label class="form-label">App Name</label>
-                <input type="text" id="actionAppName" class="code-editor" placeholder="e.g. myapp" oninput="validateAppName(this, 'actionNameErr')" autocomplete="off" spellcheck="false">
-                <div class="form-hint">Only lowercase letters, numbers, and hyphens allowed. No spaces, uppercase, or special characters.</div>
+                <label class="form-label">Service Name</label>
+                <input type="text" id="actionAppName" class="code-editor" placeholder="e.g. postgres" oninput="validateAppName(this, 'actionNameErr')" autocomplete="off" spellcheck="false">
                 <div class="validation-msg" id="actionNameErr"></div>
             </div>
             <div class="modal-actions">
@@ -723,10 +962,98 @@
         </div>
     </div>
 
+    <!-- ==========================================
+         SSH COMMAND CENTER OVERLAY
+         ========================================== -->
+    <div class="ssh-overlay" id="sshOverlay">
+        <aside class="ssh-sidebar">
+            <div class="ssh-logo-area">
+                <div class="ssh-logo-row">
+                    <svg class="ssh-logo-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke-linejoin="round"/>
+                        <path d="M2 17L12 22L22 17" stroke-linejoin="round"/>
+                        <path d="M2 12L12 17L22 12" stroke-linejoin="round"/>
+                    </svg>
+                    <div>
+                        <div class="ssh-logo-text">Node<span>fy</span></div>
+                        <span class="ssh-logo-sub">SSH Access</span>
+                    </div>
+                </div>
+                <button class="ssh-back-btn" onclick="closeSSHOverlay()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                    Back to Deploy
+                </button>
+            </div>
+            <nav class="ssh-nav" id="sshSidebarNav"></nav>
+        </aside>
+
+        <div class="ssh-main">
+            <header class="ssh-header">
+                <h1 id="sshPageTitle">SSH Command Center</h1>
+                <div class="ssh-status-badge">
+                    <div class="ssh-status-dot"></div>
+                    SESSION_ACTIVE
+                </div>
+            </header>
+
+            <div class="ssh-content-container">
+                <div class="ssh-terminal-window">
+                    <div class="ssh-terminal-header">
+                        <div class="ssh-controls">
+                            <div class="ssh-dot red"></div>
+                            <div class="ssh-dot yellow"></div>
+                            <div class="ssh-dot green"></div>
+                        </div>
+                        <div class="ssh-terminal-title">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                            <span id="sshTermTitleText">user@nodefy: ~/</span>
+                        </div>
+                    </div>
+
+                    <div class="ssh-terminal-body" id="sshTerminalBody">
+                        <div class="ssh-output-line" style="color: var(--accent-color)">System initialized. Welcome to Nodefy SSH Terminal</div>
+                        <div class="ssh-output-line" style="color: #555">Select a command from the sidebar to begin.</div>
+                        <br>
+
+                        <div class="ssh-prompt-line">
+                            <span id="sshPrompt" class="ssh-prompt">guest@nodefy:~$</span>
+                            <span id="sshCommandDisplay" class="ssh-command-input"></span><span class="ssh-cursor"></span>
+                            <button class="ssh-copy-btn" id="sshCopyBtn" onclick="sshCopyCommand()">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                                Copy
+                            </button>
+                        </div>
+
+                        <div id="sshTerminalOutput"></div>
+
+                        <div id="sshTeachingPanel" class="ssh-teaching-panel">
+                            <h3>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+                                <span id="sshTeachTitle">Explanation</span>
+                            </h3>
+                            <p id="sshTeachDesc" class="ssh-teach-desc"></p>
+                            <div style="margin-top:10px">
+                                <span style="color: #555; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">Key Parameters:</span>
+                                <div id="sshTeachParams" style="margin-top:8px"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="toast-container" id="toast-container"></div>
 
     <script>
+        /* =============================================
+           DEPLOY PAGE LOGIC (unchanged)
+           ============================================= */
         document.addEventListener('DOMContentLoaded', function () {
+            if (!localStorage.getItem('selection_type')) {
+                localStorage.setItem('selection_type', 'docker');
+            }
+
             var ambientGlow = document.getElementById('ambient-glow');
             var spot1 = document.getElementById('spot1');
             var spot2 = document.getElementById('spot2');
@@ -756,171 +1083,104 @@
             var val = input.value;
             var errEl = document.getElementById(errId);
             var regex = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
-
             if (!val) { input.classList.remove('error'); errEl.textContent = ''; return false; }
             if (/[A-Z]/.test(val)) { input.classList.add('error'); errEl.textContent = 'Uppercase letters are not allowed.'; return false; }
             if (/\s/.test(val)) { input.classList.add('error'); errEl.textContent = 'Spaces are not allowed.'; return false; }
-            if (/[^a-z0-9\-]/.test(val)) { input.classList.add('error'); errEl.textContent = 'Special characters are not allowed. Use only a-z, 0-9, and hyphens.'; return false; }
+            if (/[^a-z0-9\-]/.test(val)) { input.classList.add('error'); errEl.textContent = 'Special characters are not allowed.'; return false; }
             if (val.startsWith('-') || val.endsWith('-')) { input.classList.add('error'); errEl.textContent = 'Cannot start or end with a hyphen.'; return false; }
-            if (/--/.test(val)) { input.classList.add('error'); errEl.textContent = 'Consecutive hyphens are not allowed.'; return false; }
             if (!regex.test(val)) { input.classList.add('error'); errEl.textContent = 'Must start with a lowercase letter.'; return false; }
-
-            input.classList.remove('error');
-            errEl.textContent = '';
-            return true;
+            input.classList.remove('error'); errEl.textContent = ''; return true;
         }
 
         function validateImageName(input, errId) {
             var val = input.value.trim();
             var errEl = document.getElementById(errId);
-
             if (!val) { input.classList.remove('error'); errEl.textContent = ''; return false; }
             if (/\s/.test(val)) { input.classList.add('error'); errEl.textContent = 'Spaces are not allowed in image names.'; return false; }
-
             var pattern = /^(?:[a-z0-9.\-]+(?:\/[a-z0-9._\-]+)*\/)?[a-z0-9._\-]+(?::[a-zA-Z0-9._\-]+)?$/;
-            if (!pattern.test(val)) { input.classList.add('error'); errEl.textContent = 'Invalid image format. Use: image:tag or registry/image:tag'; return false; }
-            if (val.indexOf(':') !== -1) { var tag = val.split(':').pop(); if (tag.length > 128) { input.classList.add('error'); errEl.textContent = 'Tag is too long.'; return false; } }
-
-            input.classList.remove('error');
-            errEl.textContent = '';
-            return true;
+            if (!pattern.test(val)) { input.classList.add('error'); errEl.textContent = 'Invalid image format.'; return false; }
+            input.classList.remove('error'); errEl.textContent = ''; return true;
         }
 
         async function fetchInstances() {
             var grid = document.getElementById('instanceGrid');
-
-            if (instances.length === 0) {
+            if (instances.length === 0 && grid.innerHTML.trim() === '') {
                 grid.innerHTML = '<div class="loading-state"><div class="spinner"></div><span>Connecting to backend...</span></div>';
             }
-
             try {
-                var response = await fetch('/getdeployinstance', {
-                    method: 'GET',
-                    credentials: 'include'
-                });
-
+                var response = await fetch('/getdeployinstance', { method: 'GET', credentials: 'include', headers: { 'Content-Type': 'application/json' } });
                 if (!response.ok) throw new Error('HTTP ' + response.status);
-
                 var data = await response.json();
-                instances.length = 0;
-
-                for (var i = 0; i < data.length; i++) {
-                    var item = data[i];
-                    instances.push({
-                        id: item.id,
-                        name: item.instance_name || item.appname || item.app_name || '',
-                        status: item.status.toLowerCase()
-                    });
-                }
-
+                instances = data;
                 renderInstances();
             } catch (error) {
                 console.error('Fetch Error:', error);
                 if (instances.length === 0) {
-                    grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">⚠</div><div class="empty-state-text">Failed to connect</div><div class="empty-state-hint">' + error.message + '</div></div>';
+                    grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">⚠️</div><div class="empty-state-text">Connection Failed</div><div class="empty-state-hint">Could not reach the server. Please refresh.</div></div>';
                 }
             }
         }
 
         function renderInstances() {
             var grid = document.getElementById('instanceGrid');
-            grid.innerHTML = '';
-
             if (instances.length === 0) {
                 grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🚀</div><div class="empty-state-text">No deployments yet</div><div class="empty-state-hint">Click "Deploy App" to get started</div></div>';
                 return;
             }
-
+            grid.innerHTML = '';
             for (var i = 0; i < instances.length; i++) {
-                (function (inst) {
-                    var statusClass = 'status-building';
-                    var cardClass = 'building';
-
-                    if (inst.status === 'running') {
-                        statusClass = 'status-running';
-                        cardClass = 'running';
-                    } else if (inst.status === 'stopped') {
-                        statusClass = 'status-stopped';
-                        cardClass = 'stopped';
+                var app = instances[i];
+                var card = document.createElement('div');
+                card.className = 'app-card';
+                var appHeader = document.createElement('div');
+                appHeader.className = 'app-header';
+                appHeader.innerHTML = '<div class="app-title">' + (app.appname || 'Unnamed App') + '</div><div class="app-count">' + (app.services ? app.services.length : 0) + ' Services</div>';
+                card.appendChild(appHeader);
+                var serviceList = document.createElement('div');
+                serviceList.className = 'service-list';
+                if (app.services && app.services.length > 0) {
+                    for (var j = 0; j < app.services.length; j++) {
+                        (function(service) {
+                            var statusClass = 'status-building';
+                            if (service.status && service.status.toLowerCase() === 'running') statusClass = 'status-running';
+                            else if (service.status && service.status.toLowerCase() === 'stopped') statusClass = 'status-stopped';
+                            var row = document.createElement('div');
+                            row.className = 'service-item ' + (service.name === selectedInstance ? 'selected' : '');
+                            row.innerHTML = '<div class="service-info"><div class="service-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12l-10 7V5l10 7z"></path><path d="M2 5v14"></path></svg></div><div class="service-name">' + service.name + '</div></div><div class="status-badge ' + statusClass + '"><div class="status-dot"></div>' + service.status + '</div>';
+                            row.addEventListener('click', function(e) { e.stopPropagation(); selectedInstance = service.name; renderInstances(); });
+                            serviceList.appendChild(row);
+                        })(app.services[j]);
                     }
-
-                    var card = document.createElement('div');
-                    card.className = 'instance-card ' + cardClass + (inst.name === selectedInstance ? ' selected' : '');
-                    card.dataset.name = inst.name;
-                    card.innerHTML =
-                        '<div class="card-top">' +
-                            '<div class="inst-icon">' +
-                                '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
-                                    '<path d="M22 12l-10 7V5l10 7z"></path>' +
-                                    '<path d="M2 5v14"></path>' +
-                                '</svg>' +
-                            '</div>' +
-                            '<span class="inst-id">#' + inst.id + '</span>' +
-                        '</div>' +
-                        '<div class="card-body">' +
-                            '<div class="inst-name">' + inst.name + '</div>' +
-                            '<div class="status-badge ' + statusClass + '">' +
-                                '<div class="status-dot"></div>' +
-                                inst.status +
-                            '</div>' +
-                        '</div>' +
-                        '<div class="card-meta"><span>nodefy/deploy</span></div>';
-
-                    card.addEventListener('click', function () {
-                        selectedInstance = inst.name;
-                        var allCards = document.querySelectorAll('.instance-card');
-                        for (var j = 0; j < allCards.length; j++) {
-                            allCards[j].classList.remove('selected');
-                        }
-                        card.classList.add('selected');
-                    });
-
-                    grid.appendChild(card);
-                })(instances[i]);
+                } else {
+                    serviceList.innerHTML = '<div style="padding:10px; color:var(--text-muted); font-size:0.8rem; text-align:center;">No services found</div>';
+                }
+                card.appendChild(serviceList);
+                grid.appendChild(card);
             }
         }
 
         function closeModals() {
             var overlays = document.querySelectorAll('.modal-overlay');
-            for (var i = 0; i < overlays.length; i++) {
-                overlays[i].classList.remove('open');
-            }
+            for (var i = 0; i < overlays.length; i++) overlays[i].classList.remove('open');
             var editors = document.querySelectorAll('.code-editor');
-            for (var j = 0; j < editors.length; j++) {
-                editors[j].value = '';
-                editors[j].classList.remove('error');
-            }
+            for (var j = 0; j < editors.length; j++) { if (!editors[j].disabled) editors[j].value = ''; editors[j].classList.remove('error'); }
             var msgs = document.querySelectorAll('.validation-msg');
-            for (var k = 0; k < msgs.length; k++) {
-                msgs[k].textContent = '';
-            }
+            for (var k = 0; k < msgs.length; k++) msgs[k].textContent = '';
         }
 
         function openAddModal() {
             document.getElementById('addModal').classList.add('open');
-            setTimeout(function () {
-                document.getElementById('addAppName').focus();
-            }, 100);
+            setTimeout(function () { document.getElementById('addAppName').focus(); }, 100);
         }
 
         function handleAction(actionType) {
             document.getElementById('currentAction').value = actionType;
-
-            var labels = {
-                start: '▶ Start Instance',
-                stop: '⏹ Stop Instance',
-                kill: '⛔ Kill Instance'
-            };
+            var labels = { start: '▶ Start Service', stop: '⏹ Stop Service', kill: '⛔ Kill Service' };
             document.getElementById('actionTitle').innerText = labels[actionType] || actionType.toUpperCase();
-            document.getElementById('actionModal').classList.add('open');
-
             var nameInput = document.getElementById('actionAppName');
-            if (selectedInstance) {
-                nameInput.value = selectedInstance;
-            }
-            setTimeout(function () {
-                nameInput.focus();
-            }, 100);
+            if (selectedInstance) nameInput.value = selectedInstance;
+            document.getElementById('actionModal').classList.add('open');
+            setTimeout(function () { nameInput.focus(); }, 100);
         }
 
         function setButtonLoading(btn, loading) {
@@ -932,342 +1192,414 @@
                 btn.innerHTML = svg + ' ' + text + '...';
             } else {
                 btn.classList.remove('btn-loading');
-                if (btn.dataset.originalHtml) {
-                    btn.innerHTML = btn.dataset.originalHtml;
-                    delete btn.dataset.originalHtml;
-                }
+                if (btn.dataset.originalHtml) { btn.innerHTML = btn.dataset.originalHtml; delete btn.dataset.originalHtml; }
             }
         }
 
-        /*
-         * Deploy Add Instance
-         *
-         * Deployaddinstances struct:
-         *   Appname   string `json:"appname"`
-         *   Imagename string `json:"imagename"`
-         *
-         * POST /addinstancesdeploy
-         * Body: { "appname": "myapp", "imagename": "nginx:alpine" }
-         *
-         * Flow:
-         *   → handler reads session-id cookie
-         *   → utils.Jstost decodes JSON into Deployaddinstances
-         *   → services.DeployAddinstanceservices(sessionid, &deploy)
-         *       → redis.Getusername(sessionid)
-         *       → docker.DeployAddinstances(username, deploy)
-         *           → docker run --name myapp -d nginx:alpine
-         *       → postgres.SaveDeployAddinstances(username, deploy)
-         *   Response: 200 "Added Instances Successfully"
-         */
         async function submitAddInstance() {
             var nameInput = document.getElementById('addAppName');
             var imageInput = document.getElementById('addImageName');
             var appname = nameInput.value.trim();
             var imagename = imageInput.value.trim();
             var btn = document.getElementById('btnAddSubmit');
-
-            if (!appname) {
-                nameInput.classList.add('error');
-                document.getElementById('addNameErr').textContent = 'App name is required.';
-                nameInput.focus();
-                return;
-            }
-            if (!validateAppName(nameInput, 'addNameErr')) {
-                nameInput.focus();
-                return;
-            }
-            if (!imagename) {
-                imageInput.classList.add('error');
-                document.getElementById('addImgErr').textContent = 'Docker image name is required.';
-                imageInput.focus();
-                return;
-            }
-            if (!validateImageName(imageInput, 'addImgErr')) {
-                imageInput.focus();
-                return;
-            }
-
-            closeModals();
-            setButtonLoading(btn, true);
-
+            if (!appname) { nameInput.classList.add('error'); document.getElementById('addNameErr').textContent = 'App name is required.'; nameInput.focus(); return; }
+            if (!validateAppName(nameInput, 'addNameErr')) { nameInput.focus(); return; }
+            if (!imagename) { imageInput.classList.add('error'); document.getElementById('addImgErr').textContent = 'Docker image name is required.'; imageInput.focus(); return; }
+            if (!validateImageName(imageInput, 'addImgErr')) { imageInput.focus(); return; }
+            closeModals(); setButtonLoading(btn, true);
             try {
-                var response = await fetch('/addinstancesdeploy', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include',
-                    body: JSON.stringify({
-                        appname: appname,
-                        imagename: imagename
-                    })
-                });
-
-                if (!response.ok) {
-                    var errData = await response.json().catch(function () { return {}; });
-                    throw new Error(errData.error || errData.message || 'Server Error');
-                }
-
-                await fetchInstances();
-                showToast('Deployed', 'Application "' + appname + '" deployed successfully.', 'success');
-            } catch (error) {
-                console.error(error);
-                showToast('Error', error.message, 'error');
-            } finally {
-                setButtonLoading(btn, false);
-            }
+                var response = await fetch('/addinstancesdeploy', { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify({ appname: appname, imagename: imagename }) });
+                if (response.ok) { showToast('Deployed', 'Application "' + appname + '" deployed successfully.', 'success'); await fetchInstances(); }
+                else if (response.status === 409) { showToast('Conflict', 'An instance with this name already exists.', 'error'); }
+                else { var errText = await response.text(); console.error('Deploy Error:', errText); showToast('Error', 'Failed to deploy. Server returned ' + response.status, 'error'); }
+            } catch (error) { console.error(error); showToast('Error', 'Network error. Could not reach server.', 'error'); }
+            finally { setButtonLoading(btn, false); }
         }
 
-        /*
-         * ═══════════════════════════════════════════════════════════
-         * Start / Stop / Kill — container control endpoints
-         * ═══════════════════════════════════════════════════════════
-         *
-         * All three handlers share the Containermanage struct:
-         *
-         *   type Containermanage struct {
-         *       Instancename string `json:"instance_name"`
-         *       Type         string `json:"type"`
-         *       Status       string `json:"status"`
-         *   }
-         *
-         * We send BOTH keys in the JSON body:
-         *   "instance_name" — matches json:"instance_name" on Containermanage
-         *   "instancename"  — matches json:"instancename" on Stopcontainer
-         *
-         * Go's json.Decoder silently ignores keys that don't match any
-         * struct field tag, so sending both is always safe.
-         *
-         * ──────────────────────────────────────────────────────────
-         *
-         * START — POST /startinstance
-         *
-         *   Body:     { "instance_name": "myapp", "instancename": "myapp" }
-         *   Handler:  Startcontainerhandler
-         *     checks: r.Method != http.MethodPost → 405
-         *     reads:  session-id cookie → utils.Jstost into Containermanage
-         *     calls:  services.Startcontainerserives(sessionid, &startcontainer)
-         *       → redis.Getusername(sessionid) → username
-         *       → docker.Startcontainer(username, startcontainer)
-         *           → docker ps -aq --filter label=owner=<user>
-         *                        --filter label=instance=myapp
-         *           → docker start <container_id>
-         *       → postgres.Containerstatus(username, startcontainer)
-         *           → updates DB status
-         *   Response: 200 "Start Container Sucessfully"
-         *
-         * ──────────────────────────────────────────────────────────
-         *
-         * STOP — POST /stopinstance
-         *
-         *   Body:     { "instance_name": "myapp", "instancename": "myapp" }
-         *   Handler:  StopcontainerHandler
-         *     ⚠ BUG:  checks r.Method != http.MethodGet
-         *             This should be http.MethodPost.
-         *             A POST request will get 405 "Invalid Metheod".
-         *             FIX: change to r.Method != http.MethodPost
-         *
-         *     reads:  session-id cookie → utils.Jstost into Containermanage
-         *             (handler declares var Stopcontainer models.Containermanage)
-         *     calls:  services.Stopcontainerservices(sessionid, &Stopcontainer)
-         *       → redis.Getusername(sessionid) → username
-         *       → docker.Stopcontainer(username, Stopcontainer)
-         *           → docker ps -aq --filter label=owner=<user>
-         *                        --filter label=instance=myapp
-         *           → docker stop <container_id>
-         *       → postgres.Containerstatus(username, Stopcontainer)
-         *           → updates DB status
-         *   Response: 200 "Stop Instances Successfully"
-         *
-         *   NOTE: There is also a separate models.Stopcontainer struct:
-         *     type Stopcontainer struct {
-         *         Instancename string `json:"instancename"`
-         *         Type         string `json:"type"`
-         *     }
-         *   This is used by postgres.Stopcontainer(), NOT by the handler
-         *   itself. The handler decodes into Containermanage, but the
-         *   postgres layer receives Containermanage too (via the service).
-         *   The "instancename" key is sent as a safety net in case this
-         *   gets refactored to use models.Stopcontainer directly.
-         *
-         * ──────────────────────────────────────────────────────────
-         *
-         * KILL — POST /killinstance
-         *
-         *   Body:     { "instance_name": "myapp", "instancename": "myapp" }
-         *   Handler:  Killcontainerhandler
-         *     checks: r.Method != http.MethodPost → 405
-         *     reads:  session-id cookie → utils.Jstost into Containermanage
-         *     calls:  services.Killcontainerservices(&killinstance, sessionid)
-         *       → redis.Getusername(sessionid) → username
-         *       → docker.Killcontainer(killinstance, username)
-         *           → docker ps -aq --filter label=owner=<user>
-         *                        --filter label=instance=myapp
-         *           → docker rm -f <container_id>
-         *       → postgres.Containerkill(username, killinstance)
-         *           → deletes DB record
-         *           → if not found: ErrInstancenotfound → 400
-         *   Response: 200 "Kill Instance Successfully"
-         *             400 "Instance not found"
-         *
-         * ──────────────────────────────────────────────────────────
-         */
         async function submitAction() {
-            var type = document.getElementById('currentAction').value;
+            var actionType = document.getElementById('currentAction').value;
             var nameInput = document.getElementById('actionAppName');
-            var name = nameInput.value.trim();
             var btn = document.getElementById('btnActionSubmit');
-
-            if (!name) {
-                nameInput.classList.add('error');
-                document.getElementById('actionNameErr').textContent = 'App name is required.';
-                nameInput.focus();
-                return;
-            }
-            if (!validateAppName(nameInput, 'actionNameErr')) {
-                nameInput.focus();
-                return;
-            }
-
-            closeModals();
-            setButtonLoading(btn, true);
-
-            var endpoints = {
-                start: '/startinstance',
-                stop: '/stopinstance',
-                kill: '/killinstance'
-            };
-
-            var toastConfig = {
-                start: { title: 'Started',    msg: '"' + name + '" is running.', type: 'success' },
-                stop:  { title: 'Stopped',    msg: '"' + name + '" halted.',    type: 'info' },
-                kill:  { title: 'Terminated', msg: '"' + name + '" killed.',    type: 'error' }
-            };
-
+            var instanceName = nameInput.value.trim();
+            var selectionType = localStorage.getItem('selection_type') || 'docker';
+            var targetStatus = actionType === 'start' ? 'running' : 'stopped';
+            if (!instanceName) { nameInput.classList.add('error'); document.getElementById('actionNameErr').textContent = 'Service name is required.'; nameInput.focus(); return; }
+            if (!validateAppName(nameInput, 'actionNameErr')) { nameInput.focus(); return; }
+            closeModals(); setButtonLoading(btn, true);
+            var endpoints = { start: '/startinstance', stop: '/stopinstance', kill: '/killinstance' };
+            var payload = { instance_name: instanceName, type: selectionType, status: targetStatus };
+            var toastConfig = { start: { title: 'Started', msg: '"' + instanceName + '" is running.', type: 'success' }, stop: { title: 'Stopped', msg: '"' + instanceName + '" halted.', type: 'info' }, kill: { title: 'Terminated', msg: '"' + instanceName + '" killed.', type: 'error' } };
             try {
-                var response = await fetch(endpoints[type], {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include',
-                    body: JSON.stringify({
-                        instance_name: name,
-                        instancename: name
-                    })
-                });
-
-                if (!response.ok) {
-                    var errData = await response.json().catch(function () { return {}; });
-                    throw new Error(errData.error || errData.message || 'Server Error (' + response.status + ')');
-                }
-
-                await fetchInstances();
-
-                var cfg = toastConfig[type];
-                showToast(cfg.title, cfg.msg, cfg.type);
-            } catch (error) {
-                console.error(error);
-                showToast('Error', error.message, 'error');
-            } finally {
-                setButtonLoading(btn, false);
-            }
+                var response = await fetch(endpoints[actionType], { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(payload) });
+                if (!response.ok) { var errData = await response.json().catch(function () { return {}; }); throw new Error(errData.error || errData.message || 'Server Error (' + response.status + ')'); }
+                if (actionType === 'kill') { selectedInstance = ''; renderInstances(); } else { await fetchInstances(); }
+                var cfg = toastConfig[actionType]; showToast(cfg.title, cfg.msg, cfg.type);
+            } catch (error) { console.error(error); showToast('Error', error.message, 'error'); }
+            finally { setButtonLoading(btn, false); }
         }
 
-        /*
-         * Workspace — shared endpoint
-         *
-         * GET /workspace (session-id cookie sent via credentials: 'include')
-         * → WorkspaceHanlder reads session, resolves username
-         * → Returns workspace URL as plain text
-         * → Frontend unwraps if JSON-quoted, validates http prefix
-         * → Opens in new tab
-         */
         async function handleWorkspace() {
             var btn = document.getElementById('btnWorkspace');
             setButtonLoading(btn, true);
-
             try {
-                var response = await fetch('/workspace', {
-                    method: 'GET',
-                    credentials: 'include'
-                });
-
-                if (!response.ok) {
-                    var errData = await response.json().catch(function () { return {}; });
-                    throw new Error(errData.error || errData.message || 'Failed to get workspace (' + response.status + ')');
-                }
-
+                var response = await fetch('/workspace', { method: 'GET', credentials: 'include' });
+                if (!response.ok) throw new Error('Failed to get workspace');
                 var url = (await response.text()).trim();
-
-                /* Guard against JSON-wrapped string: "https://..." */
-                if (url.charAt(0) === '"' && url.charAt(url.length - 1) === '"') {
-                    try { url = JSON.parse(url); } catch (e) { /* keep as-is */ }
-                }
-
-                if (url && url.indexOf('http') === 0) {
-                    window.open(url, '_blank');
-                    showToast('Redirecting', 'Opening workspace...', 'info');
-                } else {
-                    throw new Error('Invalid workspace URL received from server.');
-                }
-            } catch (error) {
-                console.error(error);
-                showToast('Error', error.message, 'error');
-            } finally {
-                setButtonLoading(btn, false);
-            }
+                if (url.charAt(0) === '"') url = JSON.parse(url);
+                if (url && url.indexOf('http') === 0) { window.open(url, '_blank'); showToast('Redirecting', 'Opening workspace...', 'info'); }
+                else { throw new Error('Invalid workspace URL received'); }
+            } catch (error) { console.error(error); showToast('Info', 'Workspace feature unavailable.', 'info'); }
+            finally { setButtonLoading(btn, false); }
         }
 
         function showToast(title, message, type) {
             type = type || 'success';
-
             var container = document.getElementById('toast-container');
-            if (container.children.length >= 3) {
-                container.removeChild(container.firstChild);
-            }
-
+            if (container.children.length >= 3) container.removeChild(container.firstChild);
             var toast = document.createElement('div');
             toast.className = 'toast ' + type;
-
             var iconSvg = '';
-            if (type === 'success') {
-                iconSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
-            } else if (type === 'error') {
-                iconSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>';
-            } else {
-                iconSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>';
-            }
-
-            toast.innerHTML =
-                '<div class="toast-icon-wrapper">' + iconSvg + '</div>' +
-                '<div class="toast-content">' +
-                    '<div class="toast-title">' + title + '</div>' +
-                    '<div class="toast-message">' + message + '</div>' +
-                '</div>' +
-                '<button class="toast-close" onclick="this.parentElement.remove()">' +
-                    '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>' +
-                '</button>' +
-                '<div class="toast-progress"></div>';
-
+            if (type === 'success') iconSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+            else if (type === 'error') iconSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>';
+            else iconSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>';
+            toast.innerHTML = '<div class="toast-icon-wrapper">' + iconSvg + '</div><div class="toast-content"><div class="toast-title">' + title + '</div><div class="toast-message">' + message + '</div></div><button class="toast-close" onclick="this.parentElement.remove()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button><div class="toast-progress"></div>';
             container.appendChild(toast);
-
-            setTimeout(function () {
-                toast.style.animation = 'toastOut 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
-                toast.addEventListener('animationend', function () {
-                    if (toast.parentElement) toast.remove();
-                });
-            }, 5000);
+            setTimeout(function () { toast.style.animation = 'toastOut 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards'; toast.addEventListener('animationend', function () { if (toast.parentElement) toast.remove(); }); }, 5000);
         }
 
-        var overlays = document.querySelectorAll('.modal-overlay');
-        for (var i = 0; i < overlays.length; i++) {
-            (function (overlay) {
-                overlay.addEventListener('click', function (e) {
-                    if (e.target === overlay) closeModals();
-                });
-            })(overlays[i]);
+        // Modal close on overlay click / Escape
+        (function () {
+            var overlays = document.querySelectorAll('.modal-overlay');
+            for (var i = 0; i < overlays.length; i++) { (function (overlay) { overlay.addEventListener('click', function (e) { if (e.target === overlay) closeModals(); }); })(overlays[i]); }
+        })();
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeModals(); closeSSHOverlay(); } });
+
+
+        /* =============================================
+           SSH COMMAND CENTER LOGIC
+           ============================================= */
+
+        // Command data — only cloudflared + server start + deploy
+        var sshCommandData = {
+            'cloudflared-setup': {
+                label: 'Cloudflared Setup',
+                icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>',
+                items: {
+                    'linux-user': {
+                        label: 'For Linux User',
+                        isFolder: true,
+                        items: {
+                            'linux-install': { label: '1. Install Cloudflared', command: 'sudo apt install cloudflared', desc: 'Installs the Cloudflare Tunnel daemon (cloudflared) required for SSH tunneling.\n\nThis package provides the cloudflared binary that creates secure tunnels through Cloudflare\'s network.', params: ['sudo', 'apt install', 'cloudflared'], output: ['Reading package lists... Done', 'Building dependency tree... Done', 'The following NEW packages will be installed:', '  cloudflared', '0 upgraded, 1 newly installed, 0 to remove.', 'Setting up cloudflared (2024.x.x) ...', 'cloudflared installed successfully.'] },
+                            'linux-ssh': { label: '2. Connect using SSH', command: 'ssh username@serverurl -o ProxyCommand="cloudflared access ssh --hostname %h"', desc: 'Connects to the server via Cloudflare Access tunnel.\n\nReplace "username" with your actual login username and "serverurl" with your server\'s Cloudflare tunnel URL.\n\nThe ProxyCommand routes your SSH connection through cloudflared for secure authentication.', params: ['ssh', 'username', 'ProxyCommand', 'cloudflared access ssh', '--hostname'], output: ['Authenticating with Cloudflare Access...', 'Browser window opened for authentication.', 'Please complete login in the browser window...', 'Authentication successful!', 'Connecting to server...'] },
+                            'linux-fingerprint': { label: '3. Verify Fingerprint', command: 'yes', desc: 'When the terminal asks "The authenticity of host... can\'t be established", type "yes" to continue.\n\nThis is a one-time step. The fingerprint will be saved in your known_hosts file.', params: ['yes', 'fingerprint', 'ED25519'], output: ['The authenticity of host \'serverurl\' can\'t be established.', 'ED25519 key fingerprint is SHA256:AbCdEfGhIjKlMnOpQrStUvWxYz.', 'Are you sure you want to continue connecting (yes/no/[fingerprint])? yes', 'Warning: Permanently added \'serverurl\' (ED25519) to the list of known hosts.'] },
+                            'linux-password': { label: '4. Enter Password', command: '[Enter Password]', desc: 'When prompted, enter your Signup password associated with your Cloudflare account or server user.\n\nThe terminal will not show characters as you type — this is normal for security.', params: ['password', 'signup password'], output: ['username@serverurl\'s password: ********', '', 'Welcome to Ubuntu 22.04 LTS (GNU/Linux 5.15.0-91-generic x86_64)', '', 'System load:  0.01, 0.03, 0.05', 'Usage of /:   15.2% of 50GB', 'Memory usage: 12%', 'CPU usage:    2%'] }
+                        }
+                    },
+                    'windows-user': {
+                        label: 'For Windows User',
+                        isFolder: true,
+                        items: {
+                            'win-download': { label: '1. Download Cloudflared', command: 'https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-amd64.exe', desc: 'Download the latest Windows executable from the official Cloudflare GitHub releases page.', params: ['GitHub', 'Download', 'amd64'], output: ['Initiating download...', 'Source: github.com/cloudflare/cloudflared/releases', 'Destination: C:\\Users\\user\\Downloads\\cloudflared-windows-amd64.exe', 'Download Complete.'] },
+                            'win-rename': { label: '2. Rename File', command: 'ren cloudflared-windows-amd64.exe cloudflared.exe', desc: 'Rename the downloaded file to a shorter, easier-to-use name.', params: ['ren', 'rename'], output: ['C:\\Users\\user\\Downloads>ren cloudflared-windows-amd64.exe cloudflared.exe', '1 file(s) renamed.'] },
+                            'win-mkdir': { label: '3. Create Folder', command: 'mkdir C:\\Users\\user\\cloudflared', desc: 'Create a dedicated folder to hold the cloudflared executable for clean organization.', params: ['mkdir'], output: ['C:\\Users\\user>mkdir C:\\Users\\user\\cloudflared', 'Directory created successfully.'] },
+                            'win-move': { label: '4. Move File', command: 'move C:\\Users\\user\\Downloads\\cloudflared.exe C:\\Users\\user\\cloudflared\\', desc: 'Move the renamed executable into the newly created folder.', params: ['move'], output: ['C:\\Users\\user>move C:\\Users\\user\\Downloads\\cloudflared.exe C:\\Users\\user\\cloudflared\\', '        1 file(s) moved.'] },
+                            'win-verify': { label: '5. Verify File', command: 'dir C:\\Users\\user\\cloudflared', desc: 'List the contents of the folder to confirm the file is in place.', params: ['dir', 'list'], output: [' Volume in drive C has no label.', ' Directory of C:\\Users\\user\\cloudflared', '', '11/15/2024  10:00 AM    <DIR>          .', '11/15/2024  10:00 AM    <DIR>          ..', '11/15/2024  10:05 AM        25,000,000 cloudflared.exe', '               1 File(s)   25,000,000 bytes'] },
+                            'win-test': { label: '6. Run / Test', command: '"C:\\Users\\user\\cloudflared\\cloudflared.exe" --version', desc: 'Run the executable with the version flag to verify it works correctly.', params: ['--version', 'test'], output: ['cloudflared version 2024.x.x', 'Built with go1.22.5', 'Feature flags: None'] },
+                            'win-path': { label: '7. Add to PATH', command: '# Environment Variables: C:\\Users\\user\\cloudflared', desc: 'Add the folder to System Environment Variables.\n\n1. Search "Environment Variables" in Windows search.\n2. Click "Edit the system environment variables".\n3. Click "Environment Variables" button.\n4. Under "System variables", find "Path" and click "Edit".\n5. Click "New" and paste: C:\\Users\\user\\cloudflared\n6. Restart CMD and test: cloudflared --version', params: ['PATH', 'Environment Variables'], output: ['[System Configuration]', 'Adding C:\\Users\\user\\cloudflared to PATH...', 'Success. Restart command prompt to apply changes.', '', '> cloudflared --version', 'cloudflared version 2024.x.x', 'Works without full path!'] },
+                            'win-path-verify': { label: '8. Verify PATH Setup', command: 'cloudflared --version', desc: 'After restarting CMD, verify that cloudflared is accessible globally without the full file path.\n\nIf this fails, restart CMD as Administrator and try again.', params: ['--version', 'PATH verify'], output: ['C:\\Users\\user>cloudflared --version', 'cloudflared version 2024.x.x', 'Built with go1.22.5', 'PATH configuration verified successfully!'] },
+                            'win-ssh': { label: '9. Connect via SSH', command: 'ssh username@serverurl -o ProxyCommand="cloudflared access ssh --hostname %h"', desc: 'Connect to the server using SSH with cloudflared as the ProxyCommand.\n\nReplace "username" with your login username and "serverurl" with your server\'s Cloudflare tunnel URL.', params: ['ssh', 'username', 'ProxyCommand', 'cloudflared access ssh', '--hostname'], output: ['Authenticating with Cloudflare Access...', 'Opening browser for authentication...', 'Cloudflare Access login page opened in default browser.', 'Please complete login in the browser window...', 'Authentication successful!', 'Connecting to server...'] },
+                            'win-fingerprint': { label: '10. Accept Fingerprint', command: 'yes', desc: 'Type "yes" to accept and save the server\'s SSH fingerprint.\n\nThis is a one-time step per server.', params: ['yes', 'fingerprint', 'ED25519'], output: ['The authenticity of host \'serverurl\' can\'t be established.', 'ED25519 key fingerprint is SHA256:AbCdEfGhIjKlMnOpQrStUvWxYz.', 'Are you sure you want to continue connecting (yes/no/[fingerprint])? yes', 'Warning: Permanently added \'serverurl\' (ED25519) to the list of known hosts.'] },
+                            'win-password': { label: '11. Enter Password', command: '[Enter Signup Password]', desc: 'Enter your Signup password when prompted.\n\nThe terminal will not show characters as you type — this is normal for security.\n\nAfter entering the correct password, you will see the server welcome screen.', params: ['signup password', 'password'], output: ['username@serverurl\'s password: ********', '', 'Welcome to Ubuntu 22.04 LTS (GNU/Linux 5.15.0-91-generic x86_64)', '', 'System load:  0.01, 0.03, 0.05', 'Usage of /:   15.2% of 50GB', 'Memory usage: 12%', 'CPU usage:    2%', '', 'Last login: Thu Nov 15 10:30:00 2024 from 10.0.0.1'] }
+                        }
+                    }
+                }
+            },
+            'start-server': {
+                label: 'Start Your Server',
+                icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>',
+                items: {
+                    'go-run': { label: 'go run main.go', command: 'go run main.go', desc: 'Starts your Go application server by compiling and running main.go in a single step.\n\nThis command:\n  1. Compiles the Go source code in main.go\n  2. Runs the resulting binary immediately\n  3. Outputs server logs directly to the terminal\n\nMake sure your main.go file contains an HTTP server listening on a port (e.g., :8080).', params: ['go run', 'main.go', ':8080'], output: ['Compiling main.go...', '', '  ┌──────────────────────────────────────┐', '  │  Server started successfully          │', '  │  Listening on http://localhost:8080   │', '  │  PID: 12345                           │', '  └──────────────────────────────────────┘', '', 'Ready to accept connections.'] }
+                }
+            },
+            'deploy-commands': {
+                label: 'Deploy Commands',
+                icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>',
+                items: {
+                    'tunnel-deploy': { label: 'cloudflared tunnel --url', command: 'cloudflared tunnel --url http://localhost:8080', desc: 'Creates a public Cloudflare Tunnel that routes traffic to your local application server.\n\nThis command:\n  1. Connects to Cloudflare\'s edge network\n  2. Maps a public URL to your local http://localhost:8080\n  3. Returns a publicly accessible URL (e.g., https://xxx.trycloudflare.com)\n\nMake sure your server is already running (go run main.go) before executing this.\n\nThe tunnel remains active as long as this command is running. Press Ctrl+C to stop it.', params: ['cloudflared tunnel', '--url', 'http://localhost:8080', 'trycloudflare.com'], output: ['2024/11/15 10:30:00 INF Starting tunnel tunnelID=xxx', '2024/11/15 10:30:01 INF +----------------------------+', '2024/11/15 10:30:01 INF |  Your quick Tunnel has been created! Visit it at (it may take some time to be reachable):  |', '2024/11/15 10:30:01 INF |  https://abc-def-ghi-jkl.trycloudflare.com  |', '2024/11/15 10:30:01 INF +----------------------------+', '', '2024/11/15 10:30:02 INF Connection registered connIndex=0'] }
+                }
+            }
+        };
+
+        var sshCurrentCmdText = '';
+        var sshTypingTimeout = null;
+        var sshPromptText = 'guest@nodefy:~$';
+
+        function openSSHOverlay() {
+            document.getElementById('sshOverlay').classList.add('open');
+            buildSSHSidebar();
+            resetSSHTerminal();
         }
 
-        document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape') closeModals();
-        });
+        function closeSSHOverlay() {
+            document.getElementById('sshOverlay').classList.remove('open');
+            clearTimeout(sshTypingTimeout);
+        }
+
+        function resetSSHTerminal() {
+            document.getElementById('sshPageTitle').textContent = 'SSH Command Center';
+            document.getElementById('sshCommandDisplay').textContent = '';
+            document.getElementById('sshTerminalOutput').innerHTML = '';
+            document.getElementById('sshTeachingPanel').style.display = 'none';
+            document.getElementById('sshPrompt').textContent = sshPromptText;
+            document.getElementById('sshTermTitleText').textContent = ' ' + sshPromptText.replace(':~$', ': ~/');
+            sshCurrentCmdText = '';
+
+            // Reset welcome
+            var body = document.getElementById('sshTerminalBody');
+            var welcomeLines = body.querySelectorAll('.ssh-output-line');
+            for (var w = 0; w < welcomeLines.length; w++) welcomeLines[w].remove();
+
+            // Re-add welcome
+            var br = body.querySelector('br');
+            var line1 = document.createElement('div');
+            line1.className = 'ssh-output-line';
+            line1.style.color = 'var(--accent-color)';
+            line1.textContent = 'System initialized. Welcome to Nodefy SSH Terminal';
+            body.insertBefore(line1, br);
+
+            var line2 = document.createElement('div');
+            line2.className = 'ssh-output-line';
+            line2.style.color = '#555';
+            line2.textContent = 'Select a command from the sidebar to begin.';
+            body.insertBefore(line2, br);
+
+            // Clear active states
+            var activeItems = document.querySelectorAll('.ssh-submenu-item.active');
+            for (var a = 0; a < activeItems.length; a++) activeItems[a].classList.remove('active');
+        }
+
+        function buildSSHSidebar() {
+            var nav = document.getElementById('sshSidebarNav');
+            nav.innerHTML = '';
+
+            var sections = Object.keys(sshCommandData);
+            for (var i = 0; i < sections.length; i++) {
+                var sectionKey = sections[i];
+                var section = sshCommandData[sectionKey];
+                var dd = document.createElement('div');
+                dd.className = 'ssh-dropdown';
+
+                var header = document.createElement('div');
+                header.className = 'ssh-dropdown-header';
+                header.innerHTML = '<span style="display:flex; align-items:center; gap:10px;">' + section.icon + ' ' + section.label + '</span><svg class="ssh-dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>';
+
+                (function(ddEl, hhEl) {
+                    hhEl.onclick = function(e) { e.stopPropagation(); sshToggleDropdown(ddEl, hhEl); };
+                })(dd, header);
+
+                var content = document.createElement('div');
+                content.className = 'ssh-dropdown-content';
+
+                var itemKeys = Object.keys(section.items);
+                for (var j = 0; j < itemKeys.length; j++) {
+                    var itemKey = itemKeys[j];
+                    var item = section.items[itemKey];
+
+                    if (item.isFolder) {
+                        var subDd = document.createElement('div');
+                        subDd.className = 'ssh-dropdown ssh-nested-dropdown';
+
+                        var subH = document.createElement('div');
+                        subH.className = 'ssh-dropdown-header';
+                        subH.textContent = item.label;
+
+                        (function(sdd, sh) { sh.onclick = function(e) { e.stopPropagation(); sshToggleDropdown(sdd, sh); }; })(subDd, subH);
+
+                        var subC = document.createElement('div');
+                        subC.className = 'ssh-dropdown-content';
+
+                        var cmdKeys = Object.keys(item.items);
+                        for (var c = 0; c < cmdKeys.length; c++) {
+                            var cmdItem = item.items[cmdKeys[c]];
+                            var cmdDiv = document.createElement('div');
+                            cmdDiv.className = 'ssh-submenu-item';
+                            cmdDiv.textContent = cmdItem.label;
+                            (function(cd) {
+                                cmdDiv.onclick = function(e) {
+                                    e.stopPropagation();
+                                    sshSelectCommand(cd);
+                                    var all = document.querySelectorAll('.ssh-submenu-item');
+                                    for (var x = 0; x < all.length; x++) all[x].classList.remove('active');
+                                    cmdDiv.classList.add('active');
+                                };
+                            })(cmdItem);
+                            subC.appendChild(cmdDiv);
+                        }
+
+                        subDd.appendChild(subH);
+                        subDd.appendChild(subC);
+                        content.appendChild(subDd);
+                    } else {
+                        // Direct item (like go run main.go)
+                        var isHighlight = (sectionKey === 'start-server' || sectionKey === 'deploy-commands');
+                        var directDiv = document.createElement('div');
+                        directDiv.className = 'ssh-submenu-item' + (isHighlight ? ' highlight-item' : '');
+                        directDiv.textContent = item.label;
+                        (function(dItem, divEl) {
+                            divEl.onclick = function(e) {
+                                e.stopPropagation();
+                                sshSelectCommand(dItem);
+                                var all = document.querySelectorAll('.ssh-submenu-item');
+                                for (var x = 0; x < all.length; x++) all[x].classList.remove('active');
+                                divEl.classList.add('active');
+                            };
+                        })(item, directDiv);
+                        content.appendChild(directDiv);
+                    }
+                }
+
+                dd.appendChild(header);
+                dd.appendChild(content);
+                nav.appendChild(dd);
+            }
+        }
+
+        function sshToggleDropdown(ddEl, hEl) {
+            var parent = ddEl.parentElement;
+            var siblings = parent.querySelectorAll(':scope > .ssh-dropdown');
+            for (var i = 0; i < siblings.length; i++) {
+                var sib = siblings[i];
+                if (sib !== ddEl && sib.classList.contains('open')) {
+                    sib.classList.remove('open');
+                    var sibH = sib.querySelector('.ssh-dropdown-header');
+                    if (sibH) sibH.classList.remove('active-group');
+                }
+            }
+            if (ddEl.classList.contains('open')) {
+                ddEl.classList.remove('open');
+                hEl.classList.remove('active-group');
+            } else {
+                ddEl.classList.add('open');
+                hEl.classList.add('active-group');
+            }
+        }
+
+        function sshSelectCommand(data) {
+            document.getElementById('sshPageTitle').textContent = data.label;
+            sshCurrentCmdText = data.command;
+
+            clearTimeout(sshTypingTimeout);
+            document.getElementById('sshCommandDisplay').textContent = '';
+            document.getElementById('sshTerminalOutput').innerHTML = '';
+            document.getElementById('sshTeachingPanel').style.display = 'none';
+
+            // Remove old welcome lines
+            var body = document.getElementById('sshTerminalBody');
+            var oldLines = body.querySelectorAll('.ssh-output-line');
+            for (var o = 0; o < oldLines.length; o++) oldLines[o].remove();
+            var oldBr = body.querySelector('br');
+            if (oldBr) oldBr.remove();
+
+            var idx = 0;
+            function type() {
+                if (idx < data.command.length) {
+                    document.getElementById('sshCommandDisplay').textContent += data.command.charAt(idx);
+                    idx++;
+                    sshTypingTimeout = setTimeout(type, 35);
+                } else {
+                    sshTypingTimeout = setTimeout(function () {
+                        sshShowOutput(data.output);
+                        sshShowTeaching(data);
+                    }, 400);
+                }
+            }
+            type();
+        }
+
+        function sshShowOutput(lines) {
+            var outputEl = document.getElementById('sshTerminalOutput');
+            for (var i = 0; i < lines.length; i++) {
+                (function(line, idx) {
+                    var div = document.createElement('div');
+                    div.className = 'ssh-output-line';
+                    div.textContent = line;
+                    div.style.animationDelay = (idx * 0.05) + 's';
+
+                    // Color coding
+                    if (line.indexOf('error') !== -1 || line.indexOf('ERROR') !== -1 || line.indexOf('Killed') !== -1) {
+                        div.classList.add('ssh-term-error');
+                    } else if (line.indexOf('Success') !== -1 || line.indexOf('successfully') !== -1 || line.indexOf('Complete!') !== -1 || line.indexOf('verified successfully') !== -1 || line.indexOf('Welcome to') !== -1 || line.indexOf('Authentication successful') !== -1 || line.indexOf('Ready to accept') !== -1 || line.indexOf('started successfully') !== -1 || line.indexOf('Connection registered') !== -1 || line.indexOf('Works without') !== -1) {
+                        div.classList.add('ssh-term-accent');
+                    } else if (line.indexOf('INF') !== -1 || line.indexOf('Proto') !== -1 || line.indexOf('PID') !== -1 || line.indexOf('Filesystem') !== -1 || line.indexOf('USER') !== -1 || line.indexOf('Volume in drive') !== -1 || line.indexOf('Directory of') !== -1 || line.indexOf('Compiling') !== -1) {
+                        div.classList.add('ssh-term-info');
+                    }
+
+                    // Special green for tunnel URLs
+                    if (line.indexOf('trycloudflare.com') !== -1 || line.indexOf('localhost:8080') !== -1) {
+                        div.classList.add('ssh-term-green');
+                    }
+
+                    outputEl.appendChild(div);
+
+                    if (idx === lines.length - 1) {
+                        var prompt = document.createElement('div');
+                        prompt.className = 'ssh-output-line ssh-term-accent';
+                        prompt.style.marginTop = '10px';
+                        prompt.textContent = sshPromptText + ' ';
+                        outputEl.appendChild(prompt);
+                        outputEl.scrollTop = outputEl.scrollHeight;
+                    }
+                })(lines[i], i);
+            }
+        }
+
+        function sshShowTeaching(data) {
+            var panel = document.getElementById('sshTeachingPanel');
+            panel.style.display = 'block';
+            document.getElementById('sshTeachTitle').textContent = data.label + ' Explained';
+            document.getElementById('sshTeachDesc').textContent = data.desc;
+
+            var paramsEl = document.getElementById('sshTeachParams');
+            paramsEl.innerHTML = '';
+            if (data.params && data.params.length) {
+                for (var i = 0; i < data.params.length; i++) {
+                    var tag = document.createElement('span');
+                    tag.className = 'ssh-param-tag';
+                    tag.textContent = data.params[i];
+                    paramsEl.appendChild(tag);
+                }
+            }
+        }
+
+        function sshCopyCommand() {
+            if (!sshCurrentCmdText) return;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(sshCurrentCmdText).then(sshUpdateCopyBtn).catch(sshFallbackCopy);
+            } else {
+                sshFallbackCopy();
+            }
+        }
+
+        function sshUpdateCopyBtn() {
+            var btn = document.getElementById('sshCopyBtn');
+            var orig = btn.innerHTML;
+            btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Copied!';
+            btn.style.color = 'var(--accent-color)';
+            btn.style.borderColor = 'var(--accent-color)';
+            setTimeout(function () { btn.innerHTML = orig; btn.style.color = ''; btn.style.borderColor = ''; }, 1500);
+        }
+
+        function sshFallbackCopy() {
+            var ta = document.createElement('textarea');
+            ta.value = sshCurrentCmdText;
+            ta.style.position = 'fixed';
+            ta.style.left = '-9999px';
+            document.body.appendChild(ta);
+            ta.select();
+            try { document.execCommand('copy'); } catch (e) {}
+            document.body.removeChild(ta);
+            sshUpdateCopyBtn();
+        }
     </script>
 </body>
 </html>
