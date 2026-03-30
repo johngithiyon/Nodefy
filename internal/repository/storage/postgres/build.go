@@ -3,7 +3,6 @@ package postgres
 import (
 	"log"
 
-
 	"github.com/johngithiyon/Nodefy/internal/errors"
 	"github.com/johngithiyon/Nodefy/internal/models"
 	"github.com/johngithiyon/Nodefy/pkg/utils"
