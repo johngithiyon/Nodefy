@@ -1,118 +1,152 @@
- Nodefy
+```markdown
+<div align="center">
 
- A cloud-based platform to explore Linux environments, build development instances, and deploy applications using GitHub repositories.
+<img src="./assets/logo.png" alt="Nodefy" width="120" height="120"/>
+
+# Nodefy
+
+**A cloud-based platform to explore Linux environments, build development instances, and deploy applications using GitHub repositories.**
+
+[![Go](https://img.shields.io/badge/Go-00ADD8?logo=go&logoColor=white)](https://go.dev/)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Redis](https://img.shields.io/badge/Redis-DC382D?logo=redis&logoColor=white)](https://redis.io/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
+</div>
 
 ---
 
-📌 Overview
+## Overview
 
 Nodefy is a lightweight cloud platform that simplifies learning, development, and deployment by providing on-demand Linux environments and container-based infrastructure.
 
 It enables users to:
-- 🐧 Explore Linux operating systems in real-time  
-- 🏗 Create and manage development instances  
-- 🚀 Deploy applications using GitHub repositories  
 
-Nodefy bridges the gap between **theoretical learning** and **real-world cloud experience**.
+- **Explore** Linux operating systems in real-time
+- **Create** and manage development instances
+- **Deploy** applications using GitHub repositories
 
----
-
-Key Features
-
-- 🐧 **Linux OS Exploration**
-  - Run Linux environments like Ubuntu
-  - Hands-on terminal access
-
-- 🏗 **Instance Management**
-  - Create, start, stop, and delete containers
-  - Manage multiple instances
-
-- 🌐 **Multi-Node Development**
-  - Build distributed systems (backend, database, cache)
-  - Docker network integration
-
-- 🚀 **Deployment using GitHub Repositories**
-  - Deploy apps directly from repository links
-  - Automatic build and execution
-
-- 🔐 **Secure Access**
-  - SSH access to containers
-  - Public access via tunneling
-
-- 📊 **Dashboard**
-  - Monitor and control instances easily
+Nodefy bridges the gap between theoretical learning and real-world cloud experience.
 
 ---
 
-## 🏗 Architecture
+## Features
+
+| Feature | Description |
+|---|---|
+| 🐧 **Linux OS Exploration** | Run Linux environments like Ubuntu with hands-on terminal access |
+| 🏗 **Instance Management** | Create, start, stop, and delete containers; manage multiple instances |
+| 🌐 **Multi-Node Development** | Build distributed systems (backend, database, cache) with Docker network integration |
+| 🚀 **GitHub Deployment** | Deploy apps directly from repository links with automatic build and execution |
+| 🔐 **Secure Access** | SSH access to containers with public access via tunneling |
+| 📊 **Dashboard** | Monitor and control instances from a unified interface |
+
+---
+
+## Architecture
 
 ![Architecture Diagram](./assets/architecture.png)
 
+```
 Frontend → Backend → Docker Engine → Network → Database → User Access
+```
 
 ---
 
-## 🔁 Workflow
+## Workflow
 
 ![Workflow Diagram](./assets/workflow.png)
 
-1. User selects OS / creates instance / provides GitHub repository  
-2. Backend validates and processes request  
-3. Docker container is created  
-4. Multi-node setup (if needed)  
-5. Deployment using GitHub repository  
-6. Access provided via SSH or URL  
-7. Data stored in database  
-8. User manages instances via dashboard  
+1. User selects OS / creates instance / provides GitHub repository
+2. Backend validates and processes the request
+3. Docker container is created
+4. Multi-node setup is configured (if needed)
+5. Deployment is executed using the GitHub repository
+6. Access is provided via SSH or public URL
+7. Data is stored in the database
+8. User manages instances via the dashboard
 
 ---
 
-## 🖼 Screenshots
+## Screenshots
 
-### 🔹 Dashboard
+### Dashboard
 ![Dashboard](./assets/dashboard.png)
 
-### 🔹 OS Selection
+### OS Selection
 ![OS Selection](./assets/os-selection.png)
 
-### 🔹 Instance Management
+### Instance Management
 ![Instances](./assets/instances.png)
 
 ---
 
-## ⚙️ Tech Stack
+## Tech Stack
 
-- **Frontend:** HTML, CSS, JavaScript  
-- **Backend:** Go (Golang)
-- **Database:** PostgreSQL  
-- **Containerization:** Docker  
-- **Caching:** Redis  
-- **Networking:** SSH, Tunneling  
-
----
-
-## 🚀 Getting Started
-
-Follow these steps to run Nodefy locally.
+| Layer | Technology |
+|---|---|
+| **Frontend** | HTML, CSS, JavaScript |
+| **Backend** | Go (Golang) |
+| **Database** | PostgreSQL |
+| **Containerization** | Docker |
+| **Caching** | Redis |
+| **Networking** | SSH, Tunneling |
 
 ---
 
-## 📌 Prerequisites
+## Getting Started
 
-Make sure you have installed:
+### Prerequisites
 
-- Docker  
-- Go (Golang)  
-- PostgreSQL  
-- Git  
+- [Docker](https://docs.docker.com/get-docker/)
+- [Go](https://go.dev/doc/install) (v1.21+)
+- [PostgreSQL](https://www.postgresql.org/download/)
+- [Git](https://git-scm.com/downloads)
 
----
+### Installation
 
-## 🔧 Installation & Setup
-
-### 1️⃣ Clone the Repository
+**1. Clone the repository**
 
 ```bash
 git clone https://github.com/johngithiyon/Nodefy.git
 cd nodefy
+```
 
+**2. Configure environment variables**
+
+Create a `.env` file in the project root:
+
+```env
+CONN_STR=postgres://user:password@localhost/nodefy?sslmode=disable
+REDIS_ADDRESS=localhost:6379
+REDIS_PASSWORD=yourpassword
+MAIL_FROM=your@email.com
+MAIL_PASS=yourpassword
+```
+
+**3. Install dependencies**
+
+```bash
+go mod tidy
+```
+
+**4. Run the application**
+
+```bash
+go run cmd/server/main.go
+```
+
+**5. Open in browser**
+
+```
+http://localhost:8080
+```
+
+---
+
+## License
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+
+---
