@@ -12,6 +12,7 @@ func Containerkill(username string, Containerkill models.Containermanage) error 
 
 		userid, getiderr := Getuserid(username)
 		if getiderr != nil {
+			log.Println("Get err in kill container",getiderr)
 			return getiderr
 		}
 
@@ -23,6 +24,7 @@ func Containerkill(username string, Containerkill models.Containermanage) error 
 
 		_, deleteErr := Database.Db.Exec(query, userid, Containerkill.Instancename)
 		if deleteErr != nil {
+			log.Println("Delete Err in kill container",deleteErr)
 			return deleteErr
 		}
 	}
@@ -36,9 +38,9 @@ func Containerkill(username string, Containerkill models.Containermanage) error 
 	   }
 
 		query := `
-		DELETE FROM deploy_instances_services
+		DELETE FROM deploy_instance_services
 		WHERE app_id = $1
-		AND service_name = $2;
+		AND services_name = $2;
 		`
 
 		_, deleteErr := Database.Db.Exec(query,appid, Containerkill.Instancename)
