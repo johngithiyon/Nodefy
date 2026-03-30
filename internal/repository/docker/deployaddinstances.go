@@ -11,7 +11,8 @@ func DeployAddinstances(username string,DeployAddinstances models.Deployaddinsta
 
 	// start the container by the user given image name 
 	
-	  cmd :=  exec.Command("docker","run","--name",DeployAddinstances.Appname,"-d",DeployAddinstances.Imagename)
+	  cmd :=  exec.Command("docker","run","--name",DeployAddinstances.Appname+DeployAddinstances.Imagename,"--label", "owner="+username,
+		"--label", "instance="+DeployAddinstances.Appname+DeployAddinstances.Imagename,"-d",DeployAddinstances.Imagename,"sleep","infinity")
 
       output,outputerr :=  cmd.CombinedOutput()
 
