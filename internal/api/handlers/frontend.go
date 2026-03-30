@@ -49,3 +49,7 @@ func RenderTeachpage(w http.ResponseWriter, r *http.Request) {
 func RenderBuildinstancepage(w http.ResponseWriter, r *http.Request) {
 	services.Render(w,"buildinstance.html")
 }
+
+func RenderDeployinstancepage(w http.ResponseWriter, r *http.Request) {
+	services.Render(w,"deployinstance.html")
+}
