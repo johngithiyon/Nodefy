@@ -98,7 +98,6 @@ Frontend → Backend → Docker Engine → Network → Database → User Access
 
 - [Docker](https://docs.docker.com/get-docker/)
 - [Go](https://go.dev/doc/install) (v1.21+)
-- [PostgreSQL](https://www.postgresql.org/download/)
 - [Git](https://git-scm.com/downloads)
 - [Postgres Docker Container](https://hub.docker.com/_/postgres)
 - [Redis Docker Container](https://hub.docker.com/_/redis)
