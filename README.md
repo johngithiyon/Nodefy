@@ -1,7 +1,5 @@
 <div align="center">
 
-<img src="./assets/logo.png" alt="Nodefy" width="120" height="120"/>
-
 # Nodefy
 
 **A cloud-based platform to explore Linux environments, build development instances, and deploy applications using GitHub repositories.**
