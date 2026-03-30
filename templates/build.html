@@ -1045,7 +1045,7 @@
 
                 <div class="custom-input-area" style="display: block; margin-bottom: 30px; max-width: 550px; margin-left: auto; margin-right: auto;">
                     <p style="margin-bottom: 12px; color: var(--accent-color); font-size: 0.9rem; font-weight: 500;">Instance Name:</p>
-                    <input type="text" id="instance-name" class="code-editor" placeholder="e.g., my-stack-dev" style="min-height: 50px; height: 50px;">
+                    <input type="text" id="instance-name" class="code-editor" placeholder="e.g nodefy" style="min-height: 50px; height: 50px;">
                 </div>
 
                 <div class="actions">
@@ -1205,7 +1205,7 @@
             <!-- STEP 5: SUMMARY & DEPLOY -->
             <div id="step-5" class="wizard-step">
                 <div class="step-header">
-                    <h2>Ready to Deploy</h2>
+                    <h2>Ready to Build</h2>
                     <p>Review your stack configuration</p>
                 </div>
 
@@ -1541,7 +1541,7 @@
                 if (response.ok) {
                     showToast("Success", "Stack deployed successfully!", "success");
                     setTimeout(() => {
-                        window.location.href = '/'; 
+                        window.location.href = '/buildinfopage'; 
                     }, 2000);
                 } else {
                     const errData = await response.json();
