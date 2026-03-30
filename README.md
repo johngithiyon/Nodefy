@@ -1,4 +1,4 @@
-<div align="center">
++<div align="center">
 
 # Nodefy
 
@@ -100,8 +100,8 @@ Frontend → Backend → Docker Engine → Network → Database → User Access
 - [Go](https://go.dev/doc/install) (v1.21+)
 - [PostgreSQL](https://www.postgresql.org/download/)
 - [Git](https://git-scm.com/downloads)
-- [Postgres Docker Container]
-- [Redis Docker Container]
+- [Postgres Docker Container](https://hub.docker.com/_/postgres)
+- [Redis Docker Container](https://hub.docker.com/_/redis)
 
 ### Installation
 
