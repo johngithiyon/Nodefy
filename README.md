@@ -1,4 +1,3 @@
-```markdown
 <div align="center">
 
 <img src="./assets/logo.png" alt="Nodefy" width="120" height="120"/>
@@ -150,3 +149,9 @@ http://localhost:8080
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
 
 ---
+
+<div align="center">
+
+**Built with ❤️ by [John Githiyon](https://github.com/johngithiyon)**
+
+</div>
