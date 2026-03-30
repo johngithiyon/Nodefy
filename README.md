@@ -139,6 +139,15 @@ MAIL_PASS=yourpassword
 go mod tidy
 ```
 
+## Start the Required Containers
+
+Before running Nodefy, you need to start the required services: **PostgreSQL** and **Redis**. You can start them using Docker with the following commands:
+
+### PostgreSQL
+```bash
+docker start postgres_containername  redis_containername
+
+
 **4. Run the application**
 
 ```bash
