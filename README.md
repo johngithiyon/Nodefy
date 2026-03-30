@@ -41,16 +41,6 @@ Nodefy bridges the gap between theoretical learning and real-world cloud experie
 
 ---
 
-## Architecture
-
-![Architecture Diagram](./assets/architecture.png)
-
-```
-Frontend → Backend → Docker Engine → Network → Database → User Access
-```
-
----
-
 
 ## Workflow
 
@@ -98,18 +88,6 @@ Start, stop, and manage multiple running containers through the dashboard.
 
 ---
 
-## Screenshots
-
-### Dashboard
-![Dashboard](./assets/dashboard.png)
-
-### OS Selection
-![OS Selection](./assets/os-selection.png)
-
-### Instance Management
-![Instances](./assets/instances.png)
-
----
 
 ## Tech Stack
 
