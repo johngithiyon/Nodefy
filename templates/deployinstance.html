@@ -305,17 +305,6 @@
         .empty-state-text { font-size: 1rem; margin-bottom: 6px; color: var(--text-muted); }
         .empty-state-hint { font-size: 0.85rem; opacity: 0.6; }
 
-        .loading-state { grid-column: 1 / -1; display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 80px 20px; color: var(--text-muted); }
-
-        .spinner {
-            width: 60px; height: 60px; border-radius: 50%;
-            background: conic-gradient(from 0deg, transparent 0deg, var(--accent-color) 360deg);
-            position: relative; animation: rotateSpinner 1s linear infinite;
-            box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
-        }
-        .spinner::after { content: ''; position: absolute; top: 4px; left: 4px; right: 4px; bottom: 4px; background: #050505; border-radius: 50%; }
-        @keyframes rotateSpinner { 100% { transform: rotate(360deg); } }
-
         /* --- Modals & Toasts --- */
         .modal-overlay {
             position: fixed; inset: 0; background: rgba(5, 5, 10, 0.85); backdrop-filter: blur(12px);
@@ -911,12 +900,7 @@
                 </div>
             </div>
 
-            <div class="instance-grid" id="instanceGrid">
-                <div class="loading-state">
-                    <div class="spinner"></div>
-                    <span>Connecting to backend...</span>
-                </div>
-            </div>
+            <div class="instance-grid" id="instanceGrid"></div>
         </div>
     </main>
 
@@ -1067,6 +1051,7 @@
                 });
             }
 
+            renderInstances();
             fetchInstances();
             setInterval(fetchInstances, 5000);
         });
@@ -1098,10 +1083,6 @@
         }
 
         async function fetchInstances() {
-            var grid = document.getElementById('instanceGrid');
-            if (instances.length === 0 && grid.innerHTML.trim() === '') {
-                grid.innerHTML = '<div class="loading-state"><div class="spinner"></div><span>Connecting to backend...</span></div>';
-            }
             try {
                 var response = await fetch('/getdeployinstance', { method: 'GET', credentials: 'include', headers: { 'Content-Type': 'application/json' } });
                 if (!response.ok) throw new Error('HTTP ' + response.status);
@@ -1110,9 +1091,8 @@
                 renderInstances();
             } catch (error) {
                 console.error('Fetch Error:', error);
-                if (instances.length === 0) {
-                    grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">⚠️</div><div class="empty-state-text">Connection Failed</div><div class="empty-state-hint">Could not reach the server. Please refresh.</div></div>';
-                }
+                instances = [];
+                renderInstances();
             }
         }
 
