@@ -21,7 +21,9 @@ Nodefy is a lightweight cloud platform that simplifies learning, development, an
 It enables users to:
 
 - **Explore** Students can explore the different type of the linux family os like ubuntu,kali,fedora 
+
 - **Build** Students can create instances and built their application. Also they can create multiple instances to learn how the multinode architecture works in real production system works 
+
 - **Deploy** Students can deploy their application by providing the github repositories we teach them how to deploy their application on the instance without need of buying domain name and vps 
 
 Nodefy bridges the gap between theoretical learning and real-world cloud experience.
@@ -44,21 +46,28 @@ Nodefy bridges the gap between theoretical learning and real-world cloud experie
 
 ## Workflow
 
-### 1️⃣ Choose Stack
+### 1️ Choose Stack
 Select the required technology stack and environment for development.
 
 ![Choose Stack](/assests/choose.png)
 
 ---
 
-### 2️⃣ Explore OS
+### 2️ Explore OS
 Interact with Linux environments and explore system-level operations.
 
 ![Explore OS](/assests/exploreos.png)
 
 ---
 
-### 3️⃣ Build Instances
+### 3 Teach Linux Commands
+Teach the linux commands from the basics for the user selected linux family and also teach how to ssh to the instance
+
+![Teach Commands](/assests/teach.png)
+
+---
+
+### 4 Build Instances
 Create and configure containerized instances for development.
 
 ![Build Instances](/assests/build.png)
@@ -69,6 +78,13 @@ Create and configure containerized instances for development.
 Provide your GitHub repository link to automatically build and deploy your application.
 
 ![Deploy](/assests/deploy.png)
+
+---
+
+### Teach them how to start the app server and deploy their application 
+We make the student to do all the steps for their app deployment our aim is make student to learn the deploy process 
+
+![Teach Deploy](/assests/deployteach.png)
 
 ---
 
