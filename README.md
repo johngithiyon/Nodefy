@@ -16,13 +16,13 @@
 
 ## Overview
 
-Nodefy is a lightweight cloud platform that simplifies learning, development, and deployment by providing on-demand Linux environments and container-based infrastructure.
+Nodefy is a lightweight cloud platform that simplifies learning, development, and deployment by providing on-demand Linux environments and container-based infrastructure.Built especially for the student to learn and explore about how the real world cloud infrastructure works 
 
 It enables users to:
 
-- **Explore** Linux operating systems in real-time
-- **Create** and manage development instances
-- **Deploy** applications using GitHub repositories
+- **Explore** Students can explore the different type of the linux family os like ubuntu,kali,fedora 
+- **Build** Students can create instances and built their application. Also they can create multiple instances to learn how the multinode architecture works in real production system works 
+- **Deploy** Students can deploy their application by providing the github repositories we teach them how to deploy their application on the instance without need of buying domain name and vps 
 
 Nodefy bridges the gap between theoretical learning and real-world cloud experience.
 
