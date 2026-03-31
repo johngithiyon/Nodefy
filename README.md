@@ -74,21 +74,21 @@ Create and configure containerized instances for development.
 
 ---
 
-### 4️⃣ Deploy Using GitHub Repositories
+### 5 Deploy Using GitHub Repositories
 Provide your GitHub repository link to automatically build and deploy your application.
 
 ![Deploy](/assests/deploy.png)
 
 ---
 
-### Teach them how to start the app server and deploy their application 
+### 6 Teach them how to start the app server and deploy their application 
 We make the student to do all the steps for their app deployment our aim is make student to learn the deploy process 
 
 ![Teach Deploy](/assests/deployteach.png)
 
 ---
 
-### 5️⃣ Instance Management
+### 7 Instance Management
 Start, stop, and manage multiple running containers through the dashboard.
 
 ![Instance Management](/assests/instancesmanage.png)
