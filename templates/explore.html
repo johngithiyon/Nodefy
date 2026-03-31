@@ -721,7 +721,7 @@
                     showToast(data.message || "Environment Ready!", "success");
                     
                     // Redirect to teaching page
-                    window.location.href = 'teach.html';
+                    window.location.href = '/teachpage';
                 } else {
                     if (response.status === 400 && data.message === "Cookie not found") {
                         showToast("Session expired. Please login.", "error");
