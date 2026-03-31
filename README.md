@@ -111,6 +111,7 @@ Start, stop, and manage multiple running containers through the dashboard.
 - [Git](https://git-scm.com/downloads)
 - [Postgres Docker Container](https://hub.docker.com/_/postgres)
 - [Redis Docker Container](https://hub.docker.com/_/redis)
+- [Make](https://www.gnu.org/software/make/)
 
 ### Installation
 
@@ -151,6 +152,12 @@ docker start postgres_containername  redis_containername
 
 ```bash
 go run cmd/server/main.go
+```
+      Or
+
+**Using Make Command**
+```bash
+make run
 ```
 
 **5. Open in browser**
