@@ -8,9 +8,13 @@ import (
 
 func Routes() {
 
-	//serve the static files
+	 //serve the static files
 
 	 http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
+
+	 //serve the profile images
+
+	 http.Handle("/profileimage/", http.StripPrefix("/profileimage/", http.FileServer(http.Dir("./profileimage"))))
 
 	  // frontend endpoints 
 
