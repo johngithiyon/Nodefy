@@ -113,6 +113,7 @@ Start, stop, and manage multiple running containers through the dashboard.
 - [Redis Docker Container](https://hub.docker.com/_/redis)
 - [Make](https://www.gnu.org/software/make/)
 
+
 ### Installation
 
 **1. Clone the repository**
@@ -148,19 +149,33 @@ Before running Nodefy, you need to start the required services: **PostgreSQL** a
 docker start postgres_containername  redis_containername
 ```
 
-**4. Run the application**
+**4. Open postgres container create database**
 
 ```bash
-go run cmd/server/main.go
+docker exec -it containername bash psql -U username -p password
+create database databasename
 ```
-      Or
 
-**Using Make Command**
+**5. Install migration tool in go**
+
+```bash
+go install github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+```
+
+
+**6. Run migrations script in terminal**
+
+```bash
+make migrate-up
+```
+
+**7. Run the application**
+
 ```bash
 make run
 ```
 
-**5. Open in browser**
+**8. Open in browser**
 
 ```
 http://localhost:8080
