@@ -32,6 +32,14 @@ func Deploydocker(username string,Deploy models.Deploy) error {
 			servicecmd := exec.Command(
 				"docker", "run", "-d",
 				"--name",Deploy.Appname+"-"+Deploy.Services[i],
+
+				//this is a container config you can change based on your server capacity
+
+				"--memory=512m",
+				"--cpus=0.5",
+				"--pids-limit=100",
+				"--storage-opt size=512m",
+
 				"--label", "owner="+username,
 				"--label", "instance="+Deploy.Appname+"-"+Deploy.Services[i],
 				"-e", "POSTGRES_HOST_AUTH_METHOD=trust",
