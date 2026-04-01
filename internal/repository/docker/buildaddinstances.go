@@ -14,6 +14,7 @@ func Addinstances(username string,Addinstances models.Addinstancesbuild) error {
 	cmd := exec.Command(
 		"docker", "run",
 		"--name", Addinstances.Instancename,
+		"--network",username+"-"+"network",
 		"--label", "owner="+username,
 		"--label", "instance="+Addinstances.Instancename,
 		"-d",
