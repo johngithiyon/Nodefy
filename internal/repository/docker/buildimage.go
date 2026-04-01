@@ -18,6 +18,14 @@ func BuildImage(instancename string,username string,servicename string) error {
 				"docker", "run", "-d",
 				"--name", instancename+"-"+servicename,
 				"--network", username+"-"+"network",
+
+				//this is a container config you can change based on your server capacity
+
+				"--memory=512m",
+				"--cpus=0.5",
+				"--pids-limit=100",
+				"--storage-opt size=512m",
+
 				"--label", "owner="+username,
 				"--label", "instance="+instancename+"-"+servicename,
 				"-e", "POSTGRES_HOST_AUTH_METHOD=trust", 
