@@ -15,6 +15,14 @@ func Addinstances(username string,Addinstances models.Addinstancesbuild) error {
 		"docker", "run",
 		"--name", Addinstances.Instancename,
 		"--network",username+"-"+"network",
+		
+		//this is a container config you can change based on your server capacity
+
+		"--memory=512m",
+		"--cpus=0.5",
+		"--pids-limit=100",
+		"--storage-opt size=512m",
+
 		"--label", "owner="+username,
 		"--label", "instance="+Addinstances.Instancename,
 		"-d",
