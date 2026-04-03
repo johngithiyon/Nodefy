@@ -4,8 +4,11 @@ import (
 	"log"
 	"os"
 
+	"github.com/johngithiyon/Nodefy/internal/models"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
+
+var Rabbitmq models.Rabbitmqconn
 
 func CreateRabbitconn() error {
 
@@ -19,6 +22,14 @@ func CreateRabbitconn() error {
 	}
 
 	defer conn.Close()
+
+	Rabbitmq.Rabbitmqconn = conn
+
+	channelerr := Createchannel()
+
+	if channelerr != nil {
+		return channelerr
+	}
 
 	return nil 
 }
