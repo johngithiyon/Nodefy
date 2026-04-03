@@ -5,6 +5,7 @@ import (
 
 	"github.com/johngithiyon/Nodefy/internal/config"
 	"github.com/johngithiyon/Nodefy/internal/repository/docker"
+	"github.com/johngithiyon/Nodefy/internal/repository/rabbitmq"
 	"github.com/johngithiyon/Nodefy/internal/repository/storage/postgres"
 	"github.com/johngithiyon/Nodefy/internal/repository/storage/redis"
 	"github.com/johngithiyon/Nodefy/internal/routes"
@@ -44,6 +45,14 @@ func Appstartup() {
 	 if dockerconnerr != nil {
 		 log.Println("Docker Conn Error",dockerconnerr)
 		 return 
+	 }
+
+	 //Rabbitma connections 
+
+	 rabbitmqconnerr := rabbitmq.CreateRabbitconn()
+
+	 if rabbitmqconnerr != nil {
+            return
 	 }
 
 
