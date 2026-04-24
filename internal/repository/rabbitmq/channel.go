@@ -15,7 +15,5 @@ func Createchannel() (*amqp091.Channel,error) {
 		return nil,chlerr 
 	 }
 
-	 defer chl.Close()
-
 	 return chl,nil 
 }
