@@ -25,10 +25,16 @@ func CreateRabbitconn() error {
 
 	Rabbitmq.Rabbitmqconn = conn
 
-	channelerr := Createchannel()
+	chl,channelerr := Createchannel()
 
 	if channelerr != nil {
 		return channelerr
+	}
+
+	queueerr := Createqueue(chl)
+
+	if queueerr != nil {
+		return queueerr
 	}
 
 	return nil 
