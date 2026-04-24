@@ -21,8 +21,6 @@ func CreateRabbitconn() error {
 		return conerr
 	}
 
-	defer conn.Close()
-
 	Rabbitmq.Rabbitmqconn = conn
 
 	chl,channelerr := Createchannel()
