@@ -38,8 +38,6 @@ func Deploydocker(username string,Deploy models.Deploy) error {
 				"--memory=512m",
 				"--cpus=0.5",
 				"--pids-limit=100",
-				"--storage-opt size=512m",
-
 				"--label", "owner="+username,
 				"--label", "instance="+Deploy.Appname+"-"+Deploy.Services[i],
 				"-e", "POSTGRES_HOST_AUTH_METHOD=trust",

@@ -24,7 +24,7 @@ func BuildImage(instancename string,username string,servicename string) error {
 				"--memory=512m",
 				"--cpus=0.5",
 				"--pids-limit=100",
-				"--storage-opt size=512m",
+
 
 				"--label", "owner="+username,
 				"--label", "instance="+instancename+"-"+servicename,

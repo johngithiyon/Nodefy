@@ -21,8 +21,6 @@ func Addinstances(username string,Addinstances models.Addinstancesbuild) error {
 		"--memory=512m",
 		"--cpus=0.5",
 		"--pids-limit=100",
-		"--storage-opt size=512m",
-
 		"--label", "owner="+username,
 		"--label", "instance="+Addinstances.Instancename,
 		"-d",

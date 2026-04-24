@@ -22,7 +22,6 @@ func DeployAddinstances(username string,DeployAddinstances models.Deployaddinsta
 		"--memory=512m",
 		"--cpus=0.5",
 		"--pids-limit=100",
-		"--storage-opt size=512m",
 		
 		"--label", "owner="+username,
 		"--label", "instance="+DeployAddinstances.Appname+DeployAddinstances.Imagename,
