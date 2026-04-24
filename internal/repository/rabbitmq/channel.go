@@ -1,19 +1,21 @@
 package rabbitmq
 
-import "log"
+import (
+	"log"
 
-func Createchannel() error {
+	"github.com/rabbitmq/amqp091-go"
+)
+
+func Createchannel() (*amqp091.Channel,error) {
 
 	 chl,chlerr := Rabbitmq.Rabbitmqconn.Channel()
 
 	 if chlerr != nil {
 		log.Println("Channel Creation Error",chlerr)
-		return chlerr 
+		return nil,chlerr 
 	 }
 
 	 defer chl.Close()
 
-	 Createqueue(chl)
-
-	 return nil 
+	 return chl,nil 
 }
