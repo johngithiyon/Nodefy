@@ -1,10 +1,14 @@
 package services
 
 import (
+	"encoding/json"
+	"log"
+
 	"github.com/johngithiyon/Nodefy/internal/errors"
 	"github.com/johngithiyon/Nodefy/internal/models"
 	"github.com/johngithiyon/Nodefy/internal/repository/docker"
 	"github.com/johngithiyon/Nodefy/internal/repository/linux"
+	"github.com/johngithiyon/Nodefy/internal/repository/rabbitmq"
 	"github.com/johngithiyon/Nodefy/internal/repository/storage/redis"
 	"github.com/johngithiyon/Nodefy/pkg/utils"
 )
@@ -34,15 +38,40 @@ func BuildInstances(sessionid string,Build *models.Build ) error  {
 	}
   }	
 
-	services := Build.Services
 
-   for i:=0;i<len(services);i++ {
-	    builderr :=   docker.BuildImage(Build.Instancename,username,services[i])
+	payload := map[string]interface{}{
+		"instancename":Build.Instancename,
+		"services":Build.Services,
+		"username":username,
+	}
 
-		if builderr != nil {
-			return errors.ErrInternalserver
-		}
-   }
+	data,converr := json.Marshal(payload)
+
+	if converr != nil {
+	return converr
+	}
+
+	chl,chlerr :=  rabbitmq.Createchannel()
+
+	if chlerr != nil {
+	  log.Println("channel err",chlerr)
+	  return chlerr
+	}
+
+	publerr := rabbitmq.Publish(chl,"build_queue",data)
+
+	if publerr != nil {
+	   return  publerr
+	}
+
+	consumertype := "buildinstance"
+
+	consumerr := rabbitmq.Consumer(data,consumertype)
+
+	if consumerr != nil {
+		log.Println("Err comes in",consumerr)
+		return consumerr
+	}
 
    userexists := linux.CheckUserlinux(username)
 
