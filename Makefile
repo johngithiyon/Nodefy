@@ -19,6 +19,7 @@ migrate-cure:
 start:
 	docker start mypostgres
 	docker start myredis
+	docker start rabbitmq 
 
 run:
 	go run $(MAIN)
