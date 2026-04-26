@@ -2,19 +2,16 @@ package docker
 
 import (
 	"log"
-	"os"
 	"os/exec"
 
 	"github.com/johngithiyon/Nodefy/internal/models"
 )
 
 
-func Deploydocker(username string,Deploy models.Deploy) error {
-
-	NGROK_AUTHTOKEN := os.Getenv("AUTH_TOKEN")
+func Deploydocker(username string,Deploy *models.Deploy) error {
 	 
 	   packages := ""
-	    
+
 		if len(Deploy.Languages) > 0 {
 				
 			for i:=0;i<len(Deploy.Languages);i++ {
@@ -78,7 +75,7 @@ func Deploydocker(username string,Deploy models.Deploy) error {
 
 		log.Println(string(output))
 
-		runcmd := exec.Command("docker","run","-d","--name",Deploy.Appname+"-"+username,"-e","NGROK_AUTHTOKEN="+NGROK_AUTHTOKEN,"-e","REPO_URL="+Deploy.Gitrepo,
+		runcmd := exec.Command("docker","run","-d","--name",Deploy.Appname+"-"+username,"-e","REPO_URL="+Deploy.Gitrepo,
 		 
 		  "--label", "owner="+username,
 		 "--label", "instance="+Deploy.Appname+"-"+username,
