@@ -7,14 +7,14 @@ import (
 	"github.com/johngithiyon/Nodefy/internal/models"
 )
 
-func Exploreos(username string,exploreos models.Exploreos) error {
+func Exploreos(exploreos *models.Exploreos) error {
 
    //Fix: Other linux name pull problm
 
 	cmd := exec.Command(
 		"docker", "run", "-d",
 		"--name",exploreos.Instancename,
-		"--label", "owner="+username,
+		"--label", "owner="+exploreos.Username,
 		"--label", "instance="+exploreos.Instancename,
 		exploreos.Osname,
 		"sh", "-c", "sleep 1800 && kill 1", // kill the container after 30 minutes 
