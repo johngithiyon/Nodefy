@@ -49,7 +49,11 @@ func Exploreos(sessionid string,exploreos *models.Exploreos) error {
 
  consumertype := "exploreos"
 
-  rabbitmq.Consumer(data,consumertype)
+ consumerr :=  rabbitmq.Consumer(data,consumertype)
+
+ if consumerr != nil {
+         return consumerr
+ }
 
   userexists := linux.CheckUserlinux(username)
 
