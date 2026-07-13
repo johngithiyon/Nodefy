@@ -21,5 +21,10 @@ start:
 	docker start myredis
 	docker start rabbitmq 
 
+stop:
+	docker stop mypostgres
+	docker stop myredis
+	docker stop rabbitmq 
+
 run:
 	go run $(MAIN)
