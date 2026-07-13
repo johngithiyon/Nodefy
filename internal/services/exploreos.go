@@ -25,7 +25,7 @@ func Exploreos(sessionid string,exploreos *models.Exploreos) error {
    payload := map[string]interface{}{
             "osname":exploreos.Osname,
             "instancename":exploreos.Instancename,
-            "username":exploreos.Username,
+            "username":username,
    }
 
   data,converr := json.Marshal(payload)
