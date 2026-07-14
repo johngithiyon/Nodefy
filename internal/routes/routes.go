@@ -21,7 +21,7 @@ func Routes() {
 	  http.HandleFunc("/signupage",handlers.Rendersignupage)
 	  http.HandleFunc("/loginpage",handlers.Renderloginpage)
 	  http.HandleFunc("/otpverificationpage",handlers.RenderOtpverifypage)
-	  http.HandleFunc("/",handlers.Renderhomepage)
+	  http.HandleFunc("/",handlers.Roothandler)
 	  http.HandleFunc("/aboutpage",handlers.Renderaboutpage)
 	  http.HandleFunc("/buildpage",handlers.RenderBuildpage)
 	  http.HandleFunc("/choosepage",handlers.RenderChoosepage)
@@ -47,4 +47,5 @@ func Routes() {
 	  http.HandleFunc("/workspace",handlers.WorkspaceHanlder)
 	  http.HandleFunc("/addinstancesbuild",handlers.Addinstanceshandler)
 	  http.HandleFunc("/addinstancesdeploy",handlers.AddinstancesDeployHandler)
+	  http.HandleFunc("/createworkspace",handlers.Createworkspace)
 }
