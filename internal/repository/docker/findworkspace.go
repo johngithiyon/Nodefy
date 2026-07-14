@@ -3,6 +3,7 @@ package docker
 import (
 	"log"
 	"os/exec"
+	"strings"
 )
 
 //Function used to find the ip address of the workspace container
@@ -24,5 +25,5 @@ func Findipworkspace(containername string) (string,error) {
 
 	ip := string(cmdoutput)
 
-	return ip,nil 	    
+	return strings.TrimSpace(ip),nil 	    
 }
