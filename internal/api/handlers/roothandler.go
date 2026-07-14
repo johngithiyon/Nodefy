@@ -18,8 +18,10 @@ func Roothandler(w http.ResponseWriter,r *http.Request) {
 			      
 			    WorkspaceHanlder(w,r)
 			    
-		  }
+		  } else {
 		   
-		  Renderhomepage(w,r)
+		       Renderhomepage(w,r)
+
+		  } 
 		  
 }
