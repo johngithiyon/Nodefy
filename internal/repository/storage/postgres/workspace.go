@@ -5,11 +5,11 @@ import (
 	"log"
 )
 
-func SaveWorkspace(username string ,url string ) error {
+func SaveWorkspace(username string ,url string,containername string,containerip string) error {
             
-	       insertworkspace := "INSERT INTO workspace (username, workspace_url) VALUES($1,$2)"
+	       insertworkspace := "INSERT INTO workspace (username, workspace_url,containername,containerip) VALUES($1,$2,$3,$4)"
 
-		  _,inserterr :=  Database.Db.Exec(insertworkspace,username,url)
+		  _,inserterr :=  Database.Db.Exec(insertworkspace,username,url,containername,containerip)
 
 		  if inserterr != nil {
 			    log.Println("Insert Err in workspace",inserterr)
@@ -19,13 +19,13 @@ func SaveWorkspace(username string ,url string ) error {
 		  return  nil 
 }
 
-func CheckWorkspace(username string) (string,error) {
+func CheckWorkspace(userhash string) (string,error) {
 
-	    url := ""
+	    var containername string 
 
-	    checkworkspace := "SELECT  workspace_url FROM workspace WHERE username = $1"
+	    checkworkspace := "SELECT  containerip FROM workspace WHERE  workspace_url = $1"
 
-	   scanerr := Database.Db.QueryRow(checkworkspace,username).Scan(&url)
+	   scanerr := Database.Db.QueryRow(checkworkspace,userhash).Scan(&containername)
 
 	   if scanerr != nil {
 		   if scanerr == sql.ErrNoRows {
@@ -36,7 +36,7 @@ func CheckWorkspace(username string) (string,error) {
 		   }
 	   } 
 
-	   return  url,nil 
+	   return  containername,nil 
 
        
 }
