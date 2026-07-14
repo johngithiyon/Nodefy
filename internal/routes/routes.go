@@ -44,7 +44,6 @@ func Routes() {
 	  http.HandleFunc("/killinstance",handlers.Killcontainerhandler)
 	  http.HandleFunc("/getbuildinstance",handlers.GetBuildInstancesHandler)
       http.HandleFunc("/getdeployinstance",handlers.GetDeployinstance)
-	  http.HandleFunc("/workspace",handlers.WorkspaceHanlder)
 	  http.HandleFunc("/addinstancesbuild",handlers.Addinstanceshandler)
 	  http.HandleFunc("/addinstancesdeploy",handlers.AddinstancesDeployHandler)
 	  http.HandleFunc("/createworkspace",handlers.Createworkspace)
