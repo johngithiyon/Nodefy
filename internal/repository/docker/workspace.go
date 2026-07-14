@@ -7,13 +7,12 @@ import (
 
 func Startworkspace(username string) (string,error) {
 
-   //TO Do : set the proxy and route the users to the containers
+   containername := "workspace"+"-"+username
 
     cmd := exec.Command(
 		"docker", "run", "-d",
-		"--name", "workspace"+"-"+username,
+		"--name", containername,
 		"--network", username+"-network",
-		"-p", "0:8080",
 		"codercom/code-server:latest",
 		"--auth", "none",
 	)
@@ -27,14 +26,5 @@ func Startworkspace(username string) (string,error) {
 		 return "",runerr
 	}
 
-	ports,porterr := Portfind("workspace-"+username)
-
-	if porterr != nil {
-		return "",porterr
-	}
-
-	url := "http://localhost:"+ports
-
-
-	return url,nil 
+	return containername,nil 
 }
