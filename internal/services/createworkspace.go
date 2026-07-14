@@ -27,8 +27,14 @@ func Createworkspace(sessionid string) (string,error) {
 			if generaterr != nil {
 				  return "",generaterr
 			}
+
+			ip,findiperr := docker.Findipworkspace(containername)
+
+			if findiperr != nil {
+				return "",findiperr
+			}
 		    
-	        saverr := postgres.SaveWorkspace(username,id,containername)
+	        saverr := postgres.SaveWorkspace(username,id,containername,ip)
 
 			if saverr != nil {
 				return "",saverr
