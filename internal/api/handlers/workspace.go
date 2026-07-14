@@ -1,9 +1,11 @@
 package handlers
 
 import (
+	"log"
 	"net/http"
+	"net/http/httputil"
+	"net/url"
 
-	"github.com/johngithiyon/Nodefy/internal/errors"
 	"github.com/johngithiyon/Nodefy/internal/services"
 	"github.com/johngithiyon/Nodefy/pkg/response"
 	"github.com/johngithiyon/Nodefy/pkg/utils"
@@ -11,20 +13,28 @@ import (
 
 func WorkspaceHanlder(w http.ResponseWriter, r *http.Request) {
 
+	        userhash := utils.Trimstring(r.Host,"workspace.nodefy.in")
 
-			sessionid,sessionerr := utils.Getsessionid(r,"session-id")
-
-			if sessionerr != nil {
-				 response.Response(w,400,errors.ErrBadrequest.Error())
-				 return 
-			}
-
-			url,workspacerr := services.Workspaceservices(sessionid)
+			userhash = utils.Trimstring(userhash,".")
+			
+			containerip,workspacerr := services.Workspaceservices(userhash)
 
 			if workspacerr != nil {
 				response.Response(w,500,"Internal Server Error")
 				return
 			}
+            
+			target,parserr := url.Parse("http://"+containerip+":8080")
 
-			w.Write([]byte(url))
+			if parserr != nil {
+				log.Println("Parse Err",parserr)
+				return
+			}
+
+			proxy := httputil.NewSingleHostReverseProxy(target)
+
+			proxy.ServeHTTP(w,r)
+
+
+			
 }
