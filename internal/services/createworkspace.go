@@ -28,7 +28,7 @@ func Createworkspace(sessionid string) (string,error) {
 				  return "",generaterr
 			}
 
-			ip,findiperr := docker.Findipworkspace(containername)
+			ip,findiperr := docker.Findcontainerip(containername)
 
 			if findiperr != nil {
 				return "",findiperr
