@@ -12,5 +12,9 @@ func main() {
 	 
 	 app.Appstartup()
 	 log.Println("Server Is  listening") 
-	 http.ListenAndServe(":8080",nil)
+	 listenerr := http.ListenAndServe("[2409:40f4:1000:6af0:a582:89ed:b742:ee12]:8080",nil)
+
+	 if listenerr != nil {
+		 log.Println("Listen err",listenerr)
+	 }
 }
