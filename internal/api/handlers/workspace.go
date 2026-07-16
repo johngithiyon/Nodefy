@@ -13,7 +13,9 @@ import (
 
 func WorkspaceHanlder(w http.ResponseWriter, r *http.Request) {
 
-	        userhash := utils.Trimstring(r.Host,"workspace.nodefy.in")
+	        //here give your subdomain properly to trim the url
+
+	        userhash := utils.Trimstring(r.Host,"workspace.nodefy.in:8080")
 
 			userhash = utils.Trimstring(userhash,".")
 			
