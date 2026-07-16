@@ -10,7 +10,9 @@ func Roothandler(w http.ResponseWriter,r *http.Request) {
 	      
 	      host := r.Host
 
-		  check := "workspace.nodefy.in"
+		  //here give your subdomain name for the workspace
+
+		  check := "workspace.nodefy.in:8080"
 
 		  checker := utils.Istringcheck(host,check)
 
