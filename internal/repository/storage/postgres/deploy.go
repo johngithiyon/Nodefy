@@ -136,15 +136,17 @@ func ExposeDeployinstances(exposeappform  *models.Exposeappform) error {
 	query := `
 		UPDATE deploy_instances
 		SET domain_name = $1,
-		    container_ip = $2
-		WHERE username = $3
-		  AND appname = $4
+		    container_ip = $2,
+			port_number = $3
+		WHERE username = $4
+		  AND appname = $5
 	`
 
 	result, err := Database.Db.Exec(
 		query,
 		exposeappform.Domainame+".nodefy.in",
 		exposeappform.Containerip,
+		exposeappform.Portnumber,
 		exposeappform.Username,
 		exposeappform.Appname,
 	)
