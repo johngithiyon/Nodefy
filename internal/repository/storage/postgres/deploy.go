@@ -167,3 +167,21 @@ func ExposeDeployinstances(exposeappform  *models.Exposeappform) error {
 
 	return nil
 }
+
+func Getexposeappdetails(domainName string) (string,string, error) {
+	var containerIP string
+	var portnumber string 
+
+	query := `
+		SELECT container_ip,port_number
+		FROM deploy_instances
+		WHERE domain_name = $1
+	`
+
+	err := Database.Db.QueryRow(query, domainName).Scan(&containerIP,&portnumber)
+	if err != nil {
+		return "","", err
+	}
+
+	return containerIP,portnumber, nil
+}
