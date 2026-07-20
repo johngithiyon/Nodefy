@@ -1,10 +1,10 @@
 package postgres
 
 import (
+	"errors"
 	"log"
 
 	"github.com/johngithiyon/Nodefy/internal/models"
-	
 )
 
 func SaveDeployinstances(username string, deploy models.Deploy) error {
@@ -130,4 +130,38 @@ func GetAppId(deploy models.Containermanage) (int,error) {
 	  }
 
 	  return appid,nil 
+}
+
+func ExposeDeployinstances(exposeappform  *models.Exposeappform) error {
+	query := `
+		UPDATE deploy_instances
+		SET domain_name = $1,
+		    container_ip = $2
+		WHERE username = $3
+		  AND appname = $4
+	`
+
+	result, err := Database.Db.Exec(
+		query,
+		exposeappform.Domainame+".nodefy.in",
+		exposeappform.Containerip,
+		exposeappform.Username,
+		exposeappform.Appname,
+	)
+	if err != nil {
+		log.Println("domain container ip insert err",err)
+		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
+		log.Println("deployment not found")
+		return errors.New("deployment not found")
+	}
+
+	return nil
 }
