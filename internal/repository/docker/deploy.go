@@ -74,11 +74,11 @@ func Deploydocker(username string,Deploy *models.Deploy) error {
 
 		log.Println(string(output))
 
-		runcmd := exec.Command("docker","run","-d","--name",Deploy.Appname+"-"+username,"-e","REPO_URL="+Deploy.Gitrepo,
+		runcmd := exec.Command("docker","run","-d","--name",Deploy.Appname,"-e","REPO_URL="+Deploy.Gitrepo,
 		 
 		  "--label", "owner="+username,
-		 "--label", "instance="+Deploy.Appname+"-"+username,
-		   Deploy.Appname+"-"+username,
+		 "--label", "instance="+Deploy.Appname,
+		   Deploy.Appname,
 	       
 	      )
 
