@@ -1,6 +1,6 @@
 package models
 
-type Deployform struct {
+type Exposeappform struct {
 	       Username string 
 	       Appname string `json:"appname"`
 	       Domainame string `json:"domainame"`
