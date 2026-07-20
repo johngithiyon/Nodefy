@@ -2,28 +2,30 @@ package handlers
 
 import (
 	"net/http"
-
-	"github.com/johngithiyon/Nodefy/pkg/utils"
+	"strings"
 )
 
-func Roothandler(w http.ResponseWriter,r *http.Request) {
-	      
-	      host := r.Host
+func Roothandler(w http.ResponseWriter, r *http.Request) {
 
-		  //here give your subdomain name for the workspace
+	host := r.Host
 
-		  check := "workspace.nodefy.in:8080"
+	// Remove port
+	host = strings.Split(host, ":")[0]
 
-		  checker := utils.Istringcheck(host,check)
+	if host == "nodefy.in" {
+		Renderhomepage(w, r)
+		return
+	}
 
-		  if checker {
-			      
-			    WorkspaceHanlder(w,r)
-			    
-		  } else {
-		   
-		       Renderhomepage(w,r)
+	if strings.HasSuffix(host, ".workspace.nodefy.in") {
+		WorkspaceHanlder(w, r)
+		return
+	}
 
-		  } 
-		  
+	if strings.HasSuffix(host, ".nodefy.in") {
+		Deployproxy(w, r)
+		return
+	}
+
+	http.NotFound(w, r)
 }
