@@ -11,7 +11,7 @@ import (
 
 func Exposeapphandler(w http.ResponseWriter,r *http.Request) {
               
-	        var Deployform models.Deployform
+	        var Deployform models.Exposeappform
 
 			if r.Method != http.MethodPost {
 				response.Response(w,405,"Invalid Metheod")
