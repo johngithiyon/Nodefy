@@ -55,7 +55,7 @@ func Deploydocker(username string,Deploy *models.Deploy) error {
 
 		cmd := exec.Command(
 		"docker", "build",
-		"-t",Deploy.Appname+"-"+username, // image name
+		"-t",Deploy.Appname, // image name
 
 		"--build-arg", "PACKAGES="+packages,
 		"--build-arg", "USERNAME="+username,
