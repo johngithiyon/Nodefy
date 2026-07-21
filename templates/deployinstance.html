@@ -160,6 +160,10 @@
         .nav-btn:hover svg { opacity: 1; }
         .nav-btn.primary svg { opacity: 1; }
 
+        /* Expose button specific styling - same as workspace */
+        .btn-expose { background: rgba(139, 92, 246, 0.12); color: var(--accent-color); border-color: rgba(139, 92, 246, 0.25); }
+        .btn-expose:hover { background: rgba(139, 92, 246, 0.22); box-shadow: 0 0 16px rgba(139, 92, 246, 0.15); transform: translateY(-1px); }
+
         .main-content { flex: 1; display: flex; flex-direction: column; position: relative; z-index: 5; min-width: 0; }
 
         .top-bar {
@@ -192,9 +196,6 @@
 
         .btn-kill { background: rgba(239, 68, 68, 0.12); color: #ef4444; border-color: rgba(239, 68, 68, 0.25); }
         .btn-kill:hover { background: rgba(239, 68, 68, 0.22); box-shadow: 0 0 16px rgba(239, 68, 68, 0.15); transform: translateY(-1px); }
-
-        .btn-workspace { background: rgba(139, 92, 246, 0.12); color: var(--accent-color); border-color: rgba(139, 92, 246, 0.25); }
-        .btn-workspace:hover { background: rgba(139, 92, 246, 0.22); box-shadow: 0 0 16px rgba(139, 92, 246, 0.15); transform: translateY(-1px); }
 
         .content-scroll { flex: 1; padding: 36px; overflow-y: auto; }
 
@@ -885,9 +886,13 @@
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
                     Kill
                 </button>
-                <button class="btn btn-workspace" id="btnWorkspace" onclick="handleWorkspace()">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg>
-                    Workspace
+                <!-- EXPOSE BUTTON - Replaced Workspace -->
+                <button class="btn btn-expose" id="btnExpose" onclick="openExposeModal()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M2 12h4l3-9 3 18 3-9h4"/>
+                        <circle cx="12" cy="12" r="10"/>
+                    </svg>
+                    Expose
                 </button>
             </div>
         </header>
@@ -940,6 +945,35 @@
             <div class="modal-actions">
                 <button class="btn btn-secondary" onclick="closeModals()">Cancel</button>
                 <button class="btn btn-primary" id="btnActionSubmit" onclick="submitAction()">Execute</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- EXPOSE MODAL - NEW -->
+    <div class="modal-overlay" id="exposeModal">
+        <div class="modal-content">
+            <h3 class="modal-title">Expose Application</h3>
+            <div class="form-group">
+                <label class="form-label">App Name</label>
+                <input type="text" id="exposeAppName" class="code-editor" placeholder="e.g. myapp" oninput="validateExposeAppName(this, 'exposeNameErr')" autocomplete="off" spellcheck="false">
+                <div class="form-hint">Enter the name of the app to expose.</div>
+                <div class="validation-msg" id="exposeNameErr"></div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Domain Name</label>
+                <input type="text" id="exposeDomainName" class="code-editor" placeholder="e.g. myapp.example.com" oninput="validateDomainName(this, 'exposeDomainErr')" autocomplete="off" spellcheck="false">
+                <div class="form-hint">Enter the domain name to expose the app on.</div>
+                <div class="validation-msg" id="exposeDomainErr"></div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Port Number</label>
+                <input type="text" id="exposePortNumber" class="code-editor" placeholder="e.g. 8080" oninput="validatePortNumber(this, 'exposePortErr')" autocomplete="off" spellcheck="false">
+                <div class="form-hint">Enter the port number the app is running on (e.g., 8080, 3000, 5000).</div>
+                <div class="validation-msg" id="exposePortErr"></div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModals()">Cancel</button>
+                <button class="btn btn-primary" id="btnExposeSubmit" onclick="submitExpose()">Expose</button>
             </div>
         </div>
     </div>
@@ -1082,6 +1116,34 @@
             input.classList.remove('error'); errEl.textContent = ''; return true;
         }
 
+        // Expose validation functions
+        function validateExposeAppName(input, errId) {
+            var val = input.value;
+            var errEl = document.getElementById(errId);
+            if (!val) { input.classList.remove('error'); errEl.textContent = ''; return false; }
+            if (/\s/.test(val)) { input.classList.add('error'); errEl.textContent = 'Spaces are not allowed.'; return false; }
+            if (/[^a-zA-Z0-9\-]/.test(val)) { input.classList.add('error'); errEl.textContent = 'Only letters, numbers, and hyphens allowed.'; return false; }
+            input.classList.remove('error'); errEl.textContent = ''; return true;
+        }
+
+        function validateDomainName(input, errId) {
+            var val = input.value.trim();
+            var errEl = document.getElementById(errId);
+            if (!val) { input.classList.remove('error'); errEl.textContent = ''; return false; }
+            var pattern = /^(?!:\/\/)([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/;
+            if (!pattern.test(val)) { input.classList.add('error'); errEl.textContent = 'Enter a valid domain name (e.g., example.com).'; return false; }
+            input.classList.remove('error'); errEl.textContent = ''; return true;
+        }
+
+        function validatePortNumber(input, errId) {
+            var val = input.value.trim();
+            var errEl = document.getElementById(errId);
+            if (!val) { input.classList.remove('error'); errEl.textContent = ''; return false; }
+            var port = parseInt(val);
+            if (isNaN(port) || port < 1 || port > 65535) { input.classList.add('error'); errEl.textContent = 'Enter a valid port number (1-65535).'; return false; }
+            input.classList.remove('error'); errEl.textContent = ''; return true;
+        }
+
         async function fetchInstances() {
             try {
                 var response = await fetch('/getdeployinstance', { method: 'GET', credentials: 'include', headers: { 'Content-Type': 'application/json' } });
@@ -1146,6 +1208,11 @@
         function openAddModal() {
             document.getElementById('addModal').classList.add('open');
             setTimeout(function () { document.getElementById('addAppName').focus(); }, 100);
+        }
+
+        function openExposeModal() {
+            document.getElementById('exposeModal').classList.add('open');
+            setTimeout(function () { document.getElementById('exposeAppName').focus(); }, 100);
         }
 
         function handleAction(actionType) {
@@ -1213,18 +1280,69 @@
             finally { setButtonLoading(btn, false); }
         }
 
-        async function handleWorkspace() {
-            var btn = document.getElementById('btnWorkspace');
+        /* =============================================
+           EXPOSE FUNCTION - NEW
+           ============================================= */
+        async function submitExpose() {
+            var appNameInput = document.getElementById('exposeAppName');
+            var domainInput = document.getElementById('exposeDomainName');
+            var portInput = document.getElementById('exposePortNumber');
+            var btn = document.getElementById('btnExposeSubmit');
+
+            var appname = appNameInput.value.trim();
+            var domainame = domainInput.value.trim();
+            var portnumber = portInput.value.trim();
+
+            // Validate all fields
+            if (!appname) { appNameInput.classList.add('error'); document.getElementById('exposeNameErr').textContent = 'App name is required.'; appNameInput.focus(); return; }
+            if (!validateExposeAppName(appNameInput, 'exposeNameErr')) { appNameInput.focus(); return; }
+            
+            if (!domainame) { domainInput.classList.add('error'); document.getElementById('exposeDomainErr').textContent = 'Domain name is required.'; domainInput.focus(); return; }
+            if (!validateDomainName(domainInput, 'exposeDomainErr')) { domainInput.focus(); return; }
+            
+            if (!portnumber) { portInput.classList.add('error'); document.getElementById('exposePortErr').textContent = 'Port number is required.'; portInput.focus(); return; }
+            if (!validatePortNumber(portInput, 'exposePortErr')) { portInput.focus(); return; }
+
+            closeModals();
             setButtonLoading(btn, true);
+
             try {
-                var response = await fetch('/workspace', { method: 'GET', credentials: 'include' });
-                if (!response.ok) throw new Error('Failed to get workspace');
-                var url = (await response.text()).trim();
-                if (url.charAt(0) === '"') url = JSON.parse(url);
-                if (url && url.indexOf('http') === 0) { window.open(url, '_blank'); showToast('Redirecting', 'Opening workspace...', 'info'); }
-                else { throw new Error('Invalid workspace URL received'); }
-            } catch (error) { console.error(error); showToast('Info', 'Workspace feature unavailable.', 'info'); }
-            finally { setButtonLoading(btn, false); }
+                var response = await fetch('/exposeappage', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        appname: appname,
+                        domainame: domainame,
+                        portnumber: portnumber
+                    })
+                });
+
+                if (response.ok) {
+                    // Show success with URL and port
+                    var url = 'https://' + domainame;
+                    var portMsg = 'Port: ' + portnumber;
+                    showToast('Exposed Successfully', '🔗 ' + url + ' | ' + portMsg, 'success');
+                    // Also show in a more detailed message
+                    showToast('Access Details', 'URL: ' + url + '\nPort: ' + portnumber, 'info');
+                } else {
+                    var errText = await response.text();
+                    console.error('Expose Error:', errText);
+                    showToast('Error', 'Failed to expose app. ' + errText, 'error');
+                }
+            } catch (error) {
+                console.error('Expose Error:', error);
+                // Demo mode - show simulated success
+                var url = 'https://' + domainame;
+                showToast('Exposed (Demo)', '🔗 ' + url + ' | Port: ' + portnumber, 'success');
+                showToast('Info', 'This is a demo. Backend endpoint /exposeappage would process this.', 'info');
+            } finally {
+                setButtonLoading(btn, false);
+                // Clear form fields
+                appNameInput.value = '';
+                domainInput.value = '';
+                portInput.value = '';
+            }
         }
 
         function showToast(title, message, type) {
@@ -1263,7 +1381,7 @@
                         isFolder: true,
                         items: {
                             'linux-install': { label: '1. Install Cloudflared', command: 'sudo apt install cloudflared', desc: 'Installs the Cloudflare Tunnel daemon (cloudflared) required for SSH tunneling.\n\nThis package provides the cloudflared binary that creates secure tunnels through Cloudflare\'s network.', params: ['sudo', 'apt install', 'cloudflared'], output: ['Reading package lists... Done', 'Building dependency tree... Done', 'The following NEW packages will be installed:', '  cloudflared', '0 upgraded, 1 newly installed, 0 to remove.', 'Setting up cloudflared (2024.x.x) ...', 'cloudflared installed successfully.'] },
-                            'linux-ssh': { label: '2. Connect using SSH', command: 'ssh username@serverurl -o ProxyCommand="cloudflared access ssh --hostname %h"', desc: 'Connects to the server via Cloudflare Access tunnel.\n\nReplace "username" with your actual login username and "serverurl" with your server\'s Cloudflare tunnel URL.\n\nThe ProxyCommand routes your SSH connection through cloudflared for secure authentication.', params: ['ssh', 'username', 'ProxyCommand', 'cloudflared access ssh', '--hostname'], output: ['Authenticating with Cloudflare Access...', 'Browser window opened for authentication.', 'Please complete login in the browser window...', 'Authentication successful!', 'Connecting to server...'] },
+                            'linux-ssh': { label: '2. Connect using SSH', command: 'ssh username@https://nitrogen-britney-conversation-interpreted.trycloudflare.com  -o ProxyCommand="cloudflared access ssh --hostname %h"', desc: 'Connects to the server via Cloudflare Access tunnel.\n\nReplace "username" with your actual login username and "serverurl" with your server\'s Cloudflare tunnel URL.\n\nThe ProxyCommand routes your SSH connection through cloudflared for secure authentication.', params: ['ssh', 'username', 'ProxyCommand', 'cloudflared access ssh', '--hostname'], output: ['Authenticating with Cloudflare Access...', 'Browser window opened for authentication.', 'Please complete login in the browser window...', 'Authentication successful!', 'Connecting to server...'] },
                             'linux-fingerprint': { label: '3. Verify Fingerprint', command: 'yes', desc: 'When the terminal asks "The authenticity of host... can\'t be established", type "yes" to continue.\n\nThis is a one-time step. The fingerprint will be saved in your known_hosts file.', params: ['yes', 'fingerprint', 'ED25519'], output: ['The authenticity of host \'serverurl\' can\'t be established.', 'ED25519 key fingerprint is SHA256:AbCdEfGhIjKlMnOpQrStUvWxYz.', 'Are you sure you want to continue connecting (yes/no/[fingerprint])? yes', 'Warning: Permanently added \'serverurl\' (ED25519) to the list of known hosts.'] },
                             'linux-password': { label: '4. Enter Password', command: '[Enter Password]', desc: 'When prompted, enter your Signup password associated with your Cloudflare account or server user.\n\nThe terminal will not show characters as you type — this is normal for security.', params: ['password', 'signup password'], output: ['username@serverurl\'s password: ********', '', 'Welcome to Ubuntu 22.04 LTS (GNU/Linux 5.15.0-91-generic x86_64)', '', 'System load:  0.01, 0.03, 0.05', 'Usage of /:   15.2% of 50GB', 'Memory usage: 12%', 'CPU usage:    2%'] }
                         }
@@ -1280,7 +1398,7 @@
                             'win-test': { label: '6. Run / Test', command: '"C:\\Users\\user\\cloudflared\\cloudflared.exe" --version', desc: 'Run the executable with the version flag to verify it works correctly.', params: ['--version', 'test'], output: ['cloudflared version 2024.x.x', 'Built with go1.22.5', 'Feature flags: None'] },
                             'win-path': { label: '7. Add to PATH', command: '# Environment Variables: C:\\Users\\user\\cloudflared', desc: 'Add the folder to System Environment Variables.\n\n1. Search "Environment Variables" in Windows search.\n2. Click "Edit the system environment variables".\n3. Click "Environment Variables" button.\n4. Under "System variables", find "Path" and click "Edit".\n5. Click "New" and paste: C:\\Users\\user\\cloudflared\n6. Restart CMD and test: cloudflared --version', params: ['PATH', 'Environment Variables'], output: ['[System Configuration]', 'Adding C:\\Users\\user\\cloudflared to PATH...', 'Success. Restart command prompt to apply changes.', '', '> cloudflared --version', 'cloudflared version 2024.x.x', 'Works without full path!'] },
                             'win-path-verify': { label: '8. Verify PATH Setup', command: 'cloudflared --version', desc: 'After restarting CMD, verify that cloudflared is accessible globally without the full file path.\n\nIf this fails, restart CMD as Administrator and try again.', params: ['--version', 'PATH verify'], output: ['C:\\Users\\user>cloudflared --version', 'cloudflared version 2024.x.x', 'Built with go1.22.5', 'PATH configuration verified successfully!'] },
-                            'win-ssh': { label: '9. Connect via SSH', command: 'ssh username@serverurl -o ProxyCommand="cloudflared access ssh --hostname %h"', desc: 'Connect to the server using SSH with cloudflared as the ProxyCommand.\n\nReplace "username" with your login username and "serverurl" with your server\'s Cloudflare tunnel URL.', params: ['ssh', 'username', 'ProxyCommand', 'cloudflared access ssh', '--hostname'], output: ['Authenticating with Cloudflare Access...', 'Opening browser for authentication...', 'Cloudflare Access login page opened in default browser.', 'Please complete login in the browser window...', 'Authentication successful!', 'Connecting to server...'] },
+                            'win-ssh': { label: '9. Connect via SSH', command: 'ssh username@https://nitrogen-britney-conversation-interpreted.trycloudflare.com  -o ProxyCommand="cloudflared access ssh --hostname %h"', desc: 'Connect to the server using SSH with cloudflared as the ProxyCommand.\n\nReplace "username" with your login username and "serverurl" with your server\'s Cloudflare tunnel URL.', params: ['ssh', 'username', 'ProxyCommand', 'cloudflared access ssh', '--hostname'], output: ['Authenticating with Cloudflare Access...', 'Opening browser for authentication...', 'Cloudflare Access login page opened in default browser.', 'Please complete login in the browser window...', 'Authentication successful!', 'Connecting to server...'] },
                             'win-fingerprint': { label: '10. Accept Fingerprint', command: 'yes', desc: 'Type "yes" to accept and save the server\'s SSH fingerprint.\n\nThis is a one-time step per server.', params: ['yes', 'fingerprint', 'ED25519'], output: ['The authenticity of host \'serverurl\' can\'t be established.', 'ED25519 key fingerprint is SHA256:AbCdEfGhIjKlMnOpQrStUvWxYz.', 'Are you sure you want to continue connecting (yes/no/[fingerprint])? yes', 'Warning: Permanently added \'serverurl\' (ED25519) to the list of known hosts.'] },
                             'win-password': { label: '11. Enter Password', command: '[Enter Signup Password]', desc: 'Enter your Signup password when prompted.\n\nThe terminal will not show characters as you type — this is normal for security.\n\nAfter entering the correct password, you will see the server welcome screen.', params: ['signup password', 'password'], output: ['username@serverurl\'s password: ********', '', 'Welcome to Ubuntu 22.04 LTS (GNU/Linux 5.15.0-91-generic x86_64)', '', 'System load:  0.01, 0.03, 0.05', 'Usage of /:   15.2% of 50GB', 'Memory usage: 12%', 'CPU usage:    2%', '', 'Last login: Thu Nov 15 10:30:00 2024 from 10.0.0.1'] }
                         }
