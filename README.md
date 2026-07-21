@@ -252,6 +252,9 @@ http://localhost:8080
 
 [![Watch the Demo](/assests/demo.png)](https://youtu.be/O_RmGAArrm8?si=fpJFc9RhkQq8Guzr)
 
+
+---
+
 ## License
 
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
