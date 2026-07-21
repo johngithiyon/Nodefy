@@ -177,6 +177,25 @@ docker compose version
 
 ---
 
+### Windows
+
+1. Download and install **Docker Desktop** from:
+   https://www.docker.com/products/docker-desktop/
+
+2. During installation, enable the **Use WSL 2 instead of Hyper-V** option (recommended).
+
+3. After installation, restart your computer if prompted.
+
+4. Open **PowerShell** or **Command Prompt** and verify Docker Compose is installed:
+
+```powershell
+docker compose version
+```
+
+If the version is displayed, Docker Compose is ready to use.
+
+---
+
 ## Start the Required Services
 
 Nodefy includes a `docker-compose.yml` file that starts all the required infrastructure services:
