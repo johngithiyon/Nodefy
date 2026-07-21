@@ -9,7 +9,7 @@ func SaveWorkspace(username string ,url string,containername string,containerip 
             
 	       insertworkspace := "INSERT INTO workspace (username, workspace_url,containername,containerip) VALUES($1,$2,$3,$4)"
 
-		  _,inserterr :=  Database.Db.Exec(insertworkspace,username,url+".workspace.nodefy.in",containername,containerip)
+		  _,inserterr :=  Database.Db.Exec(insertworkspace,username,url+".workspace.nodefy.in:8080",containername,containerip)
 
 		  if inserterr != nil {
 			    log.Println("Insert Err in workspace",inserterr)
