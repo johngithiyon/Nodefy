@@ -48,4 +48,5 @@ func Routes() {
 	  http.HandleFunc("/addinstancesbuild",handlers.Addinstanceshandler)
 	  http.HandleFunc("/addinstancesdeploy",handlers.AddinstancesDeployHandler)
 	  http.HandleFunc("/createworkspace",handlers.Createworkspace)
+	  http.HandleFunc("/getworkspace",handlers.Getworkspace)
 }
