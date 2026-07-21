@@ -12,6 +12,8 @@ import (
 	"github.com/johngithiyon/Nodefy/pkg/utils"
 )
 
+//Buildhandler used to get the req from the user to build the instances
+
 func Buildhandler(w http.ResponseWriter, r *http.Request) {
 
 	var Build  models.Build
