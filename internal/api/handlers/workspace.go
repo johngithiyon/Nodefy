@@ -8,18 +8,12 @@ import (
 
 	"github.com/johngithiyon/Nodefy/internal/services"
 	"github.com/johngithiyon/Nodefy/pkg/response"
-	"github.com/johngithiyon/Nodefy/pkg/utils"
 )
 
 func WorkspaceHanlder(w http.ResponseWriter, r *http.Request) {
 
-	        //here give your subdomain properly to trim the url
-
-	        userhash := utils.Trimstring(r.Host,"workspace.nodefy.in:8080")
-
-			userhash = utils.Trimstring(userhash,".")
 			
-			containerip,workspacerr := services.Workspaceservices(userhash)
+			containerip,workspacerr := services.Workspaceservices(r.Host)
 
 			if workspacerr != nil {
 				response.Response(w,500,"Internal Server Error")
