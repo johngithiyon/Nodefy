@@ -158,12 +158,43 @@ MAIL_PASS=yourpassword
 go mod tidy
 ```
 
-## Start the Required Containers
+## Install Docker Compose
 
-Before running Nodefy, you need to start the required services: **PostgreSQL** and **Redis**. You can start them using Docker with the following commands:
+If Docker Compose is not installed on your system, install it first.
+
+### Ubuntu / Debian
 
 ```bash
-docker start postgres_containername  redis_containername
+sudo apt update
+sudo apt install docker-compose-plugin
+```
+
+Verify the installation:
+
+```bash
+docker compose version
+```
+
+---
+
+## Start the Required Services
+
+Nodefy includes a `docker-compose.yml` file that starts all the required infrastructure services:
+
+- PostgreSQL
+- Redis
+- RabbitMQ
+
+Start them with:
+
+```bash
+docker compose up -d
+```
+
+Verify that the containers are running:
+
+```bash
+docker compose ps
 ```
 
 **4. Open postgres container create database**
