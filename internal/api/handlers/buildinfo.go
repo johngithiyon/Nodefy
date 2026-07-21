@@ -9,6 +9,8 @@ import (
 	"github.com/johngithiyon/Nodefy/pkg/utils"
 )
 
+//GetBuildInstancesHandler used to get the request to show the buildinstances info
+
 func GetBuildInstancesHandler(w http.ResponseWriter,r *http.Request) {
 
 	     if r.Method != http.MethodGet {
