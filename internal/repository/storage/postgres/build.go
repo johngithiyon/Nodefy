@@ -1,6 +1,7 @@
 package postgres
 
 import (
+	"database/sql"
 	"log"
 
 	"github.com/johngithiyon/Nodefy/internal/errors"
@@ -46,11 +47,23 @@ func GetInstances(username string) ([]models.Instances,error) {
 		return nil,errors.ErrInternalserver
 	}
 
+	defer rows.Close()
+
 	for rows.Next() {
-         rows.Scan(&instance.Instanceid,&instance.Instancename,&instance.Status)
+         scanerr := rows.Scan(&instance.Instanceid,&instance.Instancename,&instance.Status)
+
+		 if scanerr != nil && scanerr != sql.ErrNoRows {
+			    rows.Close()
+			    return nil,scanerr
+		 }
 
 		 instances = append(instances,instance)
 
+	}
+
+	if rowerr := rows.Err();rowerr != nil {
+		   rows.Close()
+		   return nil,rowerr
 	}
 
 
