@@ -9,6 +9,8 @@ import (
 	"github.com/johngithiyon/Nodefy/pkg/utils"
 )
 
+//Createworkspace used to get the request to create a workspace for the user
+
 func Createworkspace(w http.ResponseWriter,r *http.Request) {
 	          
 	if r.Method != http.MethodGet {
