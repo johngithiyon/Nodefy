@@ -43,20 +43,28 @@ func GetDeployinstances(username string) ([]map[string]interface{}, error) {
 
 	var result []map[string]interface{}
 
-	appnamequery := "select id, appname from deploy_instances where username=$1"
+	appnamequery := "select id, appname,domain_name,port_number from deploy_instances where username=$1"
 
 	approw, appnamerr := Database.Db.Query(appnamequery, username)
 	if appnamerr != nil {
 		log.Println("Appname And Id err from deploy_instances", appnamerr)
 		return nil, appnamerr
 	}
+
 	defer approw.Close()
 
 	for approw.Next() {
 		var appid int
 		var appname string
+		var domain_url string
+		var portnumber string 
 
-		approw.Scan(&appid, &appname)
+        approwscanerr := approw.Scan(&appid, &appname,&domain_url,&portnumber)
+
+		if approwscanerr != nil {
+			 approw.Close()
+			 return nil,approwscanerr
+		}
 
 		servicesquery := "select services_name, status from deploy_instance_services where app_id=$1"
 
@@ -79,12 +87,26 @@ func GetDeployinstances(username string) ([]map[string]interface{}, error) {
 				"status": servicestatus,
 			})
 		}
+
+		if serviceroweerr := servicesrow.Err() ; serviceroweerr != nil {
+			   servicesrow.Close()
+			   log.Println("Err while reading services in deploy",serviceroweerr)
+			   return  nil,serviceroweerr
+		}
+
 		servicesrow.Close()
 
 		result = append(result, map[string]interface{}{
 			"appname":  appname,
 			"services": services,
+			"domainurl":domain_url,
+			"portnumber":portnumber,
 		})
+	}
+
+	if approwerr := approw.Err(); approwerr != nil {
+                log.Println("Err while reading the rows approw in deploy",approwerr)
+				 return nil,approwerr
 	}
 
 	return result, nil
