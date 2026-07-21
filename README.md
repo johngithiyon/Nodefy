@@ -1,6 +1,3 @@
-Here is the complete code in `.md` format, ready for you to copy and paste directly into your `README.md` file:
-
-```markdown
 <div align="center">
 
 # Nodefy
@@ -19,13 +16,15 @@ Here is the complete code in `.md` format, ready for you to copy and paste direc
 
 ## Overview
 
-Nodefy is a lightweight cloud platform that simplifies learning, development, and deployment by providing on-demand Linux environments and container-based infrastructure. Built especially for the student to learn and explore about how the real world cloud infrastructure works.
+Nodefy is a lightweight cloud platform that simplifies learning, development, and deployment by providing on-demand Linux environments and container-based infrastructure.Built especially for the student to learn and explore about how the real world cloud infrastructure works 
 
 It enables users to:
 
-- **Explore** - Students can explore the different type of the linux family os like ubuntu, kali, fedora.
-- **Build** - Students can create instances and built their application. Also they can create multiple instances to learn how the multinode architecture works in real production system works.
-- **Deploy** - Students can deploy their application by providing the github repositories. We teach them how to deploy their application on the instance without need of buying domain name and vps.
+- **Explore-** Students can explore the different type of the linux family os like ubuntu,kali,fedora 
+
+- **Build-** Students can create instances and built their application. Also they can create multiple instances to learn how the multinode architecture works in real production system works 
+
+- **Deploy-** Students can deploy their application by providing the github repositories we teach them how to deploy their application on the instance without need of buying domain name and vps 
 
 Nodefy bridges the gap between theoretical learning and real-world cloud experience.
 
@@ -35,60 +34,61 @@ Nodefy bridges the gap between theoretical learning and real-world cloud experie
 
 | Feature | Description |
 |---|---|
-| **Linux OS Exploration** | Run Linux environments like Ubuntu with hands-on terminal access |
-| **Instance Management** | Create, start, stop, and delete containers; manage multiple instances |
-| **Multi-Node Development** | Build distributed systems (backend, database, cache) with Docker network integration |
-| **GitHub Deployment** | Deploy apps directly from repository links with automatic build and execution |
-| **Secure Access** | SSH access to containers with public access via tunneling |
-| **Dashboard** | Monitor and control instances from a unified interface |
+|  **Linux OS Exploration** | Run Linux environments like Ubuntu with hands-on terminal access |
+|  **Instance Management** | Create, start, stop, and delete containers; manage multiple instances |
+|  **Multi-Node Development** | Build distributed systems (backend, database, cache) with Docker network integration |
+|  **GitHub Deployment** | Deploy apps directly from repository links with automatic build and execution |
+|  **Secure Access** | SSH access to containers with public access via tunneling |
+|  **Dashboard** | Monitor and control instances from a unified interface |
 
 ---
 
+
 ## Workflow
 
-### 1. Choose Stack
+### 1️ Choose Stack
 Select the required technology stack and environment for development.
 
 ![Choose Stack](/assests/choose.png)
 
 ---
 
-### 2. Explore OS
+### 2️ Explore OS
 Interact with Linux environments and explore system-level operations.
 
 ![Explore OS](/assests/exploreos.png)
 
 ---
 
-### 3. Teach Linux Commands
-Teach the linux commands from the basics for the user selected linux family and also teach how to ssh to the instance.
+### 3 Teach Linux Commands
+Teach the linux commands from the basics for the user selected linux family and also teach how to ssh to the instance
 
 ![Teach Commands](/assests/teach.png)
 
 ---
 
-### 4. Build Instances
+### 4 Build Instances
 Create and configure containerized instances for development.
 
 ![Build Instances](/assests/build.png)
 
 ---
 
-### 5. Deploy Using GitHub Repositories
+### 5 Deploy Using GitHub Repositories
 Provide your GitHub repository link to automatically build and deploy your application.
 
 ![Deploy](/assests/deploy.png)
 
 ---
 
-### 6. Teach them how to start the app server and deploy their application
-We make the student to do all the steps for their app deployment. Our aim is make student to learn the deploy process.
+### 6 Teach them how to start the app server and deploy their application 
+We make the student to do all the steps for their app deployment our aim is make student to learn the deploy process 
 
 ![Teach Deploy](/assests/deployteach.png)
 
 ---
 
-### 7. Instance Management
+### 7 Instance Management
 Start, stop, and manage multiple running containers through the dashboard.
 
 ![Instance Management](/assests/instancesmanage.png)
@@ -103,6 +103,7 @@ Start, stop, and manage multiple running containers through the dashboard.
 8. User manages instances via the dashboard
 
 ---
+
 
 ## Tech Stack
 
@@ -124,10 +125,11 @@ Start, stop, and manage multiple running containers through the dashboard.
 - [Docker](https://docs.docker.com/get-docker/)
 - [Go](https://go.dev/doc/install) (v1.21+)
 - [Git](https://git-scm.com/downloads)
-- [GuardVpn](https://github.com/johngithiyon/Guard) — *(if you are already using a Linux system)*
+- [GuardVpn](https://github.com/johngithiyon/Guard)-if you already using linux system
 - [Postgres Docker Container](https://hub.docker.com/_/postgres)
 - [Redis Docker Container](https://hub.docker.com/_/redis)
 - [Make](https://www.gnu.org/software/make/)
+
 
 ### Installation
 
@@ -156,40 +158,41 @@ MAIL_PASS=yourpassword
 go mod tidy
 ```
 
-**4. Start the Required Containers**
+## Start the Required Containers
 
 Before running Nodefy, you need to start the required services: **PostgreSQL** and **Redis**. You can start them using Docker with the following commands:
 
 ```bash
-docker start postgres_containername redis_containername
+docker start postgres_containername  redis_containername
 ```
 
-**5. Open postgres container create database**
+**4. Open postgres container create database**
 
 ```bash
 docker exec -it containername bash psql -U username -p password
 create database databasename
 ```
 
-**6. Install migration tool in go**
+**5. Install migration tool in go**
 
 ```bash
 go install github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 ```
 
-**7. Run migrations script in terminal**
+
+**6. Run migrations script in terminal**
 
 ```bash
 make migrate-up
 ```
 
-**8. Run the application**
+**7. Run the application**
 
 ```bash
 make run
 ```
 
-**9. Open in browser**
+**8. Open in browser**
 
 ```
 http://localhost:8080
@@ -200,4 +203,8 @@ http://localhost:8080
 ## License
 
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
-```
+
+---
+
+<div align="center">
+</div>
