@@ -35,5 +35,5 @@ func Getworkspace(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Write([]byte(workspace_url))
+	w.Write([]byte("http://"+workspace_url))
 }
