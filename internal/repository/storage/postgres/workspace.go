@@ -9,7 +9,7 @@ func SaveWorkspace(username string ,url string,containername string,containerip 
             
 	       insertworkspace := "INSERT INTO workspace (username, workspace_url,containername,containerip) VALUES($1,$2,$3,$4)"
 
-		  _,inserterr :=  Database.Db.Exec(insertworkspace,username,url,containername,containerip)
+		  _,inserterr :=  Database.Db.Exec(insertworkspace,username,url+".workspace.nodefy.in",containername,containerip)
 
 		  if inserterr != nil {
 			    log.Println("Insert Err in workspace",inserterr)
@@ -36,7 +36,23 @@ func CheckWorkspace(userhash string) (string,error) {
 		   }
 	   } 
 
-	   return  containername,nil 
-
-       
+	   return  containername,nil     
 }
+
+func Getworkspace(username string) (string,error) {
+	     
+	     var workspaceurl string 
+
+		 getworkspace := "select workspace_url from workspace where username=$1"
+
+		 scanerr := Database.Db.QueryRow(getworkspace,username).Scan(&workspaceurl)
+
+		 if scanerr != nil && scanerr != sql.ErrNoRows {
+			    log.Println("Scanerr in get workspace services",scanerr)
+				return "",scanerr
+		 }
+
+		 return workspaceurl,nil 
+	        
+}
+
