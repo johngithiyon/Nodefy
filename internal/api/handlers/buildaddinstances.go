@@ -10,6 +10,8 @@ import (
 	"github.com/johngithiyon/Nodefy/pkg/utils"
 )
 
+//Addinstanceshandler used to get the request to add the instances in their space
+
 func Addinstanceshandler(w http.ResponseWriter, r *http.Request) {
 
 	var Addinstance models.Addinstancesbuild
