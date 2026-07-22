@@ -12,13 +12,14 @@ func SaveDeployinstances(username string, deploy models.Deploy) error {
 
 	var appID int
 	insertQuery := `
-	INSERT INTO deploy_instances (appname, username)
-	VALUES ($1, $2)
+	INSERT INTO deploy_instances (appname, username,container_ip,domain_name,port_number)
+	VALUES ($1,$2,$3,$4,$5)
 	RETURNING id
 	`
 
-	err := Database.Db.QueryRow(insertQuery, deploy.Appname, username).Scan(&appID)
+	err := Database.Db.QueryRow(insertQuery,deploy.Appname,username,deploy.Containerip,"http://"+deploy.Domainame+".nodefy.in",deploy.Portnumber).Scan(&appID)
 	if err != nil {
+		log.Println("queryrow err",err)
 		return err
 	}
 
