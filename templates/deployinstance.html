@@ -52,7 +52,6 @@
             width: 100vw;
         }
 
-        /* --- Ambient Backgrounds --- */
         .ambient-glow {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
@@ -124,7 +123,6 @@
         }
         @keyframes riseBubble { 0% { transform: translateY(0) translateX(0) scale(0.8); opacity: 0; } 20% { opacity: 0.5; } 80% { opacity: 0.5; } 100% { transform: translateY(-120vh) translateX(50px) scale(1.2); opacity: 0; } }
 
-        /* --- UI Components --- */
         .sidebar {
             width: 240px;
             background: rgba(15, 15, 20, 0.5);
@@ -193,9 +191,6 @@
         .btn-kill { background: rgba(239, 68, 68, 0.12); color: #ef4444; border-color: rgba(239, 68, 68, 0.25); }
         .btn-kill:hover { background: rgba(239, 68, 68, 0.22); box-shadow: 0 0 16px rgba(239, 68, 68, 0.15); transform: translateY(-1px); }
 
-        .btn-workspace { background: rgba(139, 92, 246, 0.12); color: var(--accent-color); border-color: rgba(139, 92, 246, 0.25); }
-        .btn-workspace:hover { background: rgba(139, 92, 246, 0.22); box-shadow: 0 0 16px rgba(139, 92, 246, 0.15); transform: translateY(-1px); }
-
         .content-scroll { flex: 1; padding: 36px; overflow-y: auto; }
 
         .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
@@ -204,7 +199,6 @@
 
         .instance-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
 
-        /* --- App Card --- */
         .app-card {
             background: rgba(20, 20, 25, 0.6);
             border: 1px solid var(--border-subtle);
@@ -241,6 +235,40 @@
             padding: 4px 8px; border-radius: 12px; font-weight: 500;
         }
 
+        .app-url-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            border-bottom: 1px solid var(--border-subtle);
+            background: rgba(139, 92, 246, 0.04);
+            flex-wrap: wrap;
+        }
+
+        .app-url-row svg { flex-shrink: 0; color: var(--accent-color); opacity: 0.8; }
+
+        .app-url-link {
+            font-family: var(--font-code);
+            font-size: 0.82rem;
+            color: var(--accent-color);
+            text-decoration: none;
+            word-break: break-all;
+            transition: color 0.2s;
+        }
+
+        .app-url-link:hover { color: #a78bfa; text-decoration: underline; }
+
+        .app-port-badge {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            background: rgba(255,255,255,0.05);
+            padding: 2px 10px;
+            border-radius: 12px;
+            border: 1px solid var(--border-subtle);
+            font-family: var(--font-code);
+            margin-left: auto;
+        }
+
         .service-list {
             padding: 8px 12px;
         }
@@ -267,23 +295,26 @@
             box-shadow: 0 0 15px rgba(139, 92, 246, 0.1);
         }
 
-        .service-info { display: flex; align-items: center; gap: 12px; }
+        .service-info { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
 
         .service-icon {
             width: 32px; height: 32px; border-radius: 8px;
             display: flex; align-items: center; justify-content: center;
             background: rgba(255,255,255,0.03);
             color: var(--text-muted);
+            flex-shrink: 0;
         }
 
         .service-name {
             font-family: var(--font-code); font-size: 0.85rem; color: #e4e4e7; font-weight: 500;
+            word-break: break-all;
         }
 
         .status-badge {
             display: inline-flex; align-items: center; gap: 6px;
             font-size: 0.7rem; font-weight: 600; padding: 3px 8px;
             border-radius: 20px; text-transform: uppercase; letter-spacing: 0.04em;
+            flex-shrink: 0;
         }
         
         .status-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
@@ -299,13 +330,11 @@
 
         @keyframes pulseStatus { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
 
-        /* --- Empty & Loading States --- */
         .empty-state { grid-column: 1 / -1; text-align: center; padding: 80px 20px; color: var(--text-dark); }
         .empty-state-icon { font-size: 3rem; margin-bottom: 16px; opacity: 0.4; }
         .empty-state-text { font-size: 1rem; margin-bottom: 6px; color: var(--text-muted); }
         .empty-state-hint { font-size: 0.85rem; opacity: 0.6; }
 
-        /* --- Modals & Toasts --- */
         .modal-overlay {
             position: fixed; inset: 0; background: rgba(5, 5, 10, 0.85); backdrop-filter: blur(12px);
             z-index: 2000; display: none; align-items: center; justify-content: center;
@@ -348,7 +377,6 @@
 
         .btn-loading { pointer-events: none; opacity: 0.7; }
 
-        /* Toast Notifications */
         .toast-container {
             position: fixed; bottom: 40px; right: 40px; z-index: 3000;
             display: flex; flex-direction: column; gap: 12px; pointer-events: none;
@@ -393,9 +421,6 @@
         @keyframes toastIn { from { transform: translateX(100%) skewX(-10deg); opacity: 0; } to { transform: translateX(0) skewX(0); opacity: 1; } }
         @keyframes toastOut { to { transform: translateX(50px) scale(0.9); opacity: 0; } }
 
-        /* ======================================
-           SSH COMMAND CENTER OVERLAY
-           ====================================== */
         .ssh-overlay {
             position: fixed;
             inset: 0;
@@ -555,7 +580,6 @@
             font-weight: 500;
         }
 
-        /* Special highlight for server/deploy items */
         .ssh-submenu-item.highlight-item::before {
             content: '>' !important;
             color: #10b981 !important;
@@ -885,10 +909,6 @@
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
                     Kill
                 </button>
-                <button class="btn btn-workspace" id="btnWorkspace" onclick="handleWorkspace()">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg>
-                    Workspace
-                </button>
             </div>
         </header>
 
@@ -944,9 +964,7 @@
         </div>
     </div>
 
-    <!-- ==========================================
-         SSH COMMAND CENTER OVERLAY
-         ========================================== -->
+    <!-- SSH COMMAND CENTER OVERLAY -->
     <div class="ssh-overlay" id="sshOverlay">
         <aside class="ssh-sidebar">
             <div class="ssh-logo-area">
@@ -1098,7 +1116,7 @@
 
         function renderInstances() {
             var grid = document.getElementById('instanceGrid');
-            if (instances.length === 0) {
+            if (!instances || instances.length === 0) {
                 grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🚀</div><div class="empty-state-text">No deployments yet</div><div class="empty-state-hint">Click "Deploy App" to get started</div></div>';
                 return;
             }
@@ -1107,21 +1125,47 @@
                 var app = instances[i];
                 var card = document.createElement('div');
                 card.className = 'app-card';
+                
                 var appHeader = document.createElement('div');
                 appHeader.className = 'app-header';
-                appHeader.innerHTML = '<div class="app-title">' + (app.appname || 'Unnamed App') + '</div><div class="app-count">' + (app.services ? app.services.length : 0) + ' Services</div>';
+                var serviceCount = app.services ? app.services.length : 0;
+                appHeader.innerHTML = '<div class="app-title">' + (app.appname || 'Unnamed App') + '</div><div class="app-count">' + serviceCount + ' Services</div>';
                 card.appendChild(appHeader);
+
+                // URL row with domain and port
+                var urlRow = document.createElement('div');
+                urlRow.className = 'app-url-row';
+                var domainText = app.domainname || app.domain || '';
+                var portText = app.portnumber || app.port || '';
+                var displayUrl = domainText;
+                if (portText) {
+                    displayUrl = domainText + ':' + portText;
+                }
+                
+                if (displayUrl) {
+                    var linkHref = /^https?:\/\//i.test(displayUrl) ? displayUrl : ('http://' + displayUrl);
+                    urlRow.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg><a class="app-url-link" href="' + linkHref + '" target="_blank" rel="noopener noreferrer">' + displayUrl + '</a>';
+                    if (portText) {
+                        urlRow.innerHTML += '<span class="app-port-badge">Port: ' + portText + '</span>';
+                    }
+                } else {
+                    urlRow.innerHTML = '<span style="color: var(--text-muted); font-size: 0.8rem;">No URL configured</span>';
+                }
+                card.appendChild(urlRow);
+
                 var serviceList = document.createElement('div');
                 serviceList.className = 'service-list';
                 if (app.services && app.services.length > 0) {
                     for (var j = 0; j < app.services.length; j++) {
                         (function(service) {
                             var statusClass = 'status-building';
-                            if (service.status && service.status.toLowerCase() === 'running') statusClass = 'status-running';
-                            else if (service.status && service.status.toLowerCase() === 'stopped') statusClass = 'status-stopped';
+                            var statusText = service.status || 'unknown';
+                            if (statusText.toLowerCase() === 'running') statusClass = 'status-running';
+                            else if (statusText.toLowerCase() === 'stopped') statusClass = 'status-stopped';
+                            
                             var row = document.createElement('div');
                             row.className = 'service-item ' + (service.name === selectedInstance ? 'selected' : '');
-                            row.innerHTML = '<div class="service-info"><div class="service-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12l-10 7V5l10 7z"></path><path d="M2 5v14"></path></svg></div><div class="service-name">' + service.name + '</div></div><div class="status-badge ' + statusClass + '"><div class="status-dot"></div>' + service.status + '</div>';
+                            row.innerHTML = '<div class="service-info"><div class="service-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12l-10 7V5l10 7z"></path><path d="M2 5v14"></path></svg></div><div class="service-name">' + service.name + '</div></div><div class="status-badge ' + statusClass + '"><div class="status-dot"></div>' + statusText + '</div>';
                             row.addEventListener('click', function(e) { e.stopPropagation(); selectedInstance = service.name; renderInstances(); });
                             serviceList.appendChild(row);
                         })(app.services[j]);
@@ -1210,20 +1254,6 @@
                 if (actionType === 'kill') { selectedInstance = ''; renderInstances(); } else { await fetchInstances(); }
                 var cfg = toastConfig[actionType]; showToast(cfg.title, cfg.msg, cfg.type);
             } catch (error) { console.error(error); showToast('Error', error.message, 'error'); }
-            finally { setButtonLoading(btn, false); }
-        }
-
-        async function handleWorkspace() {
-            var btn = document.getElementById('btnWorkspace');
-            setButtonLoading(btn, true);
-            try {
-                var response = await fetch('/workspace', { method: 'GET', credentials: 'include' });
-                if (!response.ok) throw new Error('Failed to get workspace');
-                var url = (await response.text()).trim();
-                if (url.charAt(0) === '"') url = JSON.parse(url);
-                if (url && url.indexOf('http') === 0) { window.open(url, '_blank'); showToast('Redirecting', 'Opening workspace...', 'info'); }
-                else { throw new Error('Invalid workspace URL received'); }
-            } catch (error) { console.error(error); showToast('Info', 'Workspace feature unavailable.', 'info'); }
             finally { setButtonLoading(btn, false); }
         }
 
