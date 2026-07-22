@@ -52,7 +52,6 @@
             width: 100vw;
         }
 
-        /* --- Ambient Backgrounds --- */
         .ambient-glow {
             position: fixed;
             top: 0;
@@ -205,7 +204,6 @@
             }
         }
 
-        /* --- UI Components --- */
         .sidebar {
             width: 240px;
             background: rgba(15, 15, 20, 0.5);
@@ -367,17 +365,6 @@
             transform: translateY(-1px);
         }
 
-        .btn-workspace {
-            background: rgba(139, 92, 246, 0.12);
-            color: var(--accent-color);
-            border-color: rgba(139, 92, 246, 0.25);
-        }
-        .btn-workspace:hover {
-            background: rgba(139, 92, 246, 0.22);
-            box-shadow: 0 0 16px rgba(139, 92, 246, 0.15);
-            transform: translateY(-1px);
-        }
-
         .content-scroll {
             flex: 1;
             padding: 36px;
@@ -403,11 +390,10 @@
 
         .instance-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
             gap: 24px;
         }
 
-        /* --- App Card --- */
         .app-card {
             background: rgba(20, 20, 25, 0.6);
             border: 1px solid var(--border-subtle);
@@ -450,52 +436,51 @@
             font-size: 0.75rem;
             color: var(--text-muted);
             background: rgba(255, 255, 255, 0.05);
-            padding: 4px 8px;
+            padding: 4px 12px;
             border-radius: 12px;
             font-weight: 500;
         }
 
-        /* URL Row with Copy Button */
         .app-url-row {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 10px 24px;
+            gap: 10px;
+            padding: 12px 20px;
             border-bottom: 1px solid var(--border-subtle);
             background: rgba(139, 92, 246, 0.04);
+            flex-wrap: wrap;
         }
 
-        .app-url-row svg {
+        .app-url-row .url-icon {
             flex-shrink: 0;
             color: var(--accent-color);
             opacity: 0.8;
         }
 
-        .app-url-wrapper {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            min-width: 0;
-        }
-
         .app-url-link {
             font-family: var(--font-code);
             font-size: 0.82rem;
-            color: var(--accent-color);
+            color: #60a5fa;
             text-decoration: none;
             word-break: break-all;
             transition: color 0.2s;
             flex: 1;
-            min-width: 0;
+            min-width: 150px;
         }
 
         .app-url-link:hover {
-            color: #a78bfa;
+            color: #93bbfc;
             text-decoration: underline;
         }
 
-        .copy-url-btn {
+        .url-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .btn-copy-url {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--border-subtle);
             color: var(--text-muted);
@@ -503,59 +488,34 @@
             border-radius: 6px;
             font-size: 0.7rem;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
             gap: 4px;
             font-family: var(--font-ui);
-            flex-shrink: 0;
         }
 
-        .copy-url-btn:hover {
+        .btn-copy-url:hover {
+            background: rgba(139, 92, 246, 0.15);
             border-color: var(--accent-color);
             color: var(--accent-color);
-            background: rgba(139, 92, 246, 0.1);
         }
 
-        .copy-url-btn.copied {
+        .btn-copy-url.copied {
+            background: rgba(16, 185, 129, 0.15);
             border-color: #10b981;
             color: #10b981;
-            background: rgba(16, 185, 129, 0.1);
         }
 
-        /* Domain/Port Info Row */
-        .app-info-row {
-            display: flex;
-            gap: 16px;
-            padding: 8px 24px;
-            border-bottom: 1px solid var(--border-subtle);
-            background: rgba(255, 255, 255, 0.02);
-            flex-wrap: wrap;
-        }
-
-        .app-info-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.78rem;
+        .app-port-badge {
+            font-size: 0.7rem;
             color: var(--text-muted);
-        }
-
-        .app-info-item .label {
-            color: var(--text-dark);
-            text-transform: uppercase;
-            font-size: 0.65rem;
-            letter-spacing: 0.5px;
-        }
-
-        .app-info-item .value {
-            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 3px 12px;
+            border-radius: 12px;
+            border: 1px solid var(--border-subtle);
             font-family: var(--font-code);
-            font-size: 0.8rem;
-        }
-
-        .app-info-item .value.accent {
-            color: var(--accent-color);
+            flex-shrink: 0;
         }
 
         .service-list {
@@ -590,6 +550,8 @@
             display: flex;
             align-items: center;
             gap: 12px;
+            flex: 1;
+            min-width: 0;
         }
 
         .service-icon {
@@ -601,6 +563,7 @@
             justify-content: center;
             background: rgba(255, 255, 255, 0.03);
             color: var(--text-muted);
+            flex-shrink: 0;
         }
 
         .service-name {
@@ -608,6 +571,7 @@
             font-size: 0.85rem;
             color: #e4e4e7;
             font-weight: 500;
+            word-break: break-all;
         }
 
         .status-badge {
@@ -616,10 +580,11 @@
             gap: 6px;
             font-size: 0.7rem;
             font-weight: 600;
-            padding: 3px 8px;
+            padding: 3px 10px;
             border-radius: 20px;
             text-transform: uppercase;
             letter-spacing: 0.04em;
+            flex-shrink: 0;
         }
 
         .status-dot {
@@ -671,7 +636,6 @@
             }
         }
 
-        /* --- Empty & Loading States --- */
         .empty-state {
             grid-column: 1 / -1;
             text-align: center;
@@ -693,7 +657,6 @@
             opacity: 0.6;
         }
 
-        /* --- Modals & Toasts --- */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -815,7 +778,6 @@
             opacity: 0.7;
         }
 
-        /* Toast Notifications */
         .toast-container {
             position: fixed;
             bottom: 40px;
@@ -955,9 +917,6 @@
             }
         }
 
-        /* ======================================
-           SSH COMMAND CENTER OVERLAY
-           ====================================== */
         .ssh-overlay {
             position: fixed;
             inset: 0;
@@ -1458,6 +1417,15 @@
             background: rgba(255, 255, 255, 0.15);
         }
 
+        @keyframes rotateSpinner {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
         @media (max-width: 900px) {
             body {
                 flex-direction: column;
@@ -1627,10 +1595,6 @@
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
                     Kill
                 </button>
-                <button class="btn btn-workspace" id="btnWorkspace" onclick="handleWorkspace()">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg>
-                    Workspace
-                </button>
             </div>
         </header>
 
@@ -1686,9 +1650,7 @@
         </div>
     </div>
 
-    <!-- ==========================================
-         SSH COMMAND CENTER OVERLAY
-         ========================================== -->
+    <!-- SSH COMMAND CENTER OVERLAY -->
     <div class="ssh-overlay" id="sshOverlay">
         <aside class="ssh-sidebar">
             <div class="ssh-logo-area">
@@ -1790,7 +1752,7 @@
                     if (spot2) spot2.style.transform = 'translate(' + (x * 0.5) + 'px, ' + (y * 0.5) + 'px)';
                     if (particles) particles.style.transform = 'translate(' + (x * -0.5) + 'px, ' + (y * -0.5) + 'px)';
                     if (bubblesContainer) bubblesContainer.style.transform = 'translate(' + (x * -0.2) + 'px, ' + (y * -0.2) +
-                    'px)';
+                        'px)';
                 });
             }
 
@@ -1854,9 +1816,8 @@
 
         function renderInstances() {
             var grid = document.getElementById('instanceGrid');
-            if (instances.length === 0) {
-                grid.innerHTML =
-                    '<div class="empty-state"><div class="empty-state-icon">🚀</div><div class="empty-state-text">No deployments yet</div><div class="empty-state-hint">Click "Deploy App" to get started</div></div>';
+            if (!instances || instances.length === 0) {
+                grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🚀</div><div class="empty-state-text">No deployments yet</div><div class="empty-state-hint">Click "Deploy App" to get started</div></div>';
                 return;
             }
             grid.innerHTML = '';
@@ -1865,129 +1826,83 @@
                 var card = document.createElement('div');
                 card.className = 'app-card';
 
-                // App Header
                 var appHeader = document.createElement('div');
                 appHeader.className = 'app-header';
+                var serviceCount = app.services ? app.services.length : 0;
                 appHeader.innerHTML = '<div class="app-title">' + (app.appname || 'Unnamed App') + '</div><div class="app-count">' +
-                    (app.services ? app.services.length : 0) + ' Services</div>';
+                    serviceCount + ' Services</div>';
                 card.appendChild(appHeader);
 
-                // Build URL from domain and port
-                var domain = app.domain || app.domainame || app.domainName || '';
-                var port = app.port || app.portnumber || app.portNumber || '';
-                var fullUrl = '';
-                var displayUrl = '';
-
-                if (domain && port) {
-                    fullUrl = domain + ':' + port;
-                    displayUrl = domain + ':' + port;
-                } else if (domain) {
-                    fullUrl = domain;
-                    displayUrl = domain;
-                } else if (port) {
-                    fullUrl = 'localhost:' + port;
-                    displayUrl = 'localhost:' + port;
-                }
-
-                // URL Row with Copy Button
+                // URL row with full URL and copy button
                 var urlRow = document.createElement('div');
                 urlRow.className = 'app-url-row';
 
-                var urlWrapper = document.createElement('div');
-                urlWrapper.className = 'app-url-wrapper';
+                var domainText = app.domainname || app.domain || '';
+                var portText = app.portnumber || app.port || '';
+                var fullUrl = '';
 
-                var linkIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-                linkIcon.setAttribute('width', '14');
-                linkIcon.setAttribute('height', '14');
-                linkIcon.setAttribute('viewBox', '0 0 24 24');
-                linkIcon.setAttribute('fill', 'none');
-                linkIcon.setAttribute('stroke', 'currentColor');
-                linkIcon.setAttribute('stroke-width', '2');
-                linkIcon.setAttribute('stroke-linecap', 'round');
-                linkIcon.setAttribute('stroke-linejoin', 'round');
-                linkIcon.innerHTML =
-                    '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>';
-                urlWrapper.appendChild(linkIcon);
-
-                var urlLink = document.createElement('a');
-                urlLink.className = 'app-url-link';
-                urlLink.textContent = displayUrl || 'No URL configured';
-                if (fullUrl) {
-                    var linkHref = /^https?:\/\//i.test(fullUrl) ? fullUrl : ('http://' + fullUrl);
-                    urlLink.href = linkHref;
-                    urlLink.target = '_blank';
-                    urlLink.rel = 'noopener noreferrer';
+                if (domainText) {
+                    // Check if domain already has http:// or https://
+                    if (/^https?:\/\//i.test(domainText)) {
+                        fullUrl = domainText;
+                        if (portText) {
+                            fullUrl = domainText + ':' + portText;
+                        }
+                    } else {
+                        fullUrl = 'http://' + domainText;
+                        if (portText) {
+                            fullUrl = fullUrl + ':' + portText;
+                        }
+                    }
                 } else {
-                    urlLink.style.color = 'var(--text-muted)';
-                    urlLink.style.cursor = 'default';
-                    urlLink.style.textDecoration = 'none';
+                    fullUrl = 'http://localhost';
+                    if (portText) {
+                        fullUrl = fullUrl + ':' + portText;
+                    }
                 }
-                urlWrapper.appendChild(urlLink);
-                urlRow.appendChild(urlWrapper);
 
-                // Copy URL Button
-                var copyBtn = document.createElement('button');
-                copyBtn.className = 'copy-url-btn';
-                copyBtn.innerHTML =
-                    '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> Copy';
+                var displayUrl = fullUrl.replace(/^https?:\/\//, '');
+
                 if (fullUrl) {
-                    copyBtn.onclick = function(e) {
-                        e.stopPropagation();
-                        copyToClipboard(fullUrl, copyBtn);
-                    };
+                    var linkHref = fullUrl;
+                    urlRow.innerHTML = `
+                        <svg class="url-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                        </svg>
+                        <a class="app-url-link" href="${linkHref}" target="_blank" rel="noopener noreferrer">${displayUrl}</a>
+                        <div class="url-actions">
+                            ${portText ? `<span class="app-port-badge">Port: ${portText}</span>` : ''}
+                            <button class="btn-copy-url" onclick="copyUrlToClipboard('${fullUrl}', this)" title="Copy URL">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                </svg>
+                                Copy
+                            </button>
+                        </div>
+                    `;
                 } else {
-                    copyBtn.disabled = true;
-                    copyBtn.style.opacity = '0.4';
-                    copyBtn.style.cursor = 'not-allowed';
+                    urlRow.innerHTML = '<span style="color: var(--text-muted); font-size: 0.8rem;">No URL configured</span>';
                 }
-                urlRow.appendChild(copyBtn);
                 card.appendChild(urlRow);
 
-                // Info Row: Domain and Port
-                var infoRow = document.createElement('div');
-                infoRow.className = 'app-info-row';
-
-                if (domain) {
-                    var domainItem = document.createElement('div');
-                    domainItem.className = 'app-info-item';
-                    domainItem.innerHTML = '<span class="label">Domain</span><span class="value accent">' + domain + '</span>';
-                    infoRow.appendChild(domainItem);
-                }
-
-                if (port) {
-                    var portItem = document.createElement('div');
-                    portItem.className = 'app-info-item';
-                    portItem.innerHTML = '<span class="label">Port</span><span class="value">' + port + '</span>';
-                    infoRow.appendChild(portItem);
-                }
-
-                if (app.containerip) {
-                    var ipItem = document.createElement('div');
-                    ipItem.className = 'app-info-item';
-                    ipItem.innerHTML = '<span class="label">Container IP</span><span class="value" style="color: #60a5fa;">' + app
-                        .containerip + '</span>';
-                    infoRow.appendChild(ipItem);
-                }
-
-                card.appendChild(infoRow);
-
-                // Service List
                 var serviceList = document.createElement('div');
                 serviceList.className = 'service-list';
                 if (app.services && app.services.length > 0) {
                     for (var j = 0; j < app.services.length; j++) {
                         (function(service) {
                             var statusClass = 'status-building';
-                            if (service.status && service.status.toLowerCase() === 'running') statusClass =
-                            'status-running';
-                            else if (service.status && service.status.toLowerCase() === 'stopped') statusClass =
-                                'status-stopped';
+                            var statusText = service.status || 'unknown';
+                            if (statusText.toLowerCase() === 'running') statusClass = 'status-running';
+                            else if (statusText.toLowerCase() === 'stopped') statusClass = 'status-stopped';
+
                             var row = document.createElement('div');
                             row.className = 'service-item ' + (service.name === selectedInstance ? 'selected' : '');
                             row.innerHTML =
                                 '<div class="service-info"><div class="service-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12l-10 7V5l10 7z"></path><path d="M2 5v14"></path></svg></div><div class="service-name">' +
                                 service.name + '</div></div><div class="status-badge ' + statusClass +
-                                '"><div class="status-dot"></div>' + service.status + '</div>';
+                                '"><div class="status-dot"></div>' + statusText + '</div>';
                             row.addEventListener('click', function(e) {
                                 e.stopPropagation();
                                 selectedInstance = service.name;
@@ -2005,46 +1920,53 @@
             }
         }
 
-        // Copy to clipboard helper
-        function copyToClipboard(text, btn) {
+        // Copy URL to clipboard function
+        function copyUrlToClipboard(url, buttonElement) {
+            if (!url) return;
+
             if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(text).then(function() {
-                    updateCopyButton(btn);
+                navigator.clipboard.writeText(url).then(function() {
+                    showCopySuccess(buttonElement);
                 }).catch(function() {
-                    fallbackCopy(text, btn);
+                    fallbackCopy(url, buttonElement);
                 });
             } else {
-                fallbackCopy(text, btn);
+                fallbackCopy(url, buttonElement);
             }
         }
 
-        function fallbackCopy(text, btn) {
-            var ta = document.createElement('textarea');
-            ta.value = text;
-            ta.style.position = 'fixed';
-            ta.style.left = '-9999px';
-            ta.style.top = '-9999px';
-            document.body.appendChild(ta);
-            ta.select();
+        function fallbackCopy(url, buttonElement) {
+            var textarea = document.createElement('textarea');
+            textarea.value = url;
+            textarea.style.position = 'fixed';
+            textarea.style.left = '-9999px';
+            textarea.style.top = '-9999px';
+            document.body.appendChild(textarea);
+            textarea.select();
             try {
                 document.execCommand('copy');
-                updateCopyButton(btn);
+                showCopySuccess(buttonElement);
             } catch (e) {
                 showToast('Error', 'Failed to copy URL', 'error');
             }
-            document.body.removeChild(ta);
+            document.body.removeChild(textarea);
         }
 
-        function updateCopyButton(btn) {
-            var origHtml = btn.innerHTML;
-            btn.innerHTML =
-                '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Copied!';
-            btn.classList.add('copied');
+        function showCopySuccess(buttonElement) {
+            var originalText = buttonElement.innerHTML;
+            buttonElement.innerHTML = `
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                Copied!
+            `;
+            buttonElement.classList.add('copied');
+            showToast('Copied!', 'URL copied to clipboard', 'success');
+
             setTimeout(function() {
-                btn.innerHTML = origHtml;
-                btn.classList.remove('copied');
+                buttonElement.innerHTML = originalText;
+                buttonElement.classList.remove('copied');
             }, 2000);
-            showToast('Copied', 'URL copied to clipboard!', 'success');
         }
 
         function closeModals() {
@@ -2105,9 +2027,10 @@
             setButtonLoading(btn, true);
             try {
                 var response = await fetch('/addinstancesdeploy', { method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include', body: JSON.stringify({ appname: appname, imagename: imagename }) });
+                        credentials: 'include', body: JSON.stringify({ appname: appname, imagename: imagename }) });
                 if (response.ok) { showToast('Deployed', 'Application "' + appname + '" deployed successfully.',
-                    'success'); await fetchInstances(); } else if (response.status === 409) { showToast('Conflict',
+                    'success');
+                    await fetchInstances(); } else if (response.status === 409) { showToast('Conflict',
                         'An instance with this name already exists.', 'error'); } else { var errText = await response
                         .text();
                     console.error('Deploy Error:', errText);
@@ -2133,12 +2056,12 @@
             var endpoints = { start: '/startinstance', stop: '/stopinstance', kill: '/killinstance' };
             var payload = { instance_name: instanceName, type: selectionType, status: targetStatus };
             var toastConfig = { start: { title: 'Started', msg: '"' + instanceName + '" is running.',
-                    type: 'success' }, stop: { title: 'Stopped', msg: '"' + instanceName + '" halted.',
-                    type: 'info' }, kill: { title: 'Terminated', msg: '"' + instanceName + '" killed.',
-                    type: 'error' } };
+                type: 'success' }, stop: { title: 'Stopped', msg: '"' + instanceName + '" halted.',
+                type: 'info' }, kill: { title: 'Terminated', msg: '"' + instanceName + '" killed.',
+                type: 'error' } };
             try {
                 var response = await fetch(endpoints[actionType], { method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include', body: JSON.stringify(payload) });
+                        credentials: 'include', body: JSON.stringify(payload) });
                 if (!response.ok) { var errData = await response.json().catch(function() { return {}; });
                     throw new Error(errData.error || errData.message || 'Server Error (' + response.status + ')'); }
                 if (actionType === 'kill') { selectedInstance = '';
@@ -2147,21 +2070,6 @@
                 showToast(cfg.title, cfg.msg, cfg.type);
             } catch (error) { console.error(error);
                 showToast('Error', error.message, 'error'); } finally { setButtonLoading(btn, false); }
-        }
-
-        async function handleWorkspace() {
-            var btn = document.getElementById('btnWorkspace');
-            setButtonLoading(btn, true);
-            try {
-                var response = await fetch('/workspace', { method: 'GET', credentials: 'include' });
-                if (!response.ok) throw new Error('Failed to get workspace');
-                var url = (await response.text()).trim();
-                if (url.charAt(0) === '"') url = JSON.parse(url);
-                if (url && url.indexOf('http') === 0) { window.open(url, '_blank');
-                    showToast('Redirecting', 'Opening workspace...', 'info'); } else { throw new Error(
-                        'Invalid workspace URL received'); }
-            } catch (error) { console.error(error);
-                showToast('Info', 'Workspace feature unavailable.', 'info'); } finally { setButtonLoading(btn, false); }
         }
 
         function showToast(title, message, type) {
@@ -2185,7 +2093,7 @@
             container.appendChild(toast);
             setTimeout(function() {
                 toast.style.animation =
-                    'toastOut 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
+                'toastOut 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
                 toast.addEventListener('animationend', function() { if (toast.parentElement) toast.remove(); });
             }, 5000);
         }
@@ -2194,16 +2102,12 @@
             var overlays = document.querySelectorAll('.modal-overlay');
             for (var i = 0; i < overlays.length; i++) {
                 (function(overlay) {
-                    overlay.addEventListener('click', function(e) {
-                        if (e.target === overlay) closeModals();
-                    });
+                    overlay.addEventListener('click', function(e) { if (e.target === overlay) closeModals(); });
                 })(overlays[i]);
             }
         })();
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') { closeModals();
-                closeSSHOverlay(); }
-        });
+        document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { closeModals();
+                closeSSHOverlay(); } });
 
 
         /* =============================================
@@ -2225,8 +2129,7 @@
                                 output: ['Reading package lists... Done', 'Building dependency tree... Done',
                                     'The following NEW packages will be installed:', '  cloudflared',
                                     '0 upgraded, 1 newly installed, 0 to remove.',
-                                    'Setting up cloudflared (2024.x.x) ...',
-                                    'cloudflared installed successfully.'
+                                    'Setting up cloudflared (2024.x.x) ...', 'cloudflared installed successfully.'
                                 ] },
                             'linux-ssh': { label: '2. Connect using SSH',
                                 command: 'ssh username@https://nitrogen-britney-conversation-interpreted.trycloudflare.com  -o ProxyCommand="cloudflared access ssh --hostname %h"',
@@ -2318,8 +2221,7 @@
                                     '> cloudflared --version', 'cloudflared version 2024.x.x',
                                     'Works without full path!'
                                 ] },
-                            'win-path-verify': { label: '8. Verify PATH Setup',
-                                command: 'cloudflared --version',
+                            'win-path-verify': { label: '8. Verify PATH Setup', command: 'cloudflared --version',
                                 desc: 'After restarting CMD, verify that cloudflared is accessible globally without the full file path.\n\nIf this fails, restart CMD as Administrator and try again.',
                                 params: ['--version', 'PATH verify'],
                                 output: ['C:\\Users\\user>cloudflared --version',
@@ -2426,9 +2328,7 @@
                         label: 'cloudflared tunnel --url',
                         command: 'cloudflared tunnel --url http://localhost:8080',
                         desc: 'Creates a public Cloudflare Tunnel that routes traffic to your local application server.\n\nThis command:\n  1. Connects to Cloudflare\'s edge network\n  2. Maps a public URL to your local http://localhost:8080\n  3. Returns a publicly accessible URL (e.g., https://xxx.trycloudflare.com)\n\nMake sure your server is already running (go run main.go / node index.js / python3 main.py) before executing this.\n\nChange the port (8080) to match whichever port your server is listening on (Go:8080, Node:3000, Python:5000).\n\nThe tunnel remains active as long as this command is running. Press Ctrl+C to stop it.',
-                        params: ['cloudflared tunnel', '--url', 'http://localhost:8080',
-                            'trycloudflare.com'
-                        ],
+                        params: ['cloudflared tunnel', '--url', 'http://localhost:8080', 'trycloudflare.com'],
                         output: [
                             '2024/11/15 10:30:00 INF Starting tunnel tunnelID=xxx',
                             '2024/11/15 10:30:01 INF ',
@@ -2501,8 +2401,8 @@
 
                 var header = document.createElement('div');
                 header.className = 'ssh-dropdown-header';
-                header.innerHTML = '<span style="display:flex; align-items:center; gap:10px;">' + section.icon + ' ' + section
-                    .label + '</span><svg class="ssh-dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>';
+                header.innerHTML = '<span style="display:flex; align-items:center; gap:10px;">' + section.icon + ' ' +
+                    section.label + '</span><svg class="ssh-dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>';
 
                 (function(ddEl, hhEl) {
                     hhEl.onclick = function(e) { e.stopPropagation();
@@ -2563,7 +2463,8 @@
                                 e.stopPropagation();
                                 sshSelectCommand(dItem);
                                 var all = document.querySelectorAll('.ssh-submenu-item');
-                                for (var x = 0; x < all.length; x++) all[x].classList.remove('active');
+                                for (var x = 0; x < all.length; x++) all[x].classList.remove(
+                                'active');
                                 divEl.classList.add('active');
                             };
                         })(item, directDiv);
@@ -2643,14 +2544,14 @@
                         div.classList.add('ssh-term-error');
                     } else if (line.indexOf('Success') !== -1 || line.indexOf('successfully') !== -1 || line
                         .indexOf('Complete!') !== -1 || line.indexOf('verified successfully') !== -1 || line
-                        .indexOf('Welcome to') !== -1 || line.indexOf('Authentication successful') !== -1 || line
-                        .indexOf('Ready to accept') !== -1 || line.indexOf('started successfully') !== -1 || line
-                        .indexOf('Connection registered') !== -1 || line.indexOf('Works without') !== -1) {
+                        .indexOf('Welcome to') !== -1 || line.indexOf('Authentication successful') !== -1 ||
+                        line.indexOf('Ready to accept') !== -1 || line.indexOf('started successfully') !== -1 ||
+                        line.indexOf('Connection registered') !== -1 || line.indexOf('Works without') !== -1) {
                         div.classList.add('ssh-term-accent');
-                    } else if (line.indexOf('INF') !== -1 || line.indexOf('Proto') !== -1 || line.indexOf(
-                        'PID') !== -1 || line.indexOf('Filesystem') !== -1 || line.indexOf('USER') !== -1 ||
-                        line.indexOf('Volume in drive') !== -1 || line.indexOf('Directory of') !== -1 || line
-                        .indexOf('Compiling') !== -1) {
+                    } else if (line.indexOf('INF') !== -1 || line.indexOf('Proto') !== -1 || line.indexOf('PID') !==
+                        -1 || line.indexOf('Filesystem') !== -1 || line.indexOf('USER') !== -1 || line.indexOf(
+                        'Volume in drive') !== -1 || line.indexOf('Directory of') !== -1 || line.indexOf(
+                        'Compiling') !== -1) {
                         div.classList.add('ssh-term-info');
                     }
 
