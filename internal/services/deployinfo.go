@@ -1,6 +1,8 @@
 package services
 
 import (
+	"log"
+
 	"github.com/johngithiyon/Nodefy/internal/errors"
 	"github.com/johngithiyon/Nodefy/internal/repository/storage/postgres"
 	"github.com/johngithiyon/Nodefy/internal/repository/storage/redis"
@@ -18,12 +20,14 @@ func Getdeployinfo(sessionid string) (string,error)  {
 	deployinstances,geterr := postgres.GetDeployinstances(username)
 
 	if geterr != nil {
+		 log.Println("postgres geterr",geterr)
 		 return "",errors.ErrInternalserver
 	}
 
 	resp,converr := utils.Jsonconvertor(deployinstances)
 
 	if converr != nil {
+		log.Println("jsonconverr",converr)
 		return "",errors.ErrInternalserver
 	}
 
