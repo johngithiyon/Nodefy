@@ -6,4 +6,7 @@ type Deploy struct {
 	Gitrepo   string   `json:"gitrepo"`
 	Languages []string `json:"languages"`
 	Services  []string `json:"services"`
+	Domainame string   `json:"domainame"`
+    Portnumber string  `json:"portnumber"`
+	Containerip string 
 }
