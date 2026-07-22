@@ -6,6 +6,7 @@ import (
 
 	"github.com/johngithiyon/Nodefy/internal/errors"
 	"github.com/johngithiyon/Nodefy/internal/models"
+	"github.com/johngithiyon/Nodefy/internal/repository/docker"
 	"github.com/johngithiyon/Nodefy/internal/repository/linux"
 	"github.com/johngithiyon/Nodefy/internal/repository/rabbitmq"
 	"github.com/johngithiyon/Nodefy/internal/repository/storage/postgres"
@@ -29,7 +30,11 @@ func Deployservices(sessionid string,Deploy *models.Deploy) error {
       "gitrepo":Deploy.Gitrepo,
       "languages":Deploy.Languages,
       "services":Deploy.Services,
+	  "domainame":Deploy.Domainame,
+	  "portnumber":Deploy.Portnumber,
   }
+
+  log.Println("payload",payload)
 	
 
 	data,converr := json.Marshal(payload)
@@ -60,6 +65,13 @@ func Deployservices(sessionid string,Deploy *models.Deploy) error {
 		return consumerr
 	}
 
+	containerip,findiperr := docker.Findcontainerip(Deploy.Appname)
+
+	if findiperr != nil {
+		 return findiperr
+	}
+
+	Deploy.Containerip = containerip
 
    saverr := postgres.SaveDeployinstances(username,*Deploy)
 
