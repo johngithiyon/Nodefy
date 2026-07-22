@@ -846,7 +846,6 @@
     <!-- Navigation -->
     <nav>
         <a href="/" class="nav-logo">
-            <!-- Logo from build.html reference -->
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="var(--accent-color)" />
                 <path d="M2 17L12 22L22 17" stroke="white" />
@@ -876,7 +875,7 @@
                 </div>
 
                 <div class="actions">
-                    <div></div> <!-- Spacer -->
+                    <div></div>
                     <button class="btn btn-primary" onclick="nextStep(1)">Continue</button>
                 </div>
             </div>
@@ -891,17 +890,6 @@
                 <div class="custom-input-area" style="display: block; margin-bottom: 30px; max-width: 550px; margin-left: auto; margin-right: auto;">
                     <p style="margin-bottom: 12px; color: var(--accent-color); font-size: 0.9rem; font-weight: 500;">Git Repository URL:</p>
                     <input type="text" id="git-repo" class="code-editor" placeholder="https://github.com/username/repo.git" style="min-height: 50px; height: 50px;">
-                </div>
-
-                <div class="custom-input-area" style="display: block; margin-bottom: 30px; max-width: 550px; margin-left: auto; margin-right: auto;">
-                    <p style="margin-bottom: 12px; color: var(--accent-color); font-size: 0.9rem; font-weight: 500;">Domain Name:</p>
-                    <input type="text" id="domain-name" class="code-editor" placeholder="e.g myapp" style="min-height: 50px; height: 50px;">
-                </div>
-
-                <div class="custom-input-area" style="display: block; margin-bottom: 30px; max-width: 550px; margin-left: auto; margin-right: auto;">
-                    <p style="margin-bottom: 12px; color: var(--accent-color); font-size: 0.9rem; font-weight: 500;">Port Number:</p>
-                    <input type="number" id="port-number" class="code-editor" placeholder="e.g 3000 (unreserved: 1024-65535)" min="1024" max="65535" style="min-height: 50px; height: 50px;">
-                    <p style="margin-top: 8px; color: var(--text-muted); font-size: 0.8rem;">Must be an unreserved port between 1024 and 65535.</p>
                 </div>
 
                 <div class="actions">
@@ -1018,14 +1006,6 @@
                         <span class="summary-value custom" id="summary-repo">None</span>
                     </div>
                     <div class="summary-item">
-                        <span class="summary-label">Domain Name</span>
-                        <span class="summary-value custom" id="summary-domain">None</span>
-                    </div>
-                    <div class="summary-item">
-                        <span class="summary-label">Port Number</span>
-                        <span class="summary-value custom" id="summary-port">None</span>
-                    </div>
-                    <div class="summary-item">
                         <span class="summary-label">Language</span>
                         <span class="summary-value" id="summary-language">None</span>
                     </div>
@@ -1084,9 +1064,7 @@
         // Store form data globally
         let formData = {
             appName: '',
-            gitRepo: '',
-            domainName: '',
-            portNumber: ''
+            gitRepo: ''
         };
 
         // Navigation Logic
@@ -1121,37 +1099,7 @@
                     return;
                 }
 
-                let domain = document.getElementById('domain-name').value.trim();
-                if (!domain) {
-                    showToast("Domain Required", "Please enter a domain name", "error");
-                    return;
-                }
-                const domainRegex = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/i;
-                if (!domainRegex.test(domain)) {
-                    showToast("Invalid Domain", "Domain name can only contain letters, numbers and hyphens", "error");
-                    return;
-                }
-
-                let portValue = document.getElementById('port-number').value.trim();
-                if (!portValue) {
-                    showToast("Port Required", "Please enter a port number", "error");
-                    return;
-                }
-                const portNum = Number(portValue);
-                const reservedPorts = [22, 25, 53, 80, 110, 143, 443, 465, 587, 993, 995, 3306, 5432, 6379, 27017];
-                if (!Number.isInteger(portNum) || portNum < 1024 || portNum > 65535) {
-                    showToast("Invalid Port", "Port must be an unreserved number between 1024 and 65535", "error");
-                    return;
-                }
-                if (reservedPorts.includes(portNum)) {
-                    showToast("Reserved Port", "This port is commonly reserved, please choose another", "error");
-                    return;
-                }
-
                 formData.gitRepo = repo;
-                formData.domainName = domain;
-                formData.portNumber = portNum;
-
                 goToStep(3);
                 return;
             }
@@ -1178,8 +1126,6 @@
                 formData.appName = document.getElementById('app-name').value.trim();
             } else if (stepNumParam - 1 === 2) {
                 formData.gitRepo = document.getElementById('git-repo').value.trim();
-                formData.domainName = document.getElementById('domain-name').value.trim();
-                formData.portNumber = document.getElementById('port-number').value.trim();
             }
             goToStep(stepNumParam - 1);
         }
@@ -1211,8 +1157,6 @@
         function updateSummary() {
             document.getElementById('summary-appname').innerText = formData.appName || "N/A";
             document.getElementById('summary-repo').innerText = formData.gitRepo || "N/A";
-            document.getElementById('summary-domain').innerText = formData.domainName || "N/A";
-            document.getElementById('summary-port').innerText = formData.portNumber || "N/A";
             
             document.getElementById('summary-language').innerText = selectedLanguage ? selectedLanguage.charAt(0).toUpperCase() + selectedLanguage.slice(1) : "N/A";
             
@@ -1226,10 +1170,10 @@
             }
         }
 
-        // Deploy Logic - Updated to match backend expectations
+        // Deploy Logic - Only send what backend expects
         async function deployProject() {
-            // Validate all required fields before deployment
-            if (!formData.appName || !formData.gitRepo || !formData.domainName || !formData.portNumber) {
+            // Validate all required fields
+            if (!formData.appName || !formData.gitRepo) {
                 showToast("Missing Data", "Please complete all required fields", "error");
                 return;
             }
@@ -1242,36 +1186,35 @@
             const overlay = document.getElementById('loading-overlay');
             overlay.style.display = 'flex';
 
-            // Prepare payload matching backend model
+            // Only send fields that backend expects
             const payload = {
                 appname: formData.appName,
                 gitrepo: formData.gitRepo,
-                domain: formData.domainName,
-                port: Number(formData.portNumber),
-                languages: [selectedLanguage], // Backend expects array of strings
+                languages: [selectedLanguage],
                 services: selectedServices
             };
 
-            console.log('Sending payload:', payload);
+            console.log('Sending payload to backend:', payload);
 
             try {
                 const response = await fetch('/deployinstance', {
                     method: 'POST',
                     headers: { 
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
+                        'Content-Type': 'application/json'
                     },
-                    credentials: 'include', // Include cookies for session
+                    credentials: 'include', // Important: sends cookies for session
                     body: JSON.stringify(payload)
                 });
 
-                // Try to parse response as JSON
-                let result;
                 const responseText = await response.text();
+                let message = responseText;
+
                 try {
-                    result = JSON.parse(responseText);
+                    const jsonErr = JSON.parse(responseText);
+                    if(jsonErr.error) message = jsonErr.error;
+                    if(jsonErr.message) message = jsonErr.message;
                 } catch(e) {
-                    result = { message: responseText };
+                    // Not JSON, use raw text
                 }
 
                 if (response.ok) {
@@ -1280,7 +1223,7 @@
                         window.location.href = '/deployinfopage'; 
                     }, 2000);
                 } else {
-                    showToast("Deployment Failed", result.message || "Unknown error occurred", "error");
+                    showToast("Deployment Failed", message, "error");
                 }
             } catch (error) {
                 console.error("Error:", error);
