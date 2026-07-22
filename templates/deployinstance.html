@@ -1034,7 +1034,7 @@
             </div>
             <div class="form-group">
                 <label class="form-label">Domain Name</label>
-                <input type="text" id="exposeDomainName" class="code-editor" placeholder="e.g. myapp.example.com" oninput="validateDomainName(this, 'exposeDomainErr')" autocomplete="off" spellcheck="false">
+                <input type="text" id="exposeDomainName" class="code-editor" placeholder="e.g. myapp" oninput="validateDomainName(this, 'exposeDomainErr')" autocomplete="off" spellcheck="false">
                 <div class="form-hint">Enter the domain name to expose the app on.</div>
                 <div class="validation-msg" id="exposeDomainErr"></div>
             </div>
@@ -1225,7 +1225,7 @@
             var errEl = document.getElementById(errId);
             if (!val) { input.classList.remove('error'); errEl.textContent = ''; return false; }
             var pattern = /^(?!:\/\/)([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/;
-            if (!pattern.test(val)) { input.classList.add('error'); errEl.textContent = 'Enter a valid domain name (e.g., example.com).'; return false; }
+            if (!pattern.test(val)) { input.classList.add('error'); errEl.textContent = 'Enter a valid domain name.'; return false; }
             input.classList.remove('error'); errEl.textContent = ''; return true;
         }
 
