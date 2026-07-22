@@ -1226,18 +1226,29 @@
             }
         }
 
-        // Deploy Logic
+        // Deploy Logic - Updated to match backend expectations
         async function deployProject() {
+            // Validate all required fields before deployment
+            if (!formData.appName || !formData.gitRepo || !formData.domainName || !formData.portNumber) {
+                showToast("Missing Data", "Please complete all required fields", "error");
+                return;
+            }
+
+            if (!selectedLanguage) {
+                showToast("Missing Language", "Please select a language", "error");
+                return;
+            }
+
             const overlay = document.getElementById('loading-overlay');
             overlay.style.display = 'flex';
 
-            // Use stored data instead of reading from DOM
+            // Prepare payload matching backend model
             const payload = {
                 appname: formData.appName,
                 gitrepo: formData.gitRepo,
                 domain: formData.domainName,
                 port: Number(formData.portNumber),
-                languages: selectedLanguage ? [selectedLanguage] : [],
+                languages: [selectedLanguage], // Backend expects array of strings
                 services: selectedServices
             };
 
@@ -1246,25 +1257,30 @@
             try {
                 const response = await fetch('/deployinstance', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    credentials: 'include', // Include cookies for session
                     body: JSON.stringify(payload)
                 });
 
+                // Try to parse response as JSON
+                let result;
                 const responseText = await response.text();
-                let message = responseText;
-
                 try {
-                    const jsonErr = JSON.parse(responseText);
-                    if(jsonErr.error) message = jsonErr.error;
+                    result = JSON.parse(responseText);
                 } catch(e) {
-                    // Not JSON, use raw text
+                    result = { message: responseText };
                 }
 
                 if (response.ok) {
                     showToast("Success", "Project deployed successfully!", "success");
-                    setTimeout(() => { window.location.href = '/deployinfopage'; }, 2000);
+                    setTimeout(() => { 
+                        window.location.href = '/deployinfopage'; 
+                    }, 2000);
                 } else {
-                    showToast("Deployment Failed", message, "error");
+                    showToast("Deployment Failed", result.message || "Unknown error occurred", "error");
                 }
             } catch (error) {
                 console.error("Error:", error);
