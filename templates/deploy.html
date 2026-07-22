@@ -938,7 +938,6 @@
                         <div class="service-name">Python</div>
                     </div>
 
-                    <!-- BUG FIX: Changed 'golang' to 'go' -->
                     <div class="service-card" onclick="selectLanguage(this, 'golang-go')">
                         <div class="service-icon-box">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -974,7 +973,6 @@
                 </div>
 
                 <div class="selection-grid">
-                    <!-- BUG FIX: Changed 'postgresql' to 'postgres' -->
                     <div class="service-card" onclick="toggleService(this, 'postgres')">
                         <div class="service-icon-box"><img src="../static/images/postgresql.png" alt="Postgres"></div>
                         <div class="service-name">PostgreSQL</div>
@@ -1083,6 +1081,14 @@
         let selectedServices = [];
         let currentStep = 1;
 
+        // Store form data globally
+        let formData = {
+            appName: '',
+            gitRepo: '',
+            domainName: '',
+            portNumber: ''
+        };
+
         // Navigation Logic
         function goToStep(stepNumber) {
             document.querySelectorAll('.wizard-step').forEach(el => el.classList.remove('active'));
@@ -1099,6 +1105,7 @@
                     showToast("Name Required", "Please enter an application name", "error");
                     return;
                 }
+                formData.appName = name;
                 goToStep(2);
                 return;
             }
@@ -1109,7 +1116,6 @@
                     showToast("Repo Required", "Please enter a Git repository URL", "error");
                     return;
                 }
-                // Basic URL validation (optional but good UX)
                 if (!repo.startsWith('http') && !repo.startsWith('git@')) {
                     showToast("Invalid URL", "Please enter a valid Git URL (http/https/ssh)", "error");
                     return;
@@ -1142,6 +1148,10 @@
                     return;
                 }
 
+                formData.gitRepo = repo;
+                formData.domainName = domain;
+                formData.portNumber = portNum;
+
                 goToStep(3);
                 return;
             }
@@ -1163,6 +1173,14 @@
         }
 
         function prevStep(stepNumParam) {
+            // Store current values before going back
+            if (stepNumParam - 1 === 1) {
+                formData.appName = document.getElementById('app-name').value.trim();
+            } else if (stepNumParam - 1 === 2) {
+                formData.gitRepo = document.getElementById('git-repo').value.trim();
+                formData.domainName = document.getElementById('domain-name').value.trim();
+                formData.portNumber = document.getElementById('port-number').value.trim();
+            }
             goToStep(stepNumParam - 1);
         }
 
@@ -1191,12 +1209,11 @@
         }
 
         function updateSummary() {
-            document.getElementById('summary-appname').innerText = document.getElementById('app-name').value.trim() || "N/A";
-            document.getElementById('summary-repo').innerText = document.getElementById('git-repo').value.trim() || "N/A";
-            document.getElementById('summary-domain').innerText = document.getElementById('domain-name').value.trim() || "N/A";
-            document.getElementById('summary-port').innerText = document.getElementById('port-number').value.trim() || "N/A";
+            document.getElementById('summary-appname').innerText = formData.appName || "N/A";
+            document.getElementById('summary-repo').innerText = formData.gitRepo || "N/A";
+            document.getElementById('summary-domain').innerText = formData.domainName || "N/A";
+            document.getElementById('summary-port').innerText = formData.portNumber || "N/A";
             
-            // Handle Language Display (capitalize first letter)
             document.getElementById('summary-language').innerText = selectedLanguage ? selectedLanguage.charAt(0).toUpperCase() + selectedLanguage.slice(1) : "N/A";
             
             const servicesEl = document.getElementById('summary-services');
@@ -1214,14 +1231,17 @@
             const overlay = document.getElementById('loading-overlay');
             overlay.style.display = 'flex';
 
+            // Use stored data instead of reading from DOM
             const payload = {
-                appname: document.getElementById('app-name').value.trim(),
-                gitrepo: document.getElementById('git-repo').value.trim(),
-                domain: document.getElementById('domain-name').value.trim(),
-                port: Number(document.getElementById('port-number').value.trim()),
+                appname: formData.appName,
+                gitrepo: formData.gitRepo,
+                domain: formData.domainName,
+                port: Number(formData.portNumber),
                 languages: selectedLanguage ? [selectedLanguage] : [],
                 services: selectedServices
             };
+
+            console.log('Sending payload:', payload);
 
             try {
                 const response = await fetch('/deployinstance', {
@@ -1233,7 +1253,6 @@
                 const responseText = await response.text();
                 let message = responseText;
 
-                // Try to parse JSON error if exists, otherwise use text
                 try {
                     const jsonErr = JSON.parse(responseText);
                     if(jsonErr.error) message = jsonErr.error;
