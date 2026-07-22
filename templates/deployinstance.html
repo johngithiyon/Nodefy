@@ -160,18 +160,6 @@
         .nav-btn:hover svg { opacity: 1; }
         .nav-btn.primary svg { opacity: 1; }
 
-        /* Expose button specific styling */
-        .btn-expose { 
-            background: rgba(139, 92, 246, 0.12); 
-            color: var(--accent-color); 
-            border-color: rgba(139, 92, 246, 0.25); 
-        }
-        .btn-expose:hover { 
-            background: rgba(139, 92, 246, 0.22); 
-            box-shadow: 0 0 16px rgba(139, 92, 246, 0.15); 
-            transform: translateY(-1px); 
-        }
-
         .main-content { flex: 1; display: flex; flex-direction: column; position: relative; z-index: 5; min-width: 0; }
 
         .top-bar {
@@ -204,6 +192,9 @@
 
         .btn-kill { background: rgba(239, 68, 68, 0.12); color: #ef4444; border-color: rgba(239, 68, 68, 0.25); }
         .btn-kill:hover { background: rgba(239, 68, 68, 0.22); box-shadow: 0 0 16px rgba(239, 68, 68, 0.15); transform: translateY(-1px); }
+
+        .btn-workspace { background: rgba(139, 92, 246, 0.12); color: var(--accent-color); border-color: rgba(139, 92, 246, 0.25); }
+        .btn-workspace:hover { background: rgba(139, 92, 246, 0.22); box-shadow: 0 0 16px rgba(139, 92, 246, 0.15); transform: translateY(-1px); }
 
         .content-scroll { flex: 1; padding: 36px; overflow-y: auto; }
 
@@ -249,6 +240,28 @@
             font-size: 0.75rem; color: var(--text-muted); background: rgba(255,255,255,0.05);
             padding: 4px 8px; border-radius: 12px; font-weight: 500;
         }
+
+        .app-url-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            border-bottom: 1px solid var(--border-subtle);
+            background: rgba(139, 92, 246, 0.04);
+        }
+
+        .app-url-row svg { flex-shrink: 0; color: var(--accent-color); opacity: 0.8; }
+
+        .app-url-link {
+            font-family: var(--font-code);
+            font-size: 0.82rem;
+            color: var(--accent-color);
+            text-decoration: none;
+            word-break: break-all;
+            transition: color 0.2s;
+        }
+
+        .app-url-link:hover { color: #a78bfa; text-decoration: underline; }
 
         .service-list {
             padding: 8px 12px;
@@ -804,71 +817,6 @@
         ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.08); border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.15); }
 
-        /* Copyable URL Display */
-        .expose-result {
-            background: rgba(16, 185, 129, 0.08);
-            border: 1px solid rgba(16, 185, 129, 0.2);
-            border-radius: 12px;
-            padding: 16px;
-            margin-top: 16px;
-            display: none;
-        }
-        .expose-result.show {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .expose-result .url-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 8px 12px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 8px;
-            margin-top: 8px;
-        }
-        .expose-result .url-text {
-            font-family: var(--font-code);
-            color: #34d399;
-            font-size: 0.85rem;
-            word-break: break-all;
-            flex: 1;
-        }
-        .expose-result .copy-btn {
-            background: rgba(255,255,255,0.05);
-            border: none;
-            color: var(--text-muted);
-            padding: 4px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.7rem;
-            font-family: var(--font-ui);
-            transition: all 0.2s;
-            margin-left: 8px;
-            flex-shrink: 0;
-        }
-        .expose-result .copy-btn:hover {
-            background: rgba(139, 92, 246, 0.2);
-            color: var(--accent-color);
-        }
-        .expose-result .port-info {
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .expose-result .port-info span {
-            background: rgba(255,255,255,0.05);
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-family: var(--font-code);
-            color: #60a5fa;
-        }
-
         @media (max-width: 900px) {
             body { flex-direction: column; overflow-y: auto; }
             .sidebar { width: 100%; flex-direction: row; align-items: center; padding: 14px 16px; gap: 10px; border-bottom: 1px solid var(--border-subtle); border-right: none; }
@@ -959,13 +907,9 @@
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
                     Kill
                 </button>
-                <!-- EXPOSE BUTTON -->
-                <button class="btn btn-expose" id="btnExpose" onclick="openExposeModal()">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M2 12h4l3-9 3 18 3-9h4"/>
-                        <circle cx="12" cy="12" r="10"/>
-                    </svg>
-                    Expose
+                <button class="btn btn-workspace" id="btnWorkspace" onclick="handleWorkspace()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg>
+                    Workspace
                 </button>
             </div>
         </header>
@@ -1018,56 +962,6 @@
             <div class="modal-actions">
                 <button class="btn btn-secondary" onclick="closeModals()">Cancel</button>
                 <button class="btn btn-primary" id="btnActionSubmit" onclick="submitAction()">Execute</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- EXPOSE MODAL -->
-    <div class="modal-overlay" id="exposeModal">
-        <div class="modal-content">
-            <h3 class="modal-title">Expose Application</h3>
-            <div class="form-group">
-                <label class="form-label">App Name</label>
-                <input type="text" id="exposeAppName" class="code-editor" placeholder="e.g. myapp" oninput="validateExposeAppName(this, 'exposeNameErr')" autocomplete="off" spellcheck="false">
-                <div class="form-hint">Enter the name of the app to expose.</div>
-                <div class="validation-msg" id="exposeNameErr"></div>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Domain Name</label>
-                <input type="text" id="exposeDomainName" class="code-editor" placeholder="e.g. myapp" oninput="validateDomainName(this, 'exposeDomainErr')" autocomplete="off" spellcheck="false">
-                <div class="form-hint">Enter the domain name to expose the app on.</div>
-                <div class="validation-msg" id="exposeDomainErr"></div>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Port Number</label>
-                <input type="text" id="exposePortNumber" class="code-editor" placeholder="e.g. 8080" oninput="validatePortNumber(this, 'exposePortErr')" autocomplete="off" spellcheck="false">
-                <div class="form-hint">Enter the port number the app is running on (e.g., 8080, 3000, 5000).</div>
-                <div class="validation-msg" id="exposePortErr"></div>
-            </div>
-            <!-- Result Display Area -->
-            <div id="exposeResult" class="expose-result">
-                <div style="display:flex; align-items:center; gap:8px; color:#34d399; font-size:0.9rem; font-weight:500;">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                    Application Exposed Successfully
-                </div>
-                <div class="url-row">
-                    <div style="flex:1; min-width:0;">
-                        <div style="color:var(--text-muted); font-size:0.7rem; text-transform:uppercase; letter-spacing:0.5px;">URL</div>
-                        <div id="exposeUrlDisplay" class="url-text">https://myapp.example.com</div>
-                    </div>
-                    <button class="copy-btn" onclick="copyExposeUrl()">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                        Copy
-                    </button>
-                </div>
-                <div class="port-info" style="margin-top:8px;">
-                    <span>🔌 Port:</span>
-                    <span id="exposePortDisplay">8080</span>
-                </div>
-            </div>
-            <div class="modal-actions">
-                <button class="btn btn-secondary" onclick="closeModals()">Cancel</button>
-                <button class="btn btn-primary" id="btnExposeSubmit" onclick="submitExpose()">Expose</button>
             </div>
         </div>
     </div>
@@ -1210,34 +1104,6 @@
             input.classList.remove('error'); errEl.textContent = ''; return true;
         }
 
-        // Expose validation functions
-        function validateExposeAppName(input, errId) {
-            var val = input.value;
-            var errEl = document.getElementById(errId);
-            if (!val) { input.classList.remove('error'); errEl.textContent = ''; return false; }
-            if (/\s/.test(val)) { input.classList.add('error'); errEl.textContent = 'Spaces are not allowed.'; return false; }
-            if (/[^a-zA-Z0-9\-]/.test(val)) { input.classList.add('error'); errEl.textContent = 'Only letters, numbers, and hyphens allowed.'; return false; }
-            input.classList.remove('error'); errEl.textContent = ''; return true;
-        }
-
-        function validateDomainName(input, errId) {
-            var val = input.value.trim();
-            var errEl = document.getElementById(errId);
-            if (!val) { input.classList.remove('error'); errEl.textContent = ''; return false; }
-            var pattern = /^(?!:\/\/)([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/;
-            if (!pattern.test(val)) { input.classList.add('error'); errEl.textContent = 'Enter a valid domain name.'; return false; }
-            input.classList.remove('error'); errEl.textContent = ''; return true;
-        }
-
-        function validatePortNumber(input, errId) {
-            var val = input.value.trim();
-            var errEl = document.getElementById(errId);
-            if (!val) { input.classList.remove('error'); errEl.textContent = ''; return false; }
-            var port = parseInt(val);
-            if (isNaN(port) || port < 1 || port > 65535) { input.classList.add('error'); errEl.textContent = 'Enter a valid port number (1-65535).'; return false; }
-            input.classList.remove('error'); errEl.textContent = ''; return true;
-        }
-
         async function fetchInstances() {
             try {
                 var response = await fetch('/getdeployinstance', { method: 'GET', credentials: 'include', headers: { 'Content-Type': 'application/json' } });
@@ -1267,6 +1133,16 @@
                 appHeader.className = 'app-header';
                 appHeader.innerHTML = '<div class="app-title">' + (app.appname || 'Unnamed App') + '</div><div class="app-count">' + (app.services ? app.services.length : 0) + ' Services</div>';
                 card.appendChild(appHeader);
+
+                var appUrl = app.url || app.deployurl || app.deployUrl || ((app.domain && app.port) ? (app.domain + ':' + app.port) : (app.domain || null));
+                if (appUrl) {
+                    var urlRow = document.createElement('div');
+                    urlRow.className = 'app-url-row';
+                    var linkHref = /^https?:\/\//i.test(appUrl) ? appUrl : ('http://' + appUrl);
+                    urlRow.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg><a class="app-url-link" href="' + linkHref + '" target="_blank" rel="noopener noreferrer">' + appUrl + '</a>';
+                    card.appendChild(urlRow);
+                }
+
                 var serviceList = document.createElement('div');
                 serviceList.className = 'service-list';
                 if (app.services && app.services.length > 0) {
@@ -1297,20 +1173,11 @@
             for (var j = 0; j < editors.length; j++) { if (!editors[j].disabled) editors[j].value = ''; editors[j].classList.remove('error'); }
             var msgs = document.querySelectorAll('.validation-msg');
             for (var k = 0; k < msgs.length; k++) msgs[k].textContent = '';
-            // Hide expose result
-            document.getElementById('exposeResult').classList.remove('show');
         }
 
         function openAddModal() {
             document.getElementById('addModal').classList.add('open');
             setTimeout(function () { document.getElementById('addAppName').focus(); }, 100);
-        }
-
-        function openExposeModal() {
-            document.getElementById('exposeModal').classList.add('open');
-            // Hide result if showing from previous
-            document.getElementById('exposeResult').classList.remove('show');
-            setTimeout(function () { document.getElementById('exposeAppName').focus(); }, 100);
         }
 
         function handleAction(actionType) {
@@ -1378,132 +1245,18 @@
             finally { setButtonLoading(btn, false); }
         }
 
-        // Variable to store the last exposed URL for copying
-        var lastExposedUrl = '';
-        var lastExposedPort = '';
-
-        /* =============================================
-           EXPOSE FUNCTION
-           ============================================= */
-        async function submitExpose() {
-            var appNameInput = document.getElementById('exposeAppName');
-            var domainInput = document.getElementById('exposeDomainName');
-            var portInput = document.getElementById('exposePortNumber');
-            var btn = document.getElementById('btnExposeSubmit');
-
-            var appname = appNameInput.value.trim();
-            var domainame = domainInput.value.trim();
-            var portnumber = portInput.value.trim();
-
-            // Validate all fields
-            if (!appname) { appNameInput.classList.add('error'); document.getElementById('exposeNameErr').textContent = 'App name is required.'; appNameInput.focus(); return; }
-            if (!validateExposeAppName(appNameInput, 'exposeNameErr')) { appNameInput.focus(); return; }
-            
-            if (!domainame) { domainInput.classList.add('error'); document.getElementById('exposeDomainErr').textContent = 'Domain name is required.'; domainInput.focus(); return; }
-            if (!validateDomainName(domainInput, 'exposeDomainErr')) { domainInput.focus(); return; }
-            
-            if (!portnumber) { portInput.classList.add('error'); document.getElementById('exposePortErr').textContent = 'Port number is required.'; portInput.focus(); return; }
-            if (!validatePortNumber(portInput, 'exposePortErr')) { portInput.focus(); return; }
-
+        async function handleWorkspace() {
+            var btn = document.getElementById('btnWorkspace');
             setButtonLoading(btn, true);
-
             try {
-                var response = await fetch('/exposeappage', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include',
-                    body: JSON.stringify({
-                        appname: appname,
-                        domainame: domainame,
-                        portnumber: portnumber
-                    })
-                });
-
-                var url = 'https://' + domainame;
-                lastExposedUrl = url;
-                lastExposedPort = portnumber;
-
-                if (response.ok) {
-                    // Show the result in the modal
-                    document.getElementById('exposeUrlDisplay').textContent = url;
-                    document.getElementById('exposePortDisplay').textContent = portnumber;
-                    document.getElementById('exposeResult').classList.add('show');
-                    
-                    // Also show toast notification
-                    showToast('Exposed Successfully', '🔗 ' + url + ' | Port: ' + portnumber, 'success');
-                    
-                    // Clear form fields but keep result visible
-                    appNameInput.value = '';
-                    domainInput.value = '';
-                    portInput.value = '';
-                } else {
-                    var errText = await response.text();
-                    console.error('Expose Error:', errText);
-                    showToast('Error', 'Failed to expose app. ' + errText, 'error');
-                }
-            } catch (error) {
-                console.error('Expose Error:', error);
-                // Demo mode - show simulated success
-                var url = 'https://' + domainame;
-                lastExposedUrl = url;
-                lastExposedPort = portnumber;
-                
-                document.getElementById('exposeUrlDisplay').textContent = url;
-                document.getElementById('exposePortDisplay').textContent = portnumber;
-                document.getElementById('exposeResult').classList.add('show');
-                
-                showToast('Exposed Successfully', '🔗 ' + url + ' | Port: ' + portnumber, 'success');
-                
-                // Clear form fields
-                appNameInput.value = '';
-                domainInput.value = '';
-                portInput.value = '';
-            } finally {
-                setButtonLoading(btn, false);
-            }
-        }
-
-        function copyExposeUrl() {
-            if (!lastExposedUrl) {
-                showToast('Info', 'No URL to copy. Please expose an app first.', 'info');
-                return;
-            }
-            
-            var textToCopy = 'URL: ' + lastExposedUrl + '\nPort: ' + lastExposedPort;
-            
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(textToCopy).then(function() {
-                    showToast('Copied!', 'URL and port copied to clipboard.', 'success');
-                    // Update button feedback
-                    var btn = document.querySelector('.expose-result .copy-btn');
-                    if (btn) {
-                        var orig = btn.innerHTML;
-                        btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Copied!';
-                        btn.style.color = '#34d399';
-                        setTimeout(function() { btn.innerHTML = orig; btn.style.color = ''; }, 1500);
-                    }
-                }).catch(function() {
-                    fallbackCopyExposeUrl(textToCopy);
-                });
-            } else {
-                fallbackCopyExposeUrl(textToCopy);
-            }
-        }
-
-        function fallbackCopyExposeUrl(text) {
-            var ta = document.createElement('textarea');
-            ta.value = text;
-            ta.style.position = 'fixed';
-            ta.style.left = '-9999px';
-            document.body.appendChild(ta);
-            ta.select();
-            try {
-                document.execCommand('copy');
-                showToast('Copied!', 'URL and port copied to clipboard.', 'success');
-            } catch (e) {
-                showToast('Error', 'Could not copy. Please select and copy manually.', 'error');
-            }
-            document.body.removeChild(ta);
+                var response = await fetch('/workspace', { method: 'GET', credentials: 'include' });
+                if (!response.ok) throw new Error('Failed to get workspace');
+                var url = (await response.text()).trim();
+                if (url.charAt(0) === '"') url = JSON.parse(url);
+                if (url && url.indexOf('http') === 0) { window.open(url, '_blank'); showToast('Redirecting', 'Opening workspace...', 'info'); }
+                else { throw new Error('Invalid workspace URL received'); }
+            } catch (error) { console.error(error); showToast('Info', 'Workspace feature unavailable.', 'info'); }
+            finally { setButtonLoading(btn, false); }
         }
 
         function showToast(title, message, type) {
